@@ -25,8 +25,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../include/Geometry.h"
-#include "../include/ShaderTool.h"
+#include "Geometry.h"
+#include "ShaderTool.h"
 // --------------------------------------------------------------------------
 // OpenGL utility and support function prototypes
 
@@ -161,8 +161,8 @@ void RenderScene(Geometry *geometry, GLuint program)
 // reports GLFW errors
 void ErrorCallback(int error, const char* description)
 {
-	std::cout << "GLFW ERROR " << error << ":" << std::endl;
-	std::cout << description << std::endl;
+	std::cerr << "GLFW ERROR " << error << ":" << std::endl;
+	std::cerr << description << std::endl;
 }
 
 // handles keyboard input events
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
 {
 	// initialize the GLFW windowing system
 	if (!glfwInit()) {
-		std::cout << "ERROR: GLFW failed to initialize, TERMINATING" << std::endl;
+		std::cerr << "ERROR: GLFW failed to initialize, TERMINATING" << std::endl;
 		return -1;
 	}
 	glfwSetErrorCallback(ErrorCallback);
@@ -193,7 +193,7 @@ int main(int argc, char *argv[])
 	int width = 512, height = 512;
 	window = glfwCreateWindow(width, height, "CPSC 453 OpenGL Boilerplate", 0, 0);
 	if (!window) {
-		std::cout << "Program failed to create GLFW window, TERMINATING" << std::endl;
+		std::cerr << "Program failed to create GLFW window, TERMINATING" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 	//Intialize GLAD
 	if (!gladLoadGL())
 	{
-		std::cout << "GLAD init failed" << std::endl;
+		std::cerr << "GLAD init failed" << std::endl;
 		return -1;
 	}
 
@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
 	// call function to load and compile shader programs
 	GLuint program = InitializeShaders();
 	if (program == 0) {
-		std::cout << "Program could not initialize shaders, TERMINATING" << std::endl;
+		std::cerr << "Program could not initialize shaders, TERMINATING" << std::endl;
 		return -1;
 	}
 
@@ -235,10 +235,10 @@ int main(int argc, char *argv[])
 	// call function to create and fill buffers with geometry data
 	Geometry geometry;
 	if (!InitializeVAO(&geometry))
-		std::cout << "Program failed to intialize geometry!" << std::endl;
+		std::cerr << "Program failed to intialize geometry!" << std::endl;
 
 	if(!LoadGeometry(&geometry, vertices, colours, 3))
-		std::cout << "Failed to load geometry" << std::endl;
+		std::cerr << "Failed to load geometry" << std::endl;
 
 	// run an event-triggered main loop
 	while (!glfwWindowShouldClose(window))
@@ -304,7 +304,3 @@ bool CheckGLErrors()
 	}
 	return error;
 }
-
-
-
-

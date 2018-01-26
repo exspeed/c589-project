@@ -1,4 +1,4 @@
-#include "../include/ShaderTool.h"
+#include "ShaderTool.h"
 
 // --------------------------------------------------------------------------
 // OpenGL shader support functions
@@ -16,7 +16,7 @@ std::string LoadSource(const std::string &filename)
 		input.close();
 	}
 	else {
-		std::cout << "ERROR: Could not load shader source from file "
+		std::cerr << "ERROR: Could not load shader source from file "
 			<< filename << std::endl;
 	}
 
@@ -73,8 +73,8 @@ GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader)
 		glGetProgramiv(programObject, GL_INFO_LOG_LENGTH, &length);
 		std::string info(length, ' ');
 		glGetProgramInfoLog(programObject, info.length(), &length, &info[0]);
-		std::cout << "ERROR linking shader program:" << std::endl;
-		std::cout << info << std::endl;
+		std::cerr << "ERROR linking shader program:" << std::endl;
+		std::cerr << info << std::endl;
 	}
 
 	return programObject;
