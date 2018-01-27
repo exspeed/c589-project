@@ -9,6 +9,6 @@
 // Functions to set up OpenGL shader programs for rendering
 // --------------------------------------------------------------------------
 
-std::string LoadSource(const std::string &filename);
-GLuint CompileShader(GLenum shaderType, const std::string &source);
+std::string LoadSource(const std::string& filename);
+GLuint CompileShader(GLenum shaderType, const std::string& source);
 GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader);
