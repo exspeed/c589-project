@@ -18,6 +18,7 @@
 #include <algorithm>
 #include <string>
 #include <iterator>
+#include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -103,17 +104,17 @@ bool InitializeVAO(Geometry *geometry){
 }
 
 // create buffers and fill with geometry data, returning true if successful
-bool LoadGeometry(Geometry *geometry, glm::vec2 *vertices, glm::vec3 *colours, int elementCount)
+bool LoadGeometry(Geometry *geometry, int elementCount)
 {
 	geometry->elementCount = elementCount;
 
 	// create an array buffer object for storing our vertices
 	glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*geometry->elementCount, vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * geometry->vertices.size(), &geometry->vertices.front(), GL_STATIC_DRAW);
 
 	// create another one for storing our colours
 	glBindBuffer(GL_ARRAY_BUFFER, geometry->colourBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*geometry->elementCount, colours, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * geometry->colours.size(), &geometry->colours.front(), GL_STATIC_DRAW);
 
 	//Unbind buffer to reset to default state
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -219,25 +220,28 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	// three vertex positions and assocated colours of a triangle
-	glm::vec2 vertices[] = {
+	// Create Geometry
+	std::vector<glm::vec2> vertices =
+	{
 		glm::vec2( -.6f, -.4f ),
 		glm::vec2( .0f,  .6f ),
 		glm::vec2( .6f, -.4f )
 	};
 
-	glm::vec3 colours[] = {
+	std::vector<glm::vec3> colours =
+	{
 		glm::vec3( 1.0f, 0.0f, 0.0f ),
 		glm::vec3( 0.0f, 1.0f, 0.0f ),
 		glm::vec3( 0.0f, 0.0f, 1.0f )
 	};
 
+	Geometry geometry(vertices, colours);
+
 	// call function to create and fill buffers with geometry data
-	Geometry geometry;
 	if (!InitializeVAO(&geometry))
 		std::cerr << "Program failed to intialize geometry!" << std::endl;
 
-	if(!LoadGeometry(&geometry, vertices, colours, 3))
+	if(!LoadGeometry(&geometry, 3))
 		std::cerr << "Failed to load geometry" << std::endl;
 
 	// run an event-triggered main loop
