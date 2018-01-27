@@ -11,6 +11,8 @@
 layout(location = 0) in vec2 VertexPosition;
 layout(location = 1) in vec3 VertexColour;
 
+uniform mat4 MVP;
+
 // output to be interpolated between vertices and passed to the fragment stage
 out vec3 Colour;
 

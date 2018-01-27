@@ -144,6 +144,10 @@ void RenderScene(Geometry *geometry, GLuint program)
 	// bind our shader program and the vertex array object containing our
 	// scene geometry, then tell OpenGL to draw our geometry
 	glUseProgram(program);
+
+	glm::mat4 mvp = get_MVP();
+    glUniformMatrix4fv(glGetUniformLocation(shader->program,"MVP"), 1, GL_FALSE, &mvp[0][0]);
+	
 	glBindVertexArray(geometry->vertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, geometry->elementCount);
 
