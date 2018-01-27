@@ -18,8 +18,7 @@ public:
 private:
 	GLuint program;
 	std::vector<Geometry> geometries;
-	void InitializeShader(std::string shader_path);
 	void InitializeVAO(Geometry& g) const;
-	void DestroyGeometry(Geometry& g);
+	void DestroyGeometry(Geometry& g) const;
 	void LoadGeometry(Geometry& g) const;
 };

@@ -106,7 +106,7 @@ void Scene::InitializeVAO(Geometry& g) const
 }
 
 // Deallocate geometry-related objects
-void Scene::DestroyGeometry(Geometry& g)
+void Scene::DestroyGeometry(Geometry& g) const 
 {
 	// unbind and destroy our vertex array object and associated buffers
 	glBindVertexArray(0);
