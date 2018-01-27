@@ -1,7 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
-
 
 struct Geometry
 {
@@ -10,9 +11,9 @@ struct Geometry
 	GLuint  textureBuffer;
 	GLuint  colourBuffer;
 	GLuint  vertexArray;
-	GLsizei elementCount;
 
-	// initialize object names to zero (OpenGL reserved value)
-	Geometry() : vertexBuffer(0), colourBuffer(0), vertexArray(0), elementCount(0)
-	{}
+	std::vector<glm::vec2>& vertices;
+	std::vector<glm::vec3>& colours;
+
+	Geometry(std::vector<glm::vec2>& v, std::vector<glm::vec3>& c);
 };
