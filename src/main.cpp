@@ -104,10 +104,8 @@ bool InitializeVAO(Geometry *geometry){
 }
 
 // create buffers and fill with geometry data, returning true if successful
-bool LoadGeometry(Geometry *geometry, int elementCount)
+bool LoadGeometry(Geometry *geometry)
 {
-	geometry->elementCount = elementCount;
-
 	// create an array buffer object for storing our vertices
 	glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * geometry->vertices.size(), &geometry->vertices.front(), GL_STATIC_DRAW);
@@ -146,7 +144,7 @@ void RenderScene(Geometry *geometry, GLuint program)
 	// scene geometry, then tell OpenGL to draw our geometry
 	glUseProgram(program);
 	glBindVertexArray(geometry->vertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, geometry->elementCount);
+	glDrawArrays(GL_TRIANGLES, 0, geometry->vertices.size());
 
 	// reset state to default (no shader or geometry bound)
 	glBindVertexArray(0);
@@ -241,7 +239,7 @@ int main(int argc, char *argv[])
 	if (!InitializeVAO(&geometry))
 		std::cerr << "Program failed to intialize geometry!" << std::endl;
 
-	if(!LoadGeometry(&geometry, 3))
+	if(!LoadGeometry(&geometry))
 		std::cerr << "Failed to load geometry" << std::endl;
 
 	// run an event-triggered main loop

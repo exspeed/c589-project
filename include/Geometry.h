@@ -11,7 +11,6 @@ struct Geometry
 	GLuint  textureBuffer;
 	GLuint  colourBuffer;
 	GLuint  vertexArray;
-	GLsizei elementCount;
 
 	std::vector<glm::vec2>& vertices;
 	std::vector<glm::vec3>& colours;
