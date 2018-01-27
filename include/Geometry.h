@@ -4,8 +4,9 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
-struct Geometry
+class Geometry
 {
+public:
 	// OpenGL names for array buffer objects, vertex array object
 	GLuint  vertexBuffer;
 	GLuint  textureBuffer;
