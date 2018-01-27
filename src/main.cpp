@@ -27,153 +27,17 @@
 #include <GLFW/glfw3.h>
 
 #include "Geometry.h"
+#include "Scene.h"
 #include "ShaderTool.h"
 // --------------------------------------------------------------------------
 // OpenGL utility and support function prototypes
 
 void QueryGLVersion();
 bool CheckGLErrors();
+void ErrorCallback(int error, const char* description);
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-
-// load, compile, and link shaders, returning true if successful
-GLuint InitializeShaders()
-{
-	// load shader source from files
-	std::string vertexSource = LoadSource("shaders/vertex.glsl");
-	std::string fragmentSource = LoadSource("shaders/fragment.glsl");
-	if (vertexSource.empty() || fragmentSource.empty()) return false;
-
-	// compile shader source into shader objects
-	GLuint vertex = CompileShader(GL_VERTEX_SHADER, vertexSource);
-	GLuint fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
-
-	// link shader program
-	GLuint program = LinkProgram(vertex, fragment);
-
-	glDeleteShader(vertex);
-	glDeleteShader(fragment);
-
-	// check for OpenGL errors and return false if error occurred
-	return program;
-}
-
-bool InitializeVAO(Geometry& geometry){
-
-	const GLuint VERTEX_INDEX = 0;
-	const GLuint COLOUR_INDEX = 1;
-
-	//Generate Vertex Buffer Objects
-	// create an array buffer object for storing our vertices
-	glGenBuffers(1, &geometry.vertexBuffer);
-
-	// create another one for storing our colours
-	glGenBuffers(1, &geometry.colourBuffer);
-
-	//Set up Vertex Array Object
-	// create a vertex array object encapsulating all our vertex attributes
-	glGenVertexArrays(1, &geometry.vertexArray);
-	glBindVertexArray(geometry.vertexArray);
-
-	// associate the position array with the vertex array object
-	glBindBuffer(GL_ARRAY_BUFFER, geometry.vertexBuffer);
-	glVertexAttribPointer(
-		VERTEX_INDEX,		//Attribute index 
-		2, 					//# of components
-		GL_FLOAT, 			//Type of component
-		GL_FALSE, 			//Should be normalized?
-		sizeof(glm::vec2),		//Stride - can use 0 if tightly packed
-		0);					//Offset to first element
-	glEnableVertexAttribArray(VERTEX_INDEX);
-
-	// associate the colour array with the vertex array object
-	glBindBuffer(GL_ARRAY_BUFFER, geometry.colourBuffer);
-	glVertexAttribPointer(
-		COLOUR_INDEX,		//Attribute index 
-		3, 					//# of components
-		GL_FLOAT, 			//Type of component
-		GL_FALSE, 			//Should be normalized?
-		sizeof(glm::vec3), 		//Stride - can use 0 if tightly packed
-		0);					//Offset to first element
-	glEnableVertexAttribArray(COLOUR_INDEX);
-
-	// unbind our buffers, resetting to default state
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	return !CheckGLErrors();
-}
-
-// create buffers and fill with geometry data, returning true if successful
-bool LoadGeometry(Geometry& geometry)
-{
-	// create an array buffer object for storing our vertices
-	glBindBuffer(GL_ARRAY_BUFFER, geometry.vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * geometry.vertices.size(), &geometry.vertices.front(), GL_STATIC_DRAW);
-
-	// create another one for storing our colours
-	glBindBuffer(GL_ARRAY_BUFFER, geometry.colourBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * geometry.colours.size(), &geometry.colours.front(), GL_STATIC_DRAW);
-
-	//Unbind buffer to reset to default state
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// check for OpenGL errors and return false if error occurred
-	return !CheckGLErrors();
-}
-
-// deallocate geometry-related objects
-void DestroyGeometry(Geometry& geometry)
-{
-	// unbind and destroy our vertex array object and associated buffers
-	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &geometry.vertexArray);
-	glDeleteBuffers(1, &geometry.vertexBuffer);
-	glDeleteBuffers(1, &geometry.colourBuffer);
-}
-
-// --------------------------------------------------------------------------
-// Rendering function that draws our scene to the frame buffer
-
-void RenderScene(Geometry& geometry, GLuint program)
-{
-	// clear screen to a dark grey colour
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	// bind our shader program and the vertex array object containing our
-	// scene geometry, then tell OpenGL to draw our geometry
-	glUseProgram(program);
-	glBindVertexArray(geometry.vertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, geometry.vertices.size());
-
-	// reset state to default (no shader or geometry bound)
-	glBindVertexArray(0);
-	glUseProgram(0);
-
-	// check for an report any OpenGL errors
-	CheckGLErrors();
-}
-
-// --------------------------------------------------------------------------
-// GLFW callback functions
-
-// reports GLFW errors
-void ErrorCallback(int error, const char* description)
-{
-	std::cerr << "GLFW ERROR " << error << ":" << std::endl;
-	std::cerr << description << std::endl;
-}
-
-// handles keyboard input events
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
-
-// ==========================================================================
 // PROGRAM ENTRY POINT
-
 int main(int argc, char *argv[])
 {
 	// initialize the GLFW windowing system
@@ -183,7 +47,7 @@ int main(int argc, char *argv[])
 	}
 	glfwSetErrorCallback(ErrorCallback);
 
-	// attempt to create a window with an OpenGL 4.1 core profile context
+	// Attempt to create a window with an OpenGL 4.1 core profile context
 	GLFWwindow *window = 0;
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -197,7 +61,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	// set keyboard callback function and make our context current (active)
+	// Set keyboard callback function and make our context current (active)
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwMakeContextCurrent(window);
 
@@ -208,15 +72,8 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	// query and print out information about our OpenGL environment
+	// Query and print out information about our OpenGL environment
 	QueryGLVersion();
-
-	// call function to load and compile shader programs
-	GLuint program = InitializeShaders();
-	if (program == 0) {
-		std::cerr << "Program could not initialize shaders, TERMINATING" << std::endl;
-		return -1;
-	}
 
 	// Create Geometry
 	std::vector<glm::vec2> vertices =
@@ -235,28 +92,26 @@ int main(int argc, char *argv[])
 
 	Geometry geometry(vertices, colours);
 
-	// call function to create and fill buffers with geometry data
-	if (!InitializeVAO(geometry))
-		std::cerr << "Program failed to intialize geometry!" << std::endl;
+	// Create Scene
+	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl");
+	scene.AddGeometry(geometry);
 
-	if(!LoadGeometry(geometry))
-		std::cerr << "Failed to load geometry" << std::endl;
+	CheckGLErrors();
 
-	// run an event-triggered main loop
+	// Main Loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// call function to draw our scene
-		RenderScene(geometry, program);
+		scene.Render();
 
 		glfwSwapBuffers(window);
 
 		glfwPollEvents();
 	}
 
-	// clean up allocated resources before exit
-	DestroyGeometry(geometry);
+	// Clean up allocated resources before exit
+	scene.ClearGeometries();
 	glUseProgram(0);
-	glDeleteProgram(program);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
@@ -264,15 +119,11 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-// ==========================================================================
-// SUPPORT FUNCTION DEFINITIONS
-
-// --------------------------------------------------------------------------
 // OpenGL utility functions
 
+// Reports OpenGL version and renderer information
 void QueryGLVersion()
 {
-	// query opengl version and renderer information
 	std::string version = reinterpret_cast<const char *>(glGetString(GL_VERSION));
 	std::string glslver = reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION));
 	std::string renderer = reinterpret_cast<const char *>(glGetString(GL_RENDERER));
@@ -282,6 +133,7 @@ void QueryGLVersion()
 		<< "on renderer [ " << renderer << " ]" << std::endl;
 }
 
+// Reports OpenGL errors
 bool CheckGLErrors()
 {
 	bool error = false;
@@ -305,4 +157,20 @@ bool CheckGLErrors()
 		error = true;
 	}
 	return error;
+}
+
+// GLFW CALLBACK FUNCTIONS
+
+// Reports GLFW errors
+void ErrorCallback(int error, const char* description)
+{
+	std::cerr << "GLFW ERROR " << error << ":" << std::endl;
+	std::cerr << description << std::endl;
+}
+
+// Handles keyboard input events
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GL_TRUE);
 }

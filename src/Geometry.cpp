@@ -1,5 +1,14 @@
 #include "Geometry.h"
 
+Geometry::Geometry(const Geometry& g)
+  : vertexBuffer(g.vertexBuffer)
+  , colourBuffer(g.colourBuffer)
+  , vertexArray(g.vertexArray)
+  , vertices(g.vertices)
+  , colours(g.colours)
+{
+}
+
 Geometry::Geometry(std::vector<glm::vec2> v, std::vector<glm::vec3> c)
   : vertexBuffer(0)
   , colourBuffer(0)
