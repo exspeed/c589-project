@@ -28,6 +28,7 @@
 
 #include "Geometry.h"
 #include "ShaderTool.h"
+#include "Camera.h"
 // --------------------------------------------------------------------------
 // OpenGL utility and support function prototypes
 
@@ -144,8 +145,8 @@ void RenderScene(Geometry *geometry, GLuint program)
 	// scene geometry, then tell OpenGL to draw our geometry
 	glUseProgram(program);
 
-	glm::mat4 mvp = get_MVP();
-    glUniformMatrix4fv(glGetUniformLocation(shader->program,"MVP"), 1, GL_FALSE, &mvp[0][0]);
+	glm::mat4 mvp = getMVP();
+    glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &mvp[0][0]);
 	
 	glBindVertexArray(geometry->vertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, geometry->vertices.size());

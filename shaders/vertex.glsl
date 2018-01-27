@@ -19,7 +19,7 @@ out vec3 Colour;
 void main()
 {
     // assign vertex position without modification
-    gl_Position = vec4(VertexPosition, 0.0, 1.0);
+    gl_Position = MVP*vec4(VertexPosition, 0.0, 1.0);
 
     // assign output colour to be interpolated
     Colour = VertexColour;
