@@ -16,7 +16,5 @@ struct Geometry
 	std::vector<glm::vec2>& vertices;
 	std::vector<glm::vec3>& colours;
 
-	// initialize object names to zero (OpenGL reserved value)
-	Geometry();
 	Geometry(std::vector<glm::vec2>& v, std::vector<glm::vec3>& c);
 };
