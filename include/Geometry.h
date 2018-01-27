@@ -12,8 +12,8 @@ struct Geometry
 	GLuint  colourBuffer;
 	GLuint  vertexArray;
 
-	std::vector<glm::vec2>& vertices;
-	std::vector<glm::vec3>& colours;
+	std::vector<glm::vec2> vertices;
+	std::vector<glm::vec3> colours;
 
-	Geometry(std::vector<glm::vec2>& v, std::vector<glm::vec3>& c);
+	Geometry(std::vector<glm::vec2> v, std::vector<glm::vec3> c);
 };

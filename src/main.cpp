@@ -57,25 +57,25 @@ GLuint InitializeShaders()
 	return program;
 }
 
-bool InitializeVAO(Geometry *geometry){
+bool InitializeVAO(Geometry& geometry){
 
 	const GLuint VERTEX_INDEX = 0;
 	const GLuint COLOUR_INDEX = 1;
 
 	//Generate Vertex Buffer Objects
 	// create an array buffer object for storing our vertices
-	glGenBuffers(1, &geometry->vertexBuffer);
+	glGenBuffers(1, &geometry.vertexBuffer);
 
 	// create another one for storing our colours
-	glGenBuffers(1, &geometry->colourBuffer);
+	glGenBuffers(1, &geometry.colourBuffer);
 
 	//Set up Vertex Array Object
 	// create a vertex array object encapsulating all our vertex attributes
-	glGenVertexArrays(1, &geometry->vertexArray);
-	glBindVertexArray(geometry->vertexArray);
+	glGenVertexArrays(1, &geometry.vertexArray);
+	glBindVertexArray(geometry.vertexArray);
 
 	// associate the position array with the vertex array object
-	glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry.vertexBuffer);
 	glVertexAttribPointer(
 		VERTEX_INDEX,		//Attribute index 
 		2, 					//# of components
@@ -86,7 +86,7 @@ bool InitializeVAO(Geometry *geometry){
 	glEnableVertexAttribArray(VERTEX_INDEX);
 
 	// associate the colour array with the vertex array object
-	glBindBuffer(GL_ARRAY_BUFFER, geometry->colourBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry.colourBuffer);
 	glVertexAttribPointer(
 		COLOUR_INDEX,		//Attribute index 
 		3, 					//# of components
@@ -104,15 +104,15 @@ bool InitializeVAO(Geometry *geometry){
 }
 
 // create buffers and fill with geometry data, returning true if successful
-bool LoadGeometry(Geometry *geometry)
+bool LoadGeometry(Geometry& geometry)
 {
 	// create an array buffer object for storing our vertices
-	glBindBuffer(GL_ARRAY_BUFFER, geometry->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * geometry->vertices.size(), &geometry->vertices.front(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry.vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * geometry.vertices.size(), &geometry.vertices.front(), GL_STATIC_DRAW);
 
 	// create another one for storing our colours
-	glBindBuffer(GL_ARRAY_BUFFER, geometry->colourBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * geometry->colours.size(), &geometry->colours.front(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, geometry.colourBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * geometry.colours.size(), &geometry.colours.front(), GL_STATIC_DRAW);
 
 	//Unbind buffer to reset to default state
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -122,19 +122,19 @@ bool LoadGeometry(Geometry *geometry)
 }
 
 // deallocate geometry-related objects
-void DestroyGeometry(Geometry *geometry)
+void DestroyGeometry(Geometry& geometry)
 {
 	// unbind and destroy our vertex array object and associated buffers
 	glBindVertexArray(0);
-	glDeleteVertexArrays(1, &geometry->vertexArray);
-	glDeleteBuffers(1, &geometry->vertexBuffer);
-	glDeleteBuffers(1, &geometry->colourBuffer);
+	glDeleteVertexArrays(1, &geometry.vertexArray);
+	glDeleteBuffers(1, &geometry.vertexBuffer);
+	glDeleteBuffers(1, &geometry.colourBuffer);
 }
 
 // --------------------------------------------------------------------------
 // Rendering function that draws our scene to the frame buffer
 
-void RenderScene(Geometry *geometry, GLuint program)
+void RenderScene(Geometry& geometry, GLuint program)
 {
 	// clear screen to a dark grey colour
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -143,8 +143,8 @@ void RenderScene(Geometry *geometry, GLuint program)
 	// bind our shader program and the vertex array object containing our
 	// scene geometry, then tell OpenGL to draw our geometry
 	glUseProgram(program);
-	glBindVertexArray(geometry->vertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, geometry->vertices.size());
+	glBindVertexArray(geometry.vertexArray);
+	glDrawArrays(GL_TRIANGLES, 0, geometry.vertices.size());
 
 	// reset state to default (no shader or geometry bound)
 	glBindVertexArray(0);
@@ -236,17 +236,17 @@ int main(int argc, char *argv[])
 	Geometry geometry(vertices, colours);
 
 	// call function to create and fill buffers with geometry data
-	if (!InitializeVAO(&geometry))
+	if (!InitializeVAO(geometry))
 		std::cerr << "Program failed to intialize geometry!" << std::endl;
 
-	if(!LoadGeometry(&geometry))
+	if(!LoadGeometry(geometry))
 		std::cerr << "Failed to load geometry" << std::endl;
 
 	// run an event-triggered main loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// call function to draw our scene
-		RenderScene(&geometry, program);
+		RenderScene(geometry, program);
 
 		glfwSwapBuffers(window);
 
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
 	}
 
 	// clean up allocated resources before exit
-	DestroyGeometry(&geometry);
+	DestroyGeometry(geometry);
 	glUseProgram(0);
 	glDeleteProgram(program);
 	glfwDestroyWindow(window);

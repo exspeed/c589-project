@@ -4,7 +4,7 @@
 // OpenGL shader support functions
 
 // reads a text file with the given name into a std::string
-std::string LoadSource(const std::string &filename)
+std::string LoadSource(const std::string& filename)
 {
 	std::string source;
 
@@ -24,7 +24,7 @@ std::string LoadSource(const std::string &filename)
 }
 
 // creates and returns a shader object compiled from the given source
-GLuint CompileShader(GLenum shaderType, const std::string &source)
+GLuint CompileShader(GLenum shaderType, const std::string& source)
 {
 	// allocate shader object name
 	GLuint shaderObject = glCreateShader(shaderType);
