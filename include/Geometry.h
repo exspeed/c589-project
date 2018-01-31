@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 class Geometry
@@ -18,4 +19,10 @@ public:
 
 	Geometry(const Geometry& g);
 	Geometry(std::vector<glm::vec2> v, std::vector<glm::vec3> c);
+
+	void Load() const;
+	void Destroy() const;
+
+private:
+	void InitializeVAO();
 };
