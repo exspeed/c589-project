@@ -45,16 +45,16 @@ void Scene::Render() const
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
-
+	
 	for(auto geometry : geometries)
 	{
 		// bind our shader program and the vertex array object containing our
 		// scene geometry, then tell OpenGL to draw our geometry
 		glBindVertexArray(geometry.vertexArray);
 		glDrawArrays(GL_TRIANGLES, 0, geometry.vertices.size());
-
-		// reset state to default (no shader or geometry bound)
-		glBindVertexArray(0);
-		glUseProgram(0);
 	}
+
+	// reset state to default (no shader or geometry bound)
+	glBindVertexArray(0);
+	glUseProgram(0);
 }
