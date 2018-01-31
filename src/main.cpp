@@ -18,13 +18,15 @@
 #include "Scene.h"
 #include "ShaderTool.h"
 
+
 // PROGRAM ENTRY POINT
 int main(int argc, char *argv[])
 {
+
 	// Initialize OpenGL and creat the window
 	GLFWwindow* window = nullptr;
 	Initialize(window);
-
+  
 	// Create Geometry
 	std::vector<glm::vec2> vertices =
 	{

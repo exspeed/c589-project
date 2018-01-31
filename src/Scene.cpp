@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "ShaderTool.h"
+#include "Control.h"
 
 Scene::Scene(std::string vertex_shader, std::string fragment_shader)
 {
@@ -45,7 +46,19 @@ void Scene::Render() const
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
-	
+
+
+    
+  calculateMVP();
+  glm::mat4 Projection = getProjectionMatrix();
+  glm::mat4 View = getViewMatrix();
+  glm::mat4 Model = glm::mat4();
+
+  glm::mat4  MVP = Projection * View * Model;
+    
+  glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
+    
+
 	for(auto geometry : geometries)
 	{
 		// bind our shader program and the vertex array object containing our
