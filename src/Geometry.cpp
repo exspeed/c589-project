@@ -17,7 +17,7 @@ Geometry::Geometry(const Geometry& g)
 	Load();
 }
 
-Geometry::Geometry(std::vector<glm::vec2> v, std::vector<glm::vec3> c)
+Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c)
   : vertexBuffer(0)
   , colourBuffer(0)
   , vertexArray(0)
@@ -49,7 +49,7 @@ void Geometry::InitializeVAO()
 		2, 					//# of components
 		GL_FLOAT, 			//Type of component
 		GL_FALSE, 			//Should be normalized?
-		sizeof(glm::vec2),		//Stride - can use 0 if tightly packed
+		sizeof(glm::vec3),		//Stride - can use 0 if tightly packed
 		0);					//Offset to first element
 	glEnableVertexAttribArray(VERTEX_INDEX);
 

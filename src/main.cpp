@@ -28,11 +28,11 @@ int main(int argc, char *argv[])
 	Initialize(window);
   
 	// Create Geometry
-	std::vector<glm::vec2> vertices =
+	std::vector<glm::vec3> vertices =
 	{
-		glm::vec2( -.6f, -.4f ),
-		glm::vec2( .0f,  .6f ),
-		glm::vec2( .6f, -.4f )
+		glm::vec3( -0.6f, -0.4f, 0.0f ),
+		glm::vec3(  0.0f,  0.6f, 0.0f ),
+		glm::vec3(  0.6f, -0.4f, 0.0f )
 	};
 
 	std::vector<glm::vec3> colours =
