@@ -7,22 +7,24 @@ namespace
 }
 
 Geometry::Geometry(const Geometry& g)
-  : vertexBuffer(g.vertexBuffer)
-  , colourBuffer(g.colourBuffer)
-  , vertexArray(g.vertexArray)
-  , vertices(g.vertices)
-  , colours(g.colours)
+: vertexBuffer(g.vertexBuffer)
+	, colourBuffer(g.colourBuffer)
+	, vertexArray(g.vertexArray)
+	, vertices(g.vertices)
+	, colours(g.colours)
+	, renderMode(g.renderMode)
 {
 	InitializeVAO();
 	Load();
 }
 
-Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c)
-  : vertexBuffer(0)
-  , colourBuffer(0)
-  , vertexArray(0)
-  , vertices(std::move(v))
-  , colours(std::move(c))
+Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r)
+	: vertexBuffer(0)
+	, colourBuffer(0)
+	, vertexArray(0)
+	, vertices(std::move(v))
+	, colours(std::move(c))
+	, renderMode(r)
 {
 	InitializeVAO();
 	Load();
