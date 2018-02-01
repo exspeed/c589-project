@@ -64,7 +64,7 @@ void Scene::Render() const
 		// bind our shader program and the vertex array object containing our
 		// scene geometry, then tell OpenGL to draw our geometry
 		glBindVertexArray(geometry.vertexArray);
-		glDrawArrays(GL_TRIANGLES, 0, geometry.vertices.size());
+		glDrawArrays(geometry.renderMode, 0, geometry.vertices.size());
 	}
 
 	// reset state to default (no shader or geometry bound)
