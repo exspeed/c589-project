@@ -1,0 +1,90 @@
+\documentclass[titlepage, 11pt]{article}
+\renewcommand{\refname}{9 \ \ WORKS CITED}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+\usepackage{graphicx,caption,threeparttable}
+\graphicspath{ {images/} }
+
+\begin{document}
+
+\title{Sketch-based Model Fracturing}
+\author{
+Alfonso Mu\~{n}oz\\
+Andrew Heng\\
+Duc Daniel Do\\
+[1cm]{\small Instructor:}\\
+\small{Dr. Faramarz Samavati}
+}
+\maketitle
+
+\section{ABSTRACT}
+In this project, we propose the creation of a sketch based system for the production of fractured versions of existing 3D models. This will be done by extending the procedural fracturing methodology introduced by Van Gestel et al. to make use of sketch-based input. Such a system could aid in the game and film production process by allowing artists to generate fractured versions of models without having to recreate them.
+
+\section{INTRODUCTION}
+There is an ever increasing demand for high fidelity meshes to be used in media like film and games. The rising cost associated with this demand is often mitigated by taking a procedural approach to content generation. Procedural approaches like model fracturing as proposed by Van Gestel et al.$^{[1]}$, allow for faster content generation by modifying existing content with effects controlled by different parameters. This reduces the need to create different variations of the same objects to meet the differing criteria. However, artists have limited control over the results of procedurally generated models. We propose that the introduction of a sketch-based approach to model fracturing would allow artists to have interactive control over procedural content generation.
+
+\section{GOALS AND OBJECTIVES}
+The goal of this project is to create a proof of concept of a system that would allow users to define fractures on existing models using a sketch-based approach and to be able to export the resulting meshes in media like film or games.\\
+\\
+In order to accomplish our goal, we have outlined several objectives that we are to meet:
+% 3.1
+\subsection{Model Viewer}
+Our system must allow the user to be able to view and interact with 3D meshes. The system must also support importing and exporting meshes.
+% 3.2
+\subsection{Sketch-based Input}
+Our system must have an effective methodology for sketch-based user input.
+% 3.3
+\subsection{Fracture objects}
+Our system will support the fracturing of 2D meshes via sketching and allow exporting of fractured 2D meshes for use in other media.
+% 3.4
+\subsection{Fracture 3D objects}
+Finally, our system will extend support to the fracturing of 3D meshes through user sketching and 3D fractured object exporting.
+% 3.5
+\subsection{Further Enhancements}
+If time permits, we would like to improve upon the UX design and controls of the system, be able to support more file formats, and add support for texture fracturing.
+
+\section{METHODOLOGY}
+\begin{figure}[h]
+\begin{measuredfigure}
+\includegraphics[scale=0.5]{fracture_pattern.png}
+\caption{Fracture pattern extruded to a three dimensional fracture mesh.$^{[1]}$}
+\end{measuredfigure}
+\end{figure}
+\subsection{Fracture Mesh}
+The fracture pattern will be the shape of the sketch made by the user. We can then generate the mesh of the fracture by extruding the cross-section definition in a direction perpendicular to its plane.
+\subsection{Fracture Axis}
+To determine the principal axis of the target object, a dispersion matrix is calculated from all vertices that form the target object. Using a Jacobian decomposition, the three eigenvectors are calculated for the dispersion matrix, which are directly used to form the rotation basis of the transformation matrix.
+
+\section{EXPECTED RESULTS}
+The creation of the system may aid in the content generation process by allowing artists to produce higher quality fractured objects through sketching.
+
+\section{TIMELINE}
+Stage 1 - done approx. February 17\\
+Model Viewer. Import mesh. Export mesh.\\
+\\
+Stage 2 - done approx. February 24\\
+Sketch-based Input. Sketch-based interaction.\\
+\\
+Stage 3 - approx. March 10\\
+2D object fracturing with straight lines via sketch. 2D object fracturing with B-splines via sketch. Exporting 2D fracture(s).\\
+\\
+Stage 4 - approx. March 24\\
+3D object fracturing with straight lines via sketch. 3D object fracturing with B-splines via sketch.
+Exporting 3D fracture(s)
+
+\section{TECHNOLOGIES}
+C++, OpenGL, GLM, AssImp
+
+\section{GROUP RESPONSIBILITY}
+Individual responsibility will be determined on a weekly basis. This would be dependent on the project status and what is required. 
+
+\begin{thebibliography}{1}
+
+\bibitem{objfrac} Van Gestel, J \& Bidarra, Rafael. (2011). {\em Procedural Modelling of Destructible Materials}.
+
+\end{thebibliography}
+
+\end{document}
