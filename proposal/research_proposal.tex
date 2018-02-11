@@ -28,8 +28,7 @@ There is an ever increasing demand for high fidelity meshes to be used in media 
 
 \section{GOALS AND OBJECTIVES}
 The goal of this project is to create a proof of concept of a system that would allow users to define fractures on existing models using a sketch-based approach and to be able to export the resulting meshes in media like film or games.\\
-\\
-In order to accomplish our goal, we have outlined several objectives that we are to meet:
+\\In order to accomplish our goal, we have outlined several objectives that we are to meet:
 % 3.1
 \subsection{Model Viewer}
 Our system must allow the user to be able to view and interact with 3D meshes. The system must also support importing and exporting meshes.
@@ -37,43 +36,32 @@ Our system must allow the user to be able to view and interact with 3D meshes. T
 \subsection{Sketch-based Input}
 Our system must have an effective methodology for sketch-based user input.
 % 3.3
-\subsection{Fracture objects}
-Our system will support the fracturing of 2D meshes via sketching and allow exporting of fractured 2D meshes for use in other media.
+\subsection{Fracture Objects}
+Our system will support the fracturing of 2D and 3D meshes via sketching and allow exporting of fractured meshes for use in other media.
 % 3.4
-\subsection{Fracture 3D objects}
-Finally, our system will extend support to the fracturing of 3D meshes through user sketching and 3D fractured object exporting.
-% 3.5
 \subsection{Further Enhancements}
 If time permits, we would like to improve upon the UX design and controls of the system, be able to support more file formats, and add support for texture fracturing.
-
+% Methodology
 \section{METHODOLOGY}
-\begin{figure}[h]
-\begin{measuredfigure}
-\includegraphics[scale=0.5]{fracture_pattern.png}
-\caption{Fracture pattern extruded to a three dimensional fracture mesh.$^{[1]}$}
-\end{measuredfigure}
-\end{figure}
+\subsection{User Sketching}
+Our interface will allow the user to generate a collection of control points that will create a B-Spline curve of user-defined order.
 \subsection{Fracture Mesh}
-The fracture pattern will be the shape of the sketch made by the user. We can then generate the mesh of the fracture by extruding the cross-section definition in a direction perpendicular to its plane.
-\subsection{Fracture Axis}
-To determine the principal axis of the target object, a dispersion matrix is calculated from all vertices that form the target object. Using a Jacobian decomposition, the three eigenvectors are calculated for the dispersion matrix, which are directly used to form the rotation basis of the transformation matrix.
+The B-Spline curve from the user sketch will define the fracture pattern for the object. The fracture pattern will then be transformed into a 3D plane. We can then generate the mesh of the fracture by extruding the cross-section definition in a direction perpendicular to the original mesh (see Figure 1). To do so, we will explore plane/line intersections with 3D objects.
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.4]{fracture_pattern.png}
+\caption{Fracture pattern extruded to a three dimensional fracture mesh.$^{[1]}$}
+\end{center}
+\end{figure}
 
 \section{EXPECTED RESULTS}
 The creation of the system may aid in the content generation process by allowing artists to produce higher quality fractured objects through sketching.
 
 \section{TIMELINE}
-Stage 1 - done approx. February 17\\
-Model Viewer. Import mesh. Export mesh.\\
-\\
-Stage 2 - done approx. February 24\\
-Sketch-based Input. Sketch-based interaction.\\
-\\
-Stage 3 - approx. March 10\\
-2D object fracturing with straight lines via sketch. 2D object fracturing with B-splines via sketch. Exporting 2D fracture(s).\\
-\\
-Stage 4 - approx. March 24\\
-3D object fracturing with straight lines via sketch. 3D object fracturing with B-splines via sketch.
-Exporting 3D fracture(s)
+{[Objective 1]} Model Viewer - done approx. February 17\\
+{[Objective 2]} Sketch based Input - done approx. February 24\\
+{[Objective 3.a]} Fracturing 2D Objects - done approx. March 10\\
+{[Objective 3.b]} Fracturing 3D Objects - approx. March 24
 
 \section{TECHNOLOGIES}
 C++, OpenGL, GLM, AssImp
