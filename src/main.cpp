@@ -28,21 +28,7 @@ int main(int argc, char *argv[])
 	Initialize(window);
 
 	// Create Geometry
-	std::vector<glm::vec3> vertices =
-	{
-		glm::vec3( -0.6f, -0.4f, 0.0f ),
-		glm::vec3(  0.6f, -0.4f, 0.0f ),
-		glm::vec3(  0.0f, 1.0f, 0.0f )
-	};
-
-	std::vector<glm::vec3> colours =
-	{
-		glm::vec3( 1.0f, 0.0f, 0.0f ),
-		glm::vec3( 0.0f, 1.0f, 0.0f ),
-		glm::vec3( 0.0f, 0.0f, 1.0f )
-	};
-
-	Geometry* geometry = new Geometry(vertices, colours, GL_TRIANGLES);
+	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
 
 	// Create Scene
 	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl");
