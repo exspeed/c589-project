@@ -26,7 +26,7 @@ Scene::Scene(std::string vertex_shader, std::string fragment_shader)
 	glDeleteShader(fragment);
 }
 
-void Scene::AddGeometry(Geometry& g)
+void Scene::AddGeometry(Geometry* g)
 {
 	geometries.push_back(g);
 }
@@ -35,7 +35,7 @@ void Scene::ClearGeometries()
 {
 	for(auto geometry : geometries)
 	{
-		geometry.Destroy();
+		delete geometry;
 	}
 	geometries.clear();
 }
@@ -47,24 +47,20 @@ void Scene::Render() const
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
 
+	calculateMVP();
+	glm::mat4 Projection = getProjectionMatrix();
+	glm::mat4 View = getViewMatrix();
+	glm::mat4 Model = glm::mat4();
 
-    
-  calculateMVP();
-  glm::mat4 Projection = getProjectionMatrix();
-  glm::mat4 View = getViewMatrix();
-  glm::mat4 Model = glm::mat4();
-
-  glm::mat4  MVP = Projection * View * Model;
-    
-  glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
-    
+	glm::mat4  MVP = Projection * View * Model;
+	glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
 
 	for(auto geometry : geometries)
 	{
 		// bind our shader program and the vertex array object containing our
 		// scene geometry, then tell OpenGL to draw our geometry
-		glBindVertexArray(geometry.vertexArray);
-		glDrawArrays(geometry.renderMode, 0, geometry.vertices.size());
+		glBindVertexArray(geometry->vertexArray);
+		glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
 	}
 
 	// reset state to default (no shader or geometry bound)

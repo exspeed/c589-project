@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 	// Initialize OpenGL and creat the window
 	GLFWwindow* window = nullptr;
 	Initialize(window);
-  
+
 	// Create Geometry
 	std::vector<glm::vec3> vertices =
 	{
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 		glm::vec3( 0.0f, 0.0f, 1.0f )
 	};
 
-	Geometry geometry(vertices, colours, GL_TRIANGLES);
+	Geometry* geometry = new Geometry(vertices, colours, GL_TRIANGLES);
 
 	// Create Scene
 	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl");
