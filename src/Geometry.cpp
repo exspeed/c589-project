@@ -48,7 +48,7 @@ void Geometry::InitializeVAO()
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glVertexAttribPointer(
 		VERTEX_INDEX,		//Attribute index 
-		2, 					//# of components
+		3, 					//# of components
 		GL_FLOAT, 			//Type of component
 		GL_FALSE, 			//Should be normalized?
 		sizeof(glm::vec3),		//Stride - can use 0 if tightly packed
@@ -75,7 +75,7 @@ void Geometry::Load() const
 {
 	// create an array buffer object for storing our vertices
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
 
 	// create another one for storing our colours
 	glBindBuffer(GL_ARRAY_BUFFER, colourBuffer);

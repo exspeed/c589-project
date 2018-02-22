@@ -31,8 +31,8 @@ int main(int argc, char *argv[])
 	std::vector<glm::vec3> vertices =
 	{
 		glm::vec3( -0.6f, -0.4f, 0.0f ),
-		glm::vec3(  0.0f,  0.6f, 0.0f ),
-		glm::vec3(  0.6f, -0.4f, 0.0f )
+		glm::vec3(  0.6f, -0.4f, 0.0f ),
+		glm::vec3(  0.0f, 1.0f, 0.0f )
 	};
 
 	std::vector<glm::vec3> colours =
