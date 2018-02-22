@@ -19,7 +19,9 @@ LIBS=
 OS_NAME:=$(shell uname -s)
 
 ifeq ($(OS_NAME),Darwin)
-	LIBS += `pkg-config --static --libs glfw3 gl`
+	LIBDIR=
+	LIBS += -framework OpenGL `pkg-config --static --libs glfw3` 
+
 endif
 ifeq ($(OS_NAME),Linux)
 	LIBS += `pkg-config --static --libs glfw3 gl`

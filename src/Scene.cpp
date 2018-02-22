@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "ShaderTool.h"
+#include "Control.h"
 
 Scene::Scene(std::string vertex_shader, std::string fragment_shader)
 {
@@ -25,7 +26,7 @@ Scene::Scene(std::string vertex_shader, std::string fragment_shader)
 	glDeleteShader(fragment);
 }
 
-void Scene::AddGeometry(Geometry& g)
+void Scene::AddGeometry(Geometry* g)
 {
 	geometries.push_back(g);
 }
@@ -34,7 +35,7 @@ void Scene::ClearGeometries()
 {
 	for(auto geometry : geometries)
 	{
-		geometry.Destroy();
+		delete geometry;
 	}
 	geometries.clear();
 }
@@ -45,13 +46,16 @@ void Scene::Render() const
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
-	
+
+	glm::mat4  MVP = calculateMVP();
+	glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
+
 	for(auto geometry : geometries)
 	{
 		// bind our shader program and the vertex array object containing our
 		// scene geometry, then tell OpenGL to draw our geometry
-		glBindVertexArray(geometry.vertexArray);
-		glDrawArrays(GL_TRIANGLES, 0, geometry.vertices.size());
+		glBindVertexArray(geometry->vertexArray);
+		glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
 	}
 
 	// reset state to default (no shader or geometry bound)

@@ -18,19 +18,21 @@
 #include "Scene.h"
 #include "ShaderTool.h"
 
+
 // PROGRAM ENTRY POINT
 int main(int argc, char *argv[])
 {
+
 	// Initialize OpenGL and creat the window
 	GLFWwindow* window = nullptr;
 	Initialize(window);
 
 	// Create Geometry
-	std::vector<glm::vec2> vertices =
+	std::vector<glm::vec3> vertices =
 	{
-		glm::vec2( -.6f, -.4f ),
-		glm::vec2( .0f,  .6f ),
-		glm::vec2( .6f, -.4f )
+		glm::vec3( -0.6f, -0.4f, 0.0f ),
+		glm::vec3(  0.6f, -0.4f, 0.0f ),
+		glm::vec3(  0.0f, 1.0f, 0.0f )
 	};
 
 	std::vector<glm::vec3> colours =
@@ -40,7 +42,7 @@ int main(int argc, char *argv[])
 		glm::vec3( 0.0f, 0.0f, 1.0f )
 	};
 
-	Geometry geometry(vertices, colours);
+	Geometry* geometry = new Geometry(vertices, colours, GL_TRIANGLES);
 
 	// Create Scene
 	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl");
