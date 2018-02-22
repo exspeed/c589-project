@@ -7,7 +7,7 @@ namespace
 }
 
 Geometry::Geometry(const Geometry& g)
-: vertexBuffer(g.vertexBuffer)
+	: vertexBuffer(g.vertexBuffer)
 	, colourBuffer(g.colourBuffer)
 	, vertexArray(g.vertexArray)
 	, vertices(g.vertices)
@@ -19,7 +19,7 @@ Geometry::Geometry(const Geometry& g)
 }
 
 Geometry::Geometry(const std::string filename, GLenum r)
-: vertexBuffer(0)
+	: vertexBuffer(0)
 	, colourBuffer(0)
 	, vertexArray(0)
 	, vertices({})
