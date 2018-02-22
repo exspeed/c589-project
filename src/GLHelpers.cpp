@@ -24,6 +24,7 @@ void Initialize(GLFWwindow*& window)
 
 	// Set keyboard callback function and make our context current (active)
 	glfwSetKeyCallback(window, KeyCallback);
+	
 	glfwMakeContextCurrent(window);
 
 	//Intialize GLAD
