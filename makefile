@@ -58,7 +58,7 @@ buildDirectories:
 
 .PHONY: clean
 clean:
-	rm -f *.out $(OBJDIR)/*.o; rmdir obj;
+	rm -f *.out $(OBJDIR)/*; rmdir obj;
 
 run: all
 	./$(EXECUTABLE)

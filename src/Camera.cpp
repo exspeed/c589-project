@@ -8,6 +8,8 @@
 
 
 Camera::Camera()
+	: ProjectionMatrix(glm::mat4(1.0))
+	, ViewMatrix(glm::mat4(1.0))
 {
 	// Initial position
 	glm::vec3 position = glm::vec3(4,3,3);
