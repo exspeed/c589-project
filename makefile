@@ -10,9 +10,9 @@ ifdef debug
 	LINKFLAGS += -flto
 endif
 
-INCDIR= -I./middleware -Imiddleware/glad/include -Iinclude
+INCDIR= -I./middleware -Imiddleware/glad/include -Iinclude -I./middleware/assimp-3.3.1/include
 
-LIBDIR=-L/usr/X11R6 -L/usr/local/lib
+LIBDIR=-L/usr/X11R6 -L/usr/local/lib -L./middleware/assimp-3.3.1/lib
 
 LIBS=
 
@@ -23,6 +23,7 @@ ifeq ($(OS_NAME),Darwin)
 endif
 ifeq ($(OS_NAME),Linux)
 	LIBS += `pkg-config --static --libs glfw3 gl`
+	LIBS += -lassimp
 endif
 
 SRCDIR=./src
