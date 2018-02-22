@@ -2,10 +2,13 @@
 
 #include "Scene.h"
 #include "ShaderTool.h"
-#include "Control.h"
+#include "Camera.h"
 
 Scene::Scene(std::string vertex_shader, std::string fragment_shader)
 {
+	Camera cam;
+	camera = cam;
+
 	// load shader source from files
 	std::string vertexSource = LoadSource(vertex_shader);
 	std::string fragmentSource = LoadSource(fragment_shader);
@@ -40,6 +43,7 @@ void Scene::ClearGeometries()
 	geometries.clear();
 }
 
+
 // Rendering function that draws our scene to the frame buffer
 void Scene::Render() const
 {
@@ -47,7 +51,9 @@ void Scene::Render() const
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
 
-	glm::mat4  MVP = calculateMVP();
+	glm::mat4 model = glm::mat4(1.0); // placeholder 
+	glm::mat4 MVP = camera.ProjectionMatrix* camera.ViewMatrix * model;
+
 	glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
 
 	for(auto geometry : geometries)
