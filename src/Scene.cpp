@@ -47,12 +47,7 @@ void Scene::Render() const
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
 
-	calculateMVP();
-	glm::mat4 Projection = getProjectionMatrix();
-	glm::mat4 View = getViewMatrix();
-	glm::mat4 Model = glm::mat4();
-
-	glm::mat4  MVP = Projection * View * Model;
+	glm::mat4  MVP = calculateMVP();
 	glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
 
 	for(auto geometry : geometries)
