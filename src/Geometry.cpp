@@ -51,7 +51,7 @@ void Geometry::InitializeVAO()
 		3, 					//# of components
 		GL_FLOAT, 			//Type of component
 		GL_FALSE, 			//Should be normalized?
-		sizeof(glm::vec3),		//Stride - can use 0 if tightly packed
+		0,		//Stride - can use 0 if tightly packed
 		0);					//Offset to first element
 	glEnableVertexAttribArray(VERTEX_INDEX);
 
@@ -62,7 +62,7 @@ void Geometry::InitializeVAO()
 		3, 					//# of components
 		GL_FLOAT, 			//Type of component
 		GL_FALSE, 			//Should be normalized?
-		sizeof(glm::vec3), 		//Stride - can use 0 if tightly packed
+		0, 		//Stride - can use 0 if tightly packed
 		0);					//Offset to first element
 	glEnableVertexAttribArray(COLOUR_INDEX);
 
