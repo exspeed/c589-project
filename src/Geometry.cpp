@@ -7,13 +7,43 @@ namespace
 }
 
 Geometry::Geometry(const Geometry& g)
-: vertexBuffer(g.vertexBuffer)
+	: vertexBuffer(g.vertexBuffer)
 	, colourBuffer(g.colourBuffer)
 	, vertexArray(g.vertexArray)
 	, vertices(g.vertices)
 	, colours(g.colours)
 	, renderMode(g.renderMode)
 {
+	InitializeVAO();
+	Load();
+}
+
+Geometry::Geometry(const std::string filename, GLenum r)
+	: vertexBuffer(0)
+	, colourBuffer(0)
+	, vertexArray(0)
+	, vertices({})
+	, colours({})
+	, renderMode(r)
+{
+	Assimp::Importer importer;
+	const aiScene *scene = importer.ReadFile(filename, NULL);
+	if(!scene) 
+	{
+		printf("Unable to load mesh: %s\n", importer.GetErrorString());
+	}
+
+	for(int i = 0; i < scene->mNumMeshes; i++)
+	{
+		auto mesh = scene->mMeshes[i];
+		for(int j = 0; j < mesh->mNumVertices; j++)
+		{
+			aiVector3t<float> vec = mesh->mVertices[j];
+			vertices.push_back(glm::vec3(vec.x, vec.y, vec.z));
+			colours.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+		}
+	}
+
 	InitializeVAO();
 	Load();
 }
