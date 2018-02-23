@@ -15,7 +15,7 @@ void Initialize(GLFWwindow*& window)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	int width = 512, height = 512;
-	window = glfwCreateWindow(width, height, "CPSC 453 OpenGL Boilerplate", 0, 0);
+	window = glfwCreateWindow(width, height, "CPSC 589 Modelling Project", 0, 0);
 	if (!window) {
 		std::cerr << "Program failed to create GLFW window, TERMINATING" << std::endl;
 		glfwTerminate();
@@ -91,7 +91,7 @@ void PrintMat4(glm::mat4 const &m)
 {
 	for(int i = 0; i < 4; i++)
 	{
-		for(int j = 0; j< 4; j++)
+		for(int j = 0; j < 4; j++)
 		{
 			std::cout << m[i][j] << " "; 
 		}

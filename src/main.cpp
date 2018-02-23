@@ -27,7 +27,8 @@ int main(int argc, char *argv[])
 	// Initialize OpenGL and creat the window
 	GLFWwindow* window = nullptr;
 	Initialize(window);
-	Camera* camera = new Camera;
+
+	Camera* camera = new Camera(glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0));
 	InputManager inputManager(window, camera);
 
 	// Create Geometry
