@@ -18,8 +18,8 @@
 #include "Scene.h"
 #include "ShaderTool.h"
 
-Camera camera;
-bool g_cursorLocked = GL_TRUE;
+Camera* camera = new Camera;
+bool g_cursorLocked = GL_FALSE;
 float g_cursorX = 0;
 float g_cursorY = 0;
 
@@ -38,7 +38,7 @@ void windowMouseMotionFunc(GLFWwindow *window, double x, double y) {
     if (g_cursorLocked) {
         float deltaX = (x - g_cursorX) * 0.01;
         float deltaY = (y - g_cursorY) * 0.01;
-        camera.rotateAroundFocus(deltaX, deltaY);
+        camera->rotateAround(deltaX, deltaY);
     }
      
     g_cursorX = x;
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
 	// Create Camera
 	// Create Scene
-	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl", &camera);
+	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl", camera);
 	scene.AddGeometry(geometry);
 
 	CheckGLErrors();
@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
 
 	// Clean up allocated resources before exit
 	scene.ClearGeometries();
+	delete(camera);
 	glUseProgram(0);
 	glfwDestroyWindow(window);
 	glfwTerminate();

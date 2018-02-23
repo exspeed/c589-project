@@ -18,7 +18,7 @@ public:
 	
 
 private:
-	Camera camera;
+	Camera* camera;
 	GLuint program;
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;

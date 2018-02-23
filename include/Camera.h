@@ -11,8 +11,7 @@ glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
 
 //functions
-void rotateAroundFocus(float deltaX, float deltaY);
-void rotateAround(glm::vec3& vec, glm::vec3 const &axis, float radian);
+void rotateAround(float deltaX, float deltaY);
 Camera();
 
 private:

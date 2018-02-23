@@ -21,6 +21,7 @@ OS_NAME:=$(shell uname -s)
 ifeq ($(OS_NAME),Darwin)
 	LIBDIR=
 	LIBS += -framework OpenGL `pkg-config --static --libs glfw3` 
+	LIBS += -lassimp
 
 endif
 ifeq ($(OS_NAME),Linux)

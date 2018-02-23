@@ -5,7 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/glm.hpp>
 
 void PrintMat4(glm::mat4 const &m);
 
@@ -19,8 +20,6 @@ Camera::Camera()
 	m_forward = glm::vec3(0,0,0);
 	m_up = glm::vec3(0,1,0);
 
-
-	glm::vec3 position = glm::vec3(4,3,3);
 	// Initial Field of View
 	float initialFoV = 45.0f;
 
@@ -35,45 +34,29 @@ Camera::Camera()
 	ProjectionMatrix = glm::perspective(glm::radians(initialFoV), 4.0f / 3.0f, 0.1f, 100.0f);
 }
 
-
 void Camera::updateViewMatrix(){
 	ViewMatrix = glm::lookAt(
 		m_pos,
 		m_forward,
 		m_up
 	);
-} 
-
-
-void Camera::rotateAround(glm::vec3& vec, glm::vec3 const &axis, float radian){
-	radian *= 0.5;
-	const float sinAngle = std::sin(radian);
-	const float cosAngle = std::cos(radian);
-
-	glm::vec3 n(axis);
-	glm::normalize(n);
-
-	glm::quat qAxis(sinAngle, n*cosAngle);
-
-	vec = qAxis*vec;
 }
 
+#include <iostream>
 
-void Camera::rotateAroundFocus(float deltaX, float deltaY) {
-  glm::vec3 focus = m_pos + m_forward * m_focusDist;
-  glm::vec3 diff = m_pos - focus;
+void Camera::rotateAround(float deltaX, float deltaY) {
+	
+	// look left and right
+	glm::mat4 yaw = glm::rotate(deltaX *0.5f, m_up);
+	m_forward = yaw*(glm::vec4(m_forward-m_pos, 0));
 
-  rotateAround(diff, m_up, -deltaX);
-  m_forward = -(normalize(diff));
+	// look up and down
+	glm::vec3 bi = normalize(cross(m_up, (m_forward-m_pos)));
+	glm::mat4 roll = glm::rotate(-deltaY *0.5f, bi);
 
-  glm::vec3 bi = glm::cross(m_up , m_forward);
-	normalize(bi);
+	m_forward = roll*(glm::vec4(m_forward-m_pos, 0));
+	//m_up = roll*(glm::vec4(m_up, 0));
 
-  rotateAround(diff, bi, deltaY);
-  rotateAround(m_up, bi, deltaY);
-  m_forward = -(normalize(diff));
-
-  m_pos = focus + diff;
 
 	updateViewMatrix();
 }
