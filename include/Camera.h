@@ -9,7 +9,7 @@ public:
 	glm::mat4 ViewMatrix;
 	glm::mat4 ProjectionMatrix;
 
-	Camera();
+	Camera(glm::vec3 position, glm::vec3 fwd, glm::vec3 head);
 	void RotateAround(float deltaX, float deltaY);
 
 private:
