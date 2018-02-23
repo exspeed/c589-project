@@ -17,33 +17,7 @@
 #include "GLHelpers.h"
 #include "Scene.h"
 #include "ShaderTool.h"
-
-Camera* camera = new Camera;
-bool g_cursorLocked = GL_FALSE;
-float g_cursorX = 0;
-float g_cursorY = 0;
-
-void windowMouseButtonFunc(GLFWwindow *window, int button, int action,
-                           int mods) {
-    if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        if (action == GLFW_PRESS) {
-            g_cursorLocked = GL_TRUE;
-        } else {
-            g_cursorLocked = GL_FALSE;
-        }
-    }
-}
-
-void windowMouseMotionFunc(GLFWwindow *window, double x, double y) {
-    if (g_cursorLocked) {
-        float deltaX = (x - g_cursorX) * 0.01;
-        float deltaY = (y - g_cursorY) * 0.01;
-        camera->rotateAround(deltaX, deltaY);
-    }
-     
-    g_cursorX = x;
-    g_cursorY = y;
-}
+#include "InputManager.h"
 
 
 // PROGRAM ENTRY POINT
@@ -53,9 +27,8 @@ int main(int argc, char *argv[])
 	// Initialize OpenGL and creat the window
 	GLFWwindow* window = nullptr;
 	Initialize(window);
-
-  glfwSetCursorPosCallback(window, windowMouseMotionFunc);
-  glfwSetMouseButtonCallback(window, windowMouseButtonFunc);
+	Camera* camera = new Camera;
+	InputManager inputManager(window, camera);
 
 	// Create Geometry
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
@@ -70,6 +43,7 @@ int main(int argc, char *argv[])
 	// Main Loop
 	while (!glfwWindowShouldClose(window))
 	{
+		inputManager.CheckInput();
 		// call function to draw our scene
 		scene.Render();
 

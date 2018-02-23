@@ -6,22 +6,17 @@
 class Camera
 {
 public:
-// attributes
-glm::mat4 ViewMatrix;
-glm::mat4 ProjectionMatrix;
+	glm::mat4 ViewMatrix;
+	glm::mat4 ProjectionMatrix;
 
-//functions
-void rotateAround(float deltaX, float deltaY);
-Camera();
+	Camera();
+	void RotateAround(float deltaX, float deltaY);
 
 private:
-// attributes
-float m_focusDist;
-glm::vec3 m_pos;
-glm::vec3 m_up;
-glm::vec3 m_forward;
+	glm::vec3 pos;
+	glm::vec3 up;
+	glm::vec3 forward;
 
-//functions
-void updateViewMatrix();
+	void UpdateViewMatrix();
 
 };

@@ -21,9 +21,6 @@ void Initialize(GLFWwindow*& window)
 		glfwTerminate();
 		std::exit(EXIT_FAILURE);
 	}
-
-	// Set keyboard callback function and make our context current (active)
-	glfwSetKeyCallback(window, KeyCallback);
 	
 	glfwMakeContextCurrent(window);
 
@@ -87,13 +84,6 @@ void ErrorCallback(int error, const char* description)
 	std::cerr << description << std::endl;
 }
 
-// Handles keyboard input events
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
-}
-
 
 
 // GLM DEBUG
@@ -109,6 +99,7 @@ void PrintMat4(glm::mat4 const &m)
 	}
 }
 
-void PrintVec3(glm::vec3 const &v){
+void PrintVec3(glm::vec3 const &v)
+{
 			std::cout << v[0] << " " << v[1] << " " << v[2] << std::endl; 
 }
