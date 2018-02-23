@@ -4,10 +4,9 @@
 #include "ShaderTool.h"
 #include "Camera.h"
 
-Scene::Scene(std::string vertex_shader, std::string fragment_shader)
+Scene::Scene(std::string vertex_shader, std::string fragment_shader, Camera* cam)
 {
-	Camera cam;
-	camera = cam;
+	camera = *cam;
 
 	// load shader source from files
 	std::string vertexSource = LoadSource(vertex_shader);

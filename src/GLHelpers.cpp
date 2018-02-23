@@ -93,3 +93,22 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 }
+
+
+
+// GLM DEBUG
+void PrintMat4(glm::mat4 const &m)
+{
+	for(int i = 0; i < 4; i++)
+	{
+		for(int j = 0; j< 4; j++)
+		{
+			std::cout << m[i][j] << " "; 
+		}
+		 std::cout << std::endl;
+	}
+}
+
+void PrintVec3(glm::vec3 const &v){
+			std::cout << v[0] << " " << v[1] << " " << v[2] << std::endl; 
+}
