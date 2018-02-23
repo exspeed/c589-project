@@ -51,8 +51,6 @@ void Camera::RotateAround(float deltaX, float deltaY)
 
 	forward = roll*(glm::vec4(forward-pos, 0));
 	
-	//m_up = roll*(glm::vec4(m_up, 0));
-
 	UpdateViewMatrix();
 }
 
