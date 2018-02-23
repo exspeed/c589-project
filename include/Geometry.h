@@ -23,6 +23,11 @@ public:
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> colours;
 
+	GLfloat rotateDegree; 
+	glm::vec3 scale;
+	glm::vec3 rotateAxis;
+	glm::vec3 translate;
+
 	Geometry(const Geometry& g);
 	Geometry(const std::string filename, GLenum);
 	Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r);

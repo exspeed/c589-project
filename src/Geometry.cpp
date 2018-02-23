@@ -13,6 +13,10 @@ Geometry::Geometry(const Geometry& g)
 	, vertices(g.vertices)
 	, colours(g.colours)
 	, renderMode(g.renderMode)
+	, scale(g.scale)
+	, rotateAxis(g.rotateAxis)
+	, rotateDegree(g.rotateDegree)
+	, translate(g.translate)
 {
 	InitializeVAO();
 	Load();
@@ -25,6 +29,7 @@ Geometry::Geometry(const std::string filename, GLenum r)
 	, vertices({})
 	, colours({})
 	, renderMode(r)
+	, rotateDegree(0.0f)
 {
 	Assimp::Importer importer;
 	const aiScene *scene = importer.ReadFile(filename, NULL);
@@ -55,6 +60,7 @@ Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r)
 	, vertices(std::move(v))
 	, colours(std::move(c))
 	, renderMode(r)
+	, rotateDegree(0.0f)
 {
 	InitializeVAO();
 	Load();

@@ -18,7 +18,6 @@
 #include "Scene.h"
 #include "ShaderTool.h"
 
-
 // PROGRAM ENTRY POINT
 int main(int argc, char *argv[])
 {
@@ -29,12 +28,18 @@ int main(int argc, char *argv[])
 
 	// Create Geometry
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
+	geometry->scale = glm::vec3(2.0f);
+	geometry->rotateAxis = glm::vec3(0.0f, 1.0f, 0.0f);
+	geometry->rotateDegree = 0.0f;
+	geometry->translate = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	// Create Scene
 	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl");
 	scene.AddGeometry(geometry);
 
 	CheckGLErrors();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	// Main Loop
 	while (!glfwWindowShouldClose(window))

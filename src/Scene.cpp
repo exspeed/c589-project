@@ -4,6 +4,10 @@
 #include "ShaderTool.h"
 #include "Camera.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+
 Scene::Scene(std::string vertex_shader, std::string fragment_shader)
 {
 	Camera cam;
@@ -51,15 +55,21 @@ void Scene::Render() const
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(program);
 
-	glm::mat4 model = glm::mat4(1.0); // placeholder 
-	glm::mat4 MVP = camera.ProjectionMatrix* camera.ViewMatrix * model;
-
-	glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
-
 	for(auto geometry : geometries)
 	{
 		// bind our shader program and the vertex array object containing our
 		// scene geometry, then tell OpenGL to draw our geometry
+
+		// calculate translation, scale, and rotation matrices
+		glm::mat4 identity = glm::mat4(1.0f);
+		glm::mat4 scale = glm::scale(identity, geometry->scale);
+		glm::mat4 rotate = glm::rotate(identity, geometry->rotateDegree, geometry->rotateAxis);
+		glm::mat4 translate = glm::translate(identity, geometry->translate);
+
+		// create model matrix
+		glm::mat4 model = translate * rotate * scale;		// Applies scale -> rotate -> translate
+		glm::mat4 MVP = camera.ProjectionMatrix* camera.ViewMatrix * model;
+		glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
 		glBindVertexArray(geometry->vertexArray);
 		glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
 	}
