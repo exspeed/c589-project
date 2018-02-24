@@ -16,7 +16,7 @@
 #include "Geometry.h"
 #include "GLHelpers.h"
 #include "Scene.h"
-#include "ShaderTool.h"
+#include "Shader.h"
 #include "InputManager.h"
 
 
@@ -35,8 +35,9 @@ int main(int argc, char *argv[])
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
 
 	// Create Camera
-	// Create Scene
-	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl", camera);
+	Shader program("shaders/vertex.glsl","shaders/fragment.glsl");
+	Shader programOutline("shaders/vertex.glsl","shaders/outline.frag");
+	Scene scene(&program, &programOutline, camera);
 	scene.AddGeometry(geometry);
 
 	CheckGLErrors();

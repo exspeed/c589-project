@@ -8,11 +8,12 @@
 
 #include "Geometry.h"
 #include "Camera.h"
+#include "Shader.h"
 
 class Scene
 {
 public:
-	Scene(std::string vertex_shader, std::string fragment_shader, Camera* cam);
+	Scene(Shader* prog, Shader* progOutline, Camera* cam);
 	void AddGeometry(Geometry* g);
 	void ClearGeometries();
 	void Render() const;
@@ -20,9 +21,10 @@ public:
 
 private:
 	Camera* camera;
-	GLuint program;
-	GLuint programOutline;
+	Shader* program;
+	Shader* programOutline;
 
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;
+	void RenderStencil(std::vector<Geometry*> geo) const;
 };
