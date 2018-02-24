@@ -11,7 +11,8 @@ public:
 
 	Camera(glm::vec3 position, glm::vec3 fwd, glm::vec3 head);
 	void RotateAround(float deltaX, float deltaY);
-	void Zoom(bool);
+	void Zoom(bool in);
+	void Panning(float deltaX, float deltaY);
 
 private:
 	glm::vec3 pos;

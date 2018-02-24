@@ -16,6 +16,7 @@ public:
 private:
 	float cursorX = 0;
 	float cursorY = 0;
+	bool shiftKey = 0;
 	const float mouseSensitivity = 0.005;
 	
 	void KeyInput();

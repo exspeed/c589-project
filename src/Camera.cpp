@@ -58,7 +58,8 @@ void Camera::RotateAround(float deltaX, float deltaY)
 }
 
 
-void Camera::Zoom(bool in){
+void Camera::Zoom(bool in)
+{
 	const float zoomSpeed = 0.2;
 
 	glm::vec3 direction = zoomSpeed*(normalize(forward-pos));
@@ -70,5 +71,23 @@ void Camera::Zoom(bool in){
 	UpdateViewMatrix();
 }
 
+void Camera::Panning(float deltaX, float deltaY)
+{
+	const float panningSpeed = 0.1;
+	glm::vec3 bi = normalize(cross(forward-pos, up));
+	if(deltaX > 0)
+		pos = pos - panningSpeed*bi; 		
+	else if(deltaX < 0)
+		pos = pos + panningSpeed*bi; 		
+
+	glm::vec3 updir = normalize(cross(bi, forward-pos));
+	if(deltaY > 0)
+		pos = pos + panningSpeed*updir; 		
+	else if(deltaY < 0)
+		pos = pos - panningSpeed*updir; 		
+
+
+	UpdateViewMatrix();
+}
 
 
