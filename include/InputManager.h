@@ -10,13 +10,14 @@ public:
 	Camera* camera;
 	
 	InputManager(GLFWwindow *window, Camera* cam);
-	const void CheckInput();
+	void CheckInput();
 	
 private:
 	float cursorX = 0;
 	float cursorY = 0;
+	const float mouseSensitivity = 0.005;
 	
-	const void KeyInput();
-	const void MouseInput();
+	void KeyInput();
+ 	void MouseInput();
 	
 };

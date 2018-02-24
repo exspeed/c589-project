@@ -6,22 +6,21 @@ InputManager::InputManager(GLFWwindow *w, Camera* cam)
 {
 }
 
-const void InputManager::CheckInput()
+void InputManager::CheckInput()
 {
 	KeyInput();
 	MouseInput();
 }
 
-const void InputManager::MouseInput()
+void InputManager::MouseInput()
 {
 	double xpos, ypos;
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
 	{
 		// Get mouse position
 		glfwGetCursorPos(window, &xpos, &ypos);
-		float sensitivity = 0.005f;
-		float deltaX = (xpos - cursorX) * sensitivity;
-		float deltaY = (ypos - cursorY) * sensitivity;
+		float deltaX = (xpos - cursorX) * mouseSensitivity;
+		float deltaY = (ypos - cursorY) * mouseSensitivity;
 		
 		if(!(deltaX || deltaY))
 			return;
@@ -33,10 +32,11 @@ const void InputManager::MouseInput()
 	cursorY = ypos;
 	
 }
-const void InputManager::KeyInput()
+void InputManager::KeyInput()
 {
 	
-	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 }

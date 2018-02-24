@@ -17,6 +17,7 @@ private:
 	glm::vec3 up;
 	glm::vec3 forward;
 
+	const float mouseSensitivity = 0.005;
 	void UpdateViewMatrix();
 
 };

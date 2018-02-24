@@ -101,5 +101,5 @@ void PrintMat4(glm::mat4 const &m)
 
 void PrintVec3(glm::vec3 const &v)
 {
-			std::cout << v[0] << " " << v[1] << " " << v[2] << std::endl; 
+	std::cout << v[0] << " " << v[1] << " " << v[2] << std::endl; 
 }
