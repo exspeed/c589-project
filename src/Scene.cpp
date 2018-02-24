@@ -4,9 +4,8 @@
 #include "ShaderTool.h"
 #include "Camera.h"
 
-Scene::Scene(std::string vertex_shader, std::string fragment_shader)
+Scene::Scene(std::string vertex_shader, std::string fragment_shader, Camera* cam)
 {
-	Camera cam;
 	camera = cam;
 
 	// load shader source from files
@@ -52,7 +51,7 @@ void Scene::Render() const
 	glUseProgram(program);
 
 	glm::mat4 model = glm::mat4(1.0); // placeholder 
-	glm::mat4 MVP = camera.ProjectionMatrix* camera.ViewMatrix * model;
+	glm::mat4 MVP = camera->ProjectionMatrix* camera->ViewMatrix * model;
 
 	glUniformMatrix4fv(glGetUniformLocation(program,"MVP"), 1, GL_FALSE, &MVP[0][0]);
 

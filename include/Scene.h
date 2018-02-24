@@ -11,14 +11,14 @@
 class Scene
 {
 public:
-	Scene(std::string vertex_shader, std::string fragment_shader);
+	Scene(std::string vertex_shader, std::string fragment_shader, Camera* cam);
 	void AddGeometry(Geometry* g);
 	void ClearGeometries();
 	void Render() const;
 	
 
 private:
-	Camera camera;
+	Camera* camera;
 	GLuint program;
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;

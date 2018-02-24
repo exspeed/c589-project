@@ -15,15 +15,12 @@ void Initialize(GLFWwindow*& window)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	int width = 512, height = 512;
-	window = glfwCreateWindow(width, height, "CPSC 453 OpenGL Boilerplate", 0, 0);
+	window = glfwCreateWindow(width, height, "CPSC 589 Modelling Project", 0, 0);
 	if (!window) {
 		std::cerr << "Program failed to create GLFW window, TERMINATING" << std::endl;
 		glfwTerminate();
 		std::exit(EXIT_FAILURE);
 	}
-
-	// Set keyboard callback function and make our context current (active)
-	glfwSetKeyCallback(window, KeyCallback);
 	
 	glfwMakeContextCurrent(window);
 
@@ -87,9 +84,22 @@ void ErrorCallback(int error, const char* description)
 	std::cerr << description << std::endl;
 }
 
-// Handles keyboard input events
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+
+
+// GLM DEBUG
+void PrintMat4(glm::mat4 const &m)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GL_TRUE);
+	for(int i = 0; i < 4; i++)
+	{
+		for(int j = 0; j < 4; j++)
+		{
+			std::cout << m[i][j] << " "; 
+		}
+		 std::cout << std::endl;
+	}
+}
+
+void PrintVec3(glm::vec3 const &v)
+{
+	std::cout << v[0] << " " << v[1] << " " << v[2] << std::endl; 
 }

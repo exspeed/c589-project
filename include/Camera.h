@@ -1,20 +1,23 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 class Camera
 {
 public:
-// attributes
-glm::mat4 ViewMatrix;
-glm::mat4 ProjectionMatrix;
+	glm::mat4 ViewMatrix;
+	glm::mat4 ProjectionMatrix;
 
-//functions
-Camera();
+	Camera(glm::vec3 position, glm::vec3 fwd, glm::vec3 head);
+	void RotateAround(float deltaX, float deltaY);
 
 private:
-// attributes
+	glm::vec3 pos;
+	glm::vec3 up;
+	glm::vec3 forward;
 
-//functions
+	const float mouseSensitivity = 0.005;
+	void UpdateViewMatrix();
 
 };

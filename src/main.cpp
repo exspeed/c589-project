@@ -17,6 +17,7 @@
 #include "GLHelpers.h"
 #include "Scene.h"
 #include "ShaderTool.h"
+#include "InputManager.h"
 
 
 // PROGRAM ENTRY POINT
@@ -27,11 +28,15 @@ int main(int argc, char *argv[])
 	GLFWwindow* window = nullptr;
 	Initialize(window);
 
+	Camera* camera = new Camera(glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0));
+	InputManager inputManager(window, camera);
+
 	// Create Geometry
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
 
+	// Create Camera
 	// Create Scene
-	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl");
+	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl", camera);
 	scene.AddGeometry(geometry);
 
 	CheckGLErrors();
@@ -39,6 +44,7 @@ int main(int argc, char *argv[])
 	// Main Loop
 	while (!glfwWindowShouldClose(window))
 	{
+		inputManager.CheckInput();
 		// call function to draw our scene
 		scene.Render();
 
@@ -49,6 +55,7 @@ int main(int argc, char *argv[])
 
 	// Clean up allocated resources before exit
 	scene.ClearGeometries();
+	delete(camera);
 	glUseProgram(0);
 	glfwDestroyWindow(window);
 	glfwTerminate();
