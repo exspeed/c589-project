@@ -11,13 +11,13 @@ public:
 
 	Camera(glm::vec3 position, glm::vec3 fwd, glm::vec3 head);
 	void RotateAround(float deltaX, float deltaY);
+	void Zoom(bool);
 
 private:
 	glm::vec3 pos;
 	glm::vec3 up;
 	glm::vec3 forward;
 
-	const float mouseSensitivity = 0.005;
 	void UpdateViewMatrix();
 
 };

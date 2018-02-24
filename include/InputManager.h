@@ -10,6 +10,7 @@ public:
 	Camera* camera;
 	
 	InputManager(GLFWwindow *window, Camera* cam);
+	void ScrollWheel(double xoffset, double yoffset);
 	void CheckInput();
 	
 private:
