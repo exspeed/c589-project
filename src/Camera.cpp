@@ -4,8 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL 1
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+
 
 
 Camera::Camera(glm::vec3 p, glm::vec3 f, glm::vec3 u):
@@ -43,13 +44,15 @@ void Camera::RotateAround(float deltaX, float deltaY)
 {
 	// look left and right
 	glm::mat4 yaw = glm::rotate(deltaX, up);
-	forward = yaw*(glm::vec4(forward-pos, 0));
+	glm::vec4 fwd = yaw*glm::vec4(forward-pos, 0);
 
+	forward = glm::vec3(fwd[0], fwd[1], fwd[2]); 
 	// look up and down
 	glm::vec3 bi = normalize(cross(up, (forward-pos)));
 	glm::mat4 roll = glm::rotate(-deltaY, bi);
 
-	forward = roll*(glm::vec4(forward-pos, 0));
+	fwd = (roll*(glm::vec4(forward-pos, 0)));
+	forward = glm::vec3(fwd[0], fwd[1], fwd[2]); 
 	
 	UpdateViewMatrix();
 }
