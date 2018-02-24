@@ -41,6 +41,11 @@ int main(int argc, char *argv[])
 
 	CheckGLErrors();
 
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	
 	// Main Loop
 	while (!glfwWindowShouldClose(window))
 	{

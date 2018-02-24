@@ -4,6 +4,7 @@
 #include <vector>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtx/transform.hpp>
 
 #include "Geometry.h"
 #include "Camera.h"
@@ -20,6 +21,8 @@ public:
 private:
 	Camera* camera;
 	GLuint program;
+	GLuint programOutline;
+
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;
 };
