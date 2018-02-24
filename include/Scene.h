@@ -20,9 +20,10 @@ public:
 	
 
 private:
-	Camera* camera;
 	Shader* program;
 	Shader* programOutline;
+	Camera* camera;
+
 
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;
