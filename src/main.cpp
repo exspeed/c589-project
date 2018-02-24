@@ -23,10 +23,13 @@ InputManager* inputManager = nullptr;
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-		if(inputManager == NULL){
+		if(inputManager == NULL)
+		{
 			std::cout << "WHOOPS: inputManager is NULL\n";
 			return;
-		}else{
+		}
+		else
+		{
 			inputManager->ScrollWheel(xoffset, yoffset); //forward input
 		}
 }

@@ -16,7 +16,8 @@ void InputManager::CheckInput()
 void InputManager::MouseInput()
 {
 	double xpos, ypos;
-	if( shiftKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+	if( shiftKey && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	{
 		glfwGetCursorPos(window, &xpos, &ypos);
 		float deltaX = (xpos - cursorX) * mouseSensitivity;
 		float deltaY = (ypos - cursorY) * mouseSensitivity;
@@ -68,10 +69,12 @@ void InputManager::KeyInput()
 }
 
 void InputManager::ScrollWheel(double xoffset, double yoffset){
-    if(yoffset == 1 ){
+    if(yoffset == 1 )
+		{
 			camera->Zoom(true);
 		}
-    else if (yoffset == -1){
+    else if (yoffset == -1)
+		{
 			camera->Zoom(false);
     }
 }
