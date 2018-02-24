@@ -1,4 +1,5 @@
 #include "Geometry.h"
+#include <iostream>
 
 namespace
 {
@@ -46,6 +47,7 @@ Geometry::Geometry(const std::string filename, GLenum r)
 
 	InitializeVAO();
 	Load();
+	Export("ASD");
 }
 
 Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r)
@@ -99,6 +101,73 @@ void Geometry::InitializeVAO()
 	// Unbind our buffers, resetting to default state
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+void Geometry::Export(const std::string filename) const
+{
+	// Create aiScene, ref: https://github.com/assimp/assimp/issues/203
+	aiScene scene;
+	scene.mFlags = 0;
+scene.mRootNode = new aiNode();
+scene.mNumMeshes = 1;
+scene.mMeshes = new aiMesh*[1];
+scene.mMeshes[0] = new aiMesh();
+scene.mNumMaterials = 0;
+scene.mMaterials = NULL;
+scene.mNumAnimations = 0;
+scene.mAnimations = NULL;
+scene.mNumTextures = 0;
+scene.mTextures = NULL;
+scene.mNumLights = 0;
+scene.mLights = NULL;
+scene.mNumCameras = 0;
+scene.mCameras = NULL;
+scene.mPrivate = NULL;
+	/*
+	scene.mMaterials = new aiMaterial*[ 1 ];
+	scene.mNumMaterials = 1;
+	scene.mMaterials[ 0 ] = new aiMaterial();
+
+	scene.mMeshes = new aiMesh*[ 1 ];
+	scene.mNumMeshes = 1;
+
+	scene.mMeshes[ 0 ] = new aiMesh();
+	scene.mMeshes[ 0 ]->mMaterialIndex = 0;	
+
+	scene.mRootNode = new aiNode();
+	scene.mRootNode->mMeshes = new unsigned int[ 1 ];
+	scene.mRootNode->mMeshes[ 0 ] = 0;
+	scene.mRootNode->mNumMeshes = 1;
+*/
+	auto pMesh = scene.mMeshes[ 0 ];
+	pMesh->mVertices = new aiVector3D[ vertices.size() ];
+	pMesh->mNumVertices = vertices.size();
+
+	int j = 0;
+	for ( auto itr = vertices.begin(); itr != vertices.end(); ++itr ) 
+	{
+		pMesh->mVertices[ itr - vertices.begin() ] = aiVector3D( vertices[j].x, vertices[j].y, vertices[j].z );
+		++j;
+	}
+	
+
+	// Export
+	Assimp::Exporter exporter;
+	const char* formatId = "obj";
+	const char* exportDir = "exports/";
+	auto ret = exporter.Export(&scene, formatId, exportDir + filename + "." + formatId);
+	if(ret != AI_SUCCESS) std::cout << "FAIL" << std::endl;
+	else std::cout << "SUCCESS" << std::endl;
+}
+
+void Geometry::Export(const aiScene* scene) const
+{
+	Assimp::Exporter exporter;
+	const char* formatId = "obj";
+	const char* exportDir = "exports/";
+	auto ret = exporter.Export(scene, formatId, "exports/ASD.obj");
+	if(ret != AI_SUCCESS) std::cout << "FAIL" << std::endl;
+	else std::cout << "SUCCESS" << std::endl;
 }
 
 void Geometry::Load() const

@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "assimp/Exporter.hpp"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/mesh.h"
@@ -27,6 +28,8 @@ public:
 	Geometry(const std::string filename, GLenum);
 	Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r);
 
+	void Export(const std::string filename) const;
+	void Export(const aiScene* scene) const;
 	void Load() const;
 	void Destroy() const;
 
