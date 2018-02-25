@@ -67,6 +67,10 @@
 # Insert space padding between a header (e.g. 'if', 'for', 'while'...) and the following paren
 # if (isFoo((a+2), b))
 #     bar(a, b);
+
+--pad-paren-in
+# Insert space padding around parenthesis on both the outside and the inside
+# isFoo( a, b, c )
 	
 --align-pointer=type
 # char* foo1;
@@ -82,9 +86,6 @@
 --mode=c
 
 --lineend=linux
-
---delete-empty-lines
-# Delete empty lines within a function or method.
 
 --convert-tabs
 # Convert tabs to the appropriate number of spaces
