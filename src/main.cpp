@@ -19,7 +19,7 @@
 #include "Shader.h"
 #include "InputManager.h"
 
-InputManager* inputManager = nullptr;
+static InputManager* inputManager = nullptr;
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -54,15 +54,9 @@ int main(int argc, char *argv[])
 	Scene* scene = new Scene(&program, &programOutline, camera);
 	scene->AddGeometry(geometry);
 
-	
 	inputManager = new InputManager(window, camera, scene);
 
 	CheckGLErrors();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	
 	// Main Loop
 	while (!glfwWindowShouldClose(window))
@@ -79,6 +73,7 @@ int main(int argc, char *argv[])
 	// Clean up allocated resources before exit
 	scene->ClearGeometries();
 	delete(camera);
+	delete(scene);
 	delete(inputManager);
 	glUseProgram(0);
 	glfwDestroyWindow(window);
