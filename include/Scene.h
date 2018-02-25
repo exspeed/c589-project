@@ -11,26 +11,25 @@
 #include "Camera.h"
 #include "Shader.h"
 
-class Scene
-{
+class Scene {
 public:
-	std::vector<bool> selected;
-	
-	Scene(Shader* prog, Shader* progOutline, Camera* cam);
-	void AddGeometry(Geometry* g);
-	void ClearGeometries();
-	int	GetGeometriesSize();
-	void ToggleSelectedGeometry(int i);
+    std::vector<bool> selected;
 
-	void Render() const;
-	
+    Scene( Shader* prog, Shader* progOutline, Camera* cam );
+    void AddGeometry( Geometry* g );
+    void ClearGeometries();
+    int GetGeometriesSize();
+    void ToggleSelectedGeometry( int i );
+
+    void Render() const;
+
 
 private:
-	Shader* program;
-	Shader* programOutline;
-	Camera* camera;
+    Shader* program;
+    Shader* programOutline;
+    Camera* camera;
 
-	std::vector<Geometry*> geometries;
-	void InitializeVAO(Geometry& g) const;
-	void RenderStencil(Geometry* geometry) const;
+    std::vector<Geometry*> geometries;
+    void InitializeVAO( Geometry& g ) const;
+    void RenderStencil( Geometry* geometry ) const;
 };
