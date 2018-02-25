@@ -1,8 +1,9 @@
 #include "InputManager.h"
 
-InputManager::InputManager(GLFWwindow *w, Camera* cam)
+InputManager::InputManager(GLFWwindow *w, Camera* cam, Scene* s)
 :window(w)
 ,camera(cam)
+,scene(s)
 {
 }
 
@@ -12,7 +13,6 @@ void InputManager::CheckInput()
 	MouseInput();
 }
 
-#include <iostream>
 void InputManager::MouseInput()
 {
 	double xpos, ypos;
@@ -42,9 +42,10 @@ void InputManager::MouseInput()
 	cursorY = ypos;
 	
 }
+
 void InputManager::KeyInput()
 {
-	
+
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
@@ -65,7 +66,17 @@ void InputManager::KeyInput()
 	{
 		shiftKey = false;
 	}
-
+	
+	for(int i = 0; i < scene->selected.size() && i < 9; i++)
+	{
+		static int oldState = GLFW_RELEASE;
+		int newState = glfwGetKey(window, GLFW_KEY_0+i+1);
+		if(newState == GLFW_RELEASE && oldState == GLFW_PRESS)
+		{
+			scene->selected[i] = scene->selected[i] ? 0 : 1;
+		}
+		oldState = newState;
+	}
 }
 
 void InputManager::ScrollWheel(double xoffset, double yoffset)
@@ -78,6 +89,7 @@ void InputManager::ScrollWheel(double xoffset, double yoffset)
 	{
 		camera->Zoom(false);
 	}
+
 }
 
 

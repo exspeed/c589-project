@@ -1,10 +1,47 @@
-#include "ShaderTool.h"
+#include "Shader.h"
 
 // --------------------------------------------------------------------------
 // OpenGL shader support functions
 
+Shader::Shader(std::string vertex_shader, std::string fragment_shader)
+{
+	// load shader source from files
+	std::string vertexSource = LoadSource(vertex_shader);
+	std::string fragmentSource = LoadSource(fragment_shader);
+	if (vertexSource.empty() || fragmentSource.empty())
+	{
+		std::cerr << "Program could not initialize shaders, TERMINATING" << std::endl;
+		std::exit(EXIT_FAILURE);
+	}
+	
+	// compile shader source into shader objects
+	GLuint vertex = CompileShader(GL_VERTEX_SHADER, vertexSource);
+	GLuint fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSource);
+	
+	// link shader program
+	programID = LinkProgram(vertex, fragment);
+	
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+}
+
+void Shader::use()
+{
+	glUseProgram(programID);
+}
+
+void Shader::setInt(const std::string &name, int value) const
+{
+	glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
+}
+
+void Shader::setMat4(const std::string &name, const glm::mat4 &mat) const
+{
+	glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
 // reads a text file with the given name into a std::string
-std::string LoadSource(const std::string& filename)
+std::string Shader::LoadSource(const std::string& filename)
 {
 	std::string source;
 
@@ -24,7 +61,7 @@ std::string LoadSource(const std::string& filename)
 }
 
 // creates and returns a shader object compiled from the given source
-GLuint CompileShader(GLenum shaderType, const std::string& source)
+GLuint Shader::CompileShader(GLenum shaderType, const std::string& source)
 {
 	// allocate shader object name
 	GLuint shaderObject = glCreateShader(shaderType);
@@ -52,7 +89,7 @@ GLuint CompileShader(GLenum shaderType, const std::string& source)
 }
 
 // creates and returns a program object linked from vertex and fragment shaders
-GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader)
+GLuint Shader::LinkProgram(GLuint vertexShader, GLuint fragmentShader)
 {
 	// allocate program object name
 	GLuint programObject = glCreateProgram();
@@ -79,3 +116,6 @@ GLuint LinkProgram(GLuint vertexShader, GLuint fragmentShader)
 
 	return programObject;
 }
+
+
+
