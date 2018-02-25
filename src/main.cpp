@@ -75,7 +75,6 @@ int main(int argc, char *argv[])
 	delete(camera);
 	delete(scene);
 	delete(inputManager);
-	glUseProgram(0);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
