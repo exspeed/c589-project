@@ -27,7 +27,7 @@ public:
 	Geometry(const std::string filename, GLenum);
 	Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r);
 	
-	void SetSelectedGeometry();
+	void ToggleSelectedGeometry();
 	bool IsSelectedGeometry();
 
 	void Load() const;

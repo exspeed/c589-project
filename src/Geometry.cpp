@@ -117,9 +117,9 @@ void Geometry::Load() const
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Geometry::SetSelectedGeometry()
+void Geometry::ToggleSelectedGeometry()
 {
-	selected = selected ? 0 : 1;
+	selected = !selected;
 }
 
 bool Geometry::IsSelectedGeometry()

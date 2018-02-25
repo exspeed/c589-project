@@ -30,9 +30,9 @@ int Scene::GetGeometriesSize()
 	return geometries.size();
 }
 
-void Scene::SetSelectedGeometry(int i)
+void Scene::ToggleSelectedGeometry(int i)
 {
-	geometries[i]->SetSelectedGeometry();
+	geometries[i]->ToggleSelectedGeometry();
 }
 
 // Rendering function that draws our scene to the frame buffer

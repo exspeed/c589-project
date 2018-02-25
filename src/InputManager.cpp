@@ -73,7 +73,7 @@ void InputManager::KeyInput()
 		int newState = glfwGetKey(window, GLFW_KEY_0+i+1);
 		if(newState == GLFW_RELEASE && oldState == GLFW_PRESS)
 		{
-			scene->SetSelectedGeometry(i);
+			scene->ToggleSelectedGeometry(i);
 		}
 		oldState = newState;
 	}

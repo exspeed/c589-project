@@ -19,7 +19,7 @@
 #include "Shader.h"
 #include "InputManager.h"
 
-InputManager* inputManager = nullptr;
+static InputManager* inputManager = nullptr;
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
 	// Clean up allocated resources before exit
 	scene->ClearGeometries();
 	delete(camera);
+	delete(scene);
 	delete(inputManager);
 	glUseProgram(0);
 	glfwDestroyWindow(window);
