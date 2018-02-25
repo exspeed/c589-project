@@ -67,13 +67,13 @@ void InputManager::KeyInput()
 		shiftKey = false;
 	}
 	
-	for(int i = 0; i < scene->selected.size() && i < 9; i++)
+	for(int i = 0; i < scene->GetGeometriesSize() && i < 9; i++)
 	{
 		static int oldState = GLFW_RELEASE;
 		int newState = glfwGetKey(window, GLFW_KEY_0+i+1);
 		if(newState == GLFW_RELEASE && oldState == GLFW_PRESS)
 		{
-			scene->selected[i] = scene->selected[i] ? 0 : 1;
+			scene->SetSelectedGeometry(i);
 		}
 		oldState = newState;
 	}

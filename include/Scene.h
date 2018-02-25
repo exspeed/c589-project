@@ -17,6 +17,9 @@ public:
 	Scene(Shader* prog, Shader* progOutline, Camera* cam);
 	void AddGeometry(Geometry* g);
 	void ClearGeometries();
+	int	GetGeometriesSize();
+	void SetSelectedGeometry(int i);
+
 	void Render() const;
 	
 

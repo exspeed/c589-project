@@ -1,3 +1,5 @@
+#include <glad/glad.h>
+
 #include "Geometry.h"
 
 namespace
@@ -114,6 +116,17 @@ void Geometry::Load() const
 	//Unbind buffer to reset to default state
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+void Geometry::SetSelectedGeometry()
+{
+	selected = selected ? 0 : 1;
+}
+
+bool Geometry::IsSelectedGeometry()
+{
+	return selected;
+}
+
 
 // Deallocate geometry-related objects
 void Geometry::Destroy() const 

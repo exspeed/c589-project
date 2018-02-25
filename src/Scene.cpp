@@ -14,7 +14,6 @@ program(prog)
 void Scene::AddGeometry(Geometry* g)
 {
 	geometries.push_back(g);
-	selected.push_back(0);
 }
 
 void Scene::ClearGeometries()
@@ -26,6 +25,15 @@ void Scene::ClearGeometries()
 	geometries.clear();
 }
 
+int Scene::GetGeometriesSize()
+{
+	return geometries.size();
+}
+
+void Scene::SetSelectedGeometry(int i)
+{
+	geometries[i]->SetSelectedGeometry();
+}
 
 // Rendering function that draws our scene to the frame buffer
 void Scene::Render() const
@@ -33,11 +41,13 @@ void Scene::Render() const
 	
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+
 	// Draw non stencil objects here
 	// TODO ...
 	for(int i = 0; i < geometries.size(); i++)
 	{
-		if(!selected[i])
+		if(!geometries[i]->IsSelectedGeometry())
 		{
 			program->use();
 			glStencilMask(0x00);
@@ -53,8 +63,6 @@ void Scene::Render() const
 			RenderStencil(geometries[i]);
 		}
 	}
-	
-	glEnable(GL_DEPTH_TEST);
 	
 	// reset state to default (no shader or geometry bound)
 	glBindVertexArray(0);
