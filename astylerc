@@ -82,3 +82,9 @@
 --mode=c
 
 --lineend=linux
+
+--delete-empty-lines
+# Delete empty lines within a function or method.
+
+--convert-tabs
+# Convert tabs to the appropriate number of spaces
