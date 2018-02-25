@@ -1,6 +1,6 @@
 #pragma once
 
-#define GLFW_INCLUDE_NONE
+#include "PreprocessorSettings.h"
 
 #include <string>
 #include <vector>

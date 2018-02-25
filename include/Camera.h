@@ -1,6 +1,6 @@
 #pragma once
 
-#define GLFW_INCLUDE_NONE
+#include "PreprocessorSettings.h"
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
