@@ -68,15 +68,16 @@ void InputManager::KeyInput()
 
 }
 
-void InputManager::ScrollWheel(double xoffset, double yoffset){
-    if(yoffset == 1 )
-		{
-			camera->Zoom(true);
-		}
-    else if (yoffset == -1)
-		{
-			camera->Zoom(false);
-    }
+void InputManager::ScrollWheel(double xoffset, double yoffset)
+{
+	if(yoffset == 1 )
+	{
+		camera->Zoom(true);
+	}
+	else if (yoffset == -1)
+	{
+		camera->Zoom(false);
+	}
 }
 
 
