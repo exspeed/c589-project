@@ -16,10 +16,10 @@
 #include "Geometry.h"
 #include "GLHelpers.h"
 #include "Scene.h"
-#include "ShaderTool.h"
+#include "Shader.h"
 #include "InputManager.h"
 
-InputManager* inputManager = nullptr;
+static InputManager* inputManager = nullptr;
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -44,24 +44,26 @@ int main(int argc, char *argv[])
 
 	glfwSetScrollCallback(window, scroll_callback);
 	Camera* camera = new Camera(glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0));
-	inputManager = new InputManager(window, camera);
 
 	// Create Geometry
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
 
 	// Create Camera
-	// Create Scene
-	Scene scene("shaders/vertex.glsl", "shaders/fragment.glsl", camera);
-	scene.AddGeometry(geometry);
+	Shader program("shaders/vertex.glsl","shaders/fragment.glsl");
+	Shader programOutline("shaders/vertex.glsl","shaders/outline.frag");
+	Scene* scene = new Scene(&program, &programOutline, camera);
+	scene->AddGeometry(geometry);
+
+	inputManager = new InputManager(window, camera, scene);
 
 	CheckGLErrors();
-
+	
 	// Main Loop
 	while (!glfwWindowShouldClose(window))
 	{
 		inputManager->CheckInput();
 		// call function to draw our scene
-		scene.Render();
+		scene->Render();
 
 		glfwSwapBuffers(window);
 
@@ -69,8 +71,9 @@ int main(int argc, char *argv[])
 	}
 
 	// Clean up allocated resources before exit
-	scene.ClearGeometries();
+	scene->ClearGeometries();
 	delete(camera);
+	delete(scene);
 	delete(inputManager);
 	glUseProgram(0);
 	glfwDestroyWindow(window);

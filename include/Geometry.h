@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <glm/glm.hpp>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
 
@@ -20,16 +19,21 @@ public:
 	GLuint  vertexArray;
 	GLenum  renderMode;
 
+
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec3> colours;
 
 	Geometry(const Geometry& g);
 	Geometry(const std::string filename, GLenum);
 	Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r);
+	
+	void ToggleSelectedGeometry();
+	bool IsSelectedGeometry();
 
 	void Load() const;
 	void Destroy() const;
 
 private:
+	bool selected = 0;
 	void InitializeVAO();
 };

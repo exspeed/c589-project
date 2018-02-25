@@ -2,24 +2,33 @@
 
 #include <string>
 #include <vector>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtx/transform.hpp>
 
 #include "Geometry.h"
 #include "Camera.h"
+#include "Shader.h"
 
 class Scene
 {
 public:
-	Scene(std::string vertex_shader, std::string fragment_shader, Camera* cam);
+	std::vector<bool> selected;
+	
+	Scene(Shader* prog, Shader* progOutline, Camera* cam);
 	void AddGeometry(Geometry* g);
 	void ClearGeometries();
+	int	GetGeometriesSize();
+	void ToggleSelectedGeometry(int i);
+
 	void Render() const;
 	
 
 private:
+	Shader* program;
+	Shader* programOutline;
 	Camera* camera;
-	GLuint program;
+
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;
+	void RenderStencil(Geometry* geometry) const;
 };

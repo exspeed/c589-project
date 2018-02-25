@@ -16,8 +16,8 @@ public:
 
 private:
 	glm::vec3 pos;
-	glm::vec3 up;
 	glm::vec3 forward;
+	glm::vec3 up;
 
 	void UpdateViewMatrix();
 
