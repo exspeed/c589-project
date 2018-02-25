@@ -14,6 +14,7 @@ program(prog)
 void Scene::AddGeometry(Geometry* g)
 {
 	geometries.push_back(g);
+	selected.push_back(0);
 }
 
 void Scene::ClearGeometries()
@@ -32,11 +33,26 @@ void Scene::Render() const
 	
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glStencilMask(0x00);
 	// Draw non stencil objects here
 	// TODO ...
-	
-	RenderStencil(geometries);
+	for(int i = 0; i < geometries.size(); i++)
+	{
+		if(!selected[i])
+		{
+			program->use();
+			glStencilMask(0x00);
+			glm::mat4 model = glm::mat4(1.0); // placeholder
+			glm::mat4 MVP = camera->ProjectionMatrix* camera->ViewMatrix * model;
+			program->setMat4("MVP", MVP);
+			
+			glBindVertexArray(geometries[i]->vertexArray);
+			glDrawArrays(geometries[i]->renderMode, 0, geometries[i]->vertices.size());
+		}
+		else
+		{
+			RenderStencil(geometries[i]);
+		}
+	}
 	
 	glEnable(GL_DEPTH_TEST);
 	
@@ -46,7 +62,7 @@ void Scene::Render() const
 }
 
 
-void Scene::RenderStencil(std::vector<Geometry*> geo) const
+void Scene::RenderStencil(Geometry* geometry) const
 {
 	program->use();
 	
@@ -58,13 +74,10 @@ void Scene::RenderStencil(std::vector<Geometry*> geo) const
 	
 	program->setMat4("MVP", MVP);
 	
-	for(auto geometry : geometries)
-	{
 		// bind our shader program and the vertex array object containing our
 		// scene geometry, then tell OpenGL to draw our geometry
-		glBindVertexArray(geometry->vertexArray);
-		glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
-	}
+	glBindVertexArray(geometry->vertexArray);
+	glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
 	
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
@@ -76,11 +89,9 @@ void Scene::RenderStencil(std::vector<Geometry*> geo) const
 	MVP =camera->ProjectionMatrix* camera->ViewMatrix * model;
 	programOutline->setMat4("MVP", MVP);
 	
-	for(auto geometry : geo)
-	{
-		glBindVertexArray(geometry->vertexArray);
-		glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
-	}
+	glBindVertexArray(geometry->vertexArray);
+	glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
+	
 	glBindVertexArray(0);
 	glStencilMask(0xFF);
 

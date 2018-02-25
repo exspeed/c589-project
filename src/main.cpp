@@ -29,7 +29,6 @@ int main(int argc, char *argv[])
 	Initialize(window);
 
 	Camera* camera = new Camera(glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0));
-	InputManager inputManager(window, camera);
 
 	// Create Geometry
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
@@ -37,8 +36,11 @@ int main(int argc, char *argv[])
 	// Create Camera
 	Shader program("shaders/vertex.glsl","shaders/fragment.glsl");
 	Shader programOutline("shaders/vertex.glsl","shaders/outline.frag");
-	Scene scene(&program, &programOutline, camera);
-	scene.AddGeometry(geometry);
+	Scene* scene = new Scene(&program, &programOutline, camera);
+	scene->AddGeometry(geometry);
+
+	
+	InputManager inputManager(window, camera, scene);
 
 	CheckGLErrors();
 
@@ -52,7 +54,7 @@ int main(int argc, char *argv[])
 	{
 		inputManager.CheckInput();
 		// call function to draw our scene
-		scene.Render();
+		scene->Render();
 
 		glfwSwapBuffers(window);
 
@@ -60,7 +62,7 @@ int main(int argc, char *argv[])
 	}
 
 	// Clean up allocated resources before exit
-	scene.ClearGeometries();
+	scene->ClearGeometries();
 	delete(camera);
 	glUseProgram(0);
 	glfwDestroyWindow(window);

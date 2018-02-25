@@ -1,8 +1,9 @@
 #include "InputManager.h"
 
-InputManager::InputManager(GLFWwindow *w, Camera* cam)
+InputManager::InputManager(GLFWwindow *w, Camera* cam, Scene* s)
 :window(w)
 ,camera(cam)
+,scene(s)
 {
 }
 
@@ -38,5 +39,9 @@ void InputManager::KeyInput()
 	if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+	else if(glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		scene->selected[0] = 1;
 	}
 }

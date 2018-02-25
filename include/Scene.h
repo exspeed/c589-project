@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/gtx/transform.hpp>
 
@@ -13,6 +12,8 @@
 class Scene
 {
 public:
+	std::vector<bool> selected;
+	
 	Scene(Shader* prog, Shader* progOutline, Camera* cam);
 	void AddGeometry(Geometry* g);
 	void ClearGeometries();
@@ -24,8 +25,7 @@ private:
 	Shader* programOutline;
 	Camera* camera;
 
-
 	std::vector<Geometry*> geometries;
 	void InitializeVAO(Geometry& g) const;
-	void RenderStencil(std::vector<Geometry*> geo) const;
+	void RenderStencil(Geometry* geometry) const;
 };
