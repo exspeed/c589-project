@@ -19,6 +19,20 @@
 #include "ShaderTool.h"
 #include "InputManager.h"
 
+InputManager* inputManager = nullptr;
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+		if(inputManager == nullptr)
+		{
+			std::cout << "WHOOPS: inputManager is NULL\n";
+			return;
+		}
+		else
+		{
+			inputManager->ScrollWheel(xoffset, yoffset); //forward input
+		}
+}
 
 // PROGRAM ENTRY POINT
 int main(int argc, char *argv[])
@@ -28,8 +42,9 @@ int main(int argc, char *argv[])
 	GLFWwindow* window = nullptr;
 	Initialize(window);
 
+	glfwSetScrollCallback(window, scroll_callback);
 	Camera* camera = new Camera(glm::vec3(4,3,3), glm::vec3(0,0,0), glm::vec3(0,1,0));
-	InputManager inputManager(window, camera);
+	inputManager = new InputManager(window, camera);
 
 	// Create Geometry
 	Geometry* geometry = new Geometry("models/cube/cube.obj", GL_TRIANGLES);
@@ -44,7 +59,7 @@ int main(int argc, char *argv[])
 	// Main Loop
 	while (!glfwWindowShouldClose(window))
 	{
-		inputManager.CheckInput();
+		inputManager->CheckInput();
 		// call function to draw our scene
 		scene.Render();
 
@@ -56,6 +71,7 @@ int main(int argc, char *argv[])
 	// Clean up allocated resources before exit
 	scene.ClearGeometries();
 	delete(camera);
+	delete(inputManager);
 	glUseProgram(0);
 	glfwDestroyWindow(window);
 	glfwTerminate();

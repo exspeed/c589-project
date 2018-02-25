@@ -48,12 +48,46 @@ void Camera::RotateAround(float deltaX, float deltaY)
 
 	forward = glm::vec3(fwd[0], fwd[1], fwd[2]); 
 	// look up and down
-	glm::vec3 bi = normalize(cross(up, (forward-pos)));
+	glm::vec3 bi = glm::normalize(glm::cross(up, (forward-pos)));
 	glm::mat4 roll = glm::rotate(-deltaY, bi);
 
 	fwd = (roll*(glm::vec4(forward-pos, 0)));
 	forward = glm::vec3(fwd[0], fwd[1], fwd[2]); 
 	
+	UpdateViewMatrix();
+}
+
+
+void Camera::Zoom(bool in)
+{
+	const float zoomSpeed = 0.2;
+
+	glm::vec3 direction = zoomSpeed*(glm::normalize(forward-pos));
+	if(!in)
+	{
+		direction = -direction;
+	}
+	pos = pos + direction;
+
+	UpdateViewMatrix();
+}
+
+void Camera::Panning(float deltaX, float deltaY)
+{
+	const float panningSpeed = 0.1;
+	glm::vec3 bi = glm::normalize(glm::cross(forward-pos, up));
+	if(deltaX > 0)
+		pos = pos - panningSpeed*bi; 		
+	else if(deltaX < 0)
+		pos = pos + panningSpeed*bi; 		
+
+	glm::vec3 updir = glm::normalize(glm::cross(bi, forward-pos));
+	if(deltaY > 0)
+		pos = pos + panningSpeed*updir; 		
+	else if(deltaY < 0)
+		pos = pos - panningSpeed*updir; 		
+
+
 	UpdateViewMatrix();
 }
 
