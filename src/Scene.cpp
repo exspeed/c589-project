@@ -41,7 +41,6 @@ void Scene::Render() const
 	
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
 
 	// Draw non stencil objects here
 	// TODO ...
@@ -73,7 +72,6 @@ void Scene::Render() const
 void Scene::RenderStencil(Geometry* geometry) const
 {
 	program->use();
-	
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
 	
@@ -99,6 +97,8 @@ void Scene::RenderStencil(Geometry* geometry) const
 	
 	glBindVertexArray(geometry->vertexArray);
 	glDrawArrays(geometry->renderMode, 0, geometry->vertices.size());
+	
+	glEnable(GL_DEPTH_TEST);
 	
 	glBindVertexArray(0);
 	glStencilMask(0xFF);
