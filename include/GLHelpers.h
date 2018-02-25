@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PreprocessorSettings.h"
+
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>

@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-#include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/glm.hpp>
