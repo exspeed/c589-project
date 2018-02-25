@@ -13,7 +13,6 @@ void InputManager::CheckInput()
 	MouseInput();
 }
 
-#include <iostream>
 void InputManager::MouseInput()
 {
 	double xpos, ypos;
@@ -90,6 +89,7 @@ void InputManager::ScrollWheel(double xoffset, double yoffset)
 	{
 		camera->Zoom(false);
 	}
+
 }
 
 
