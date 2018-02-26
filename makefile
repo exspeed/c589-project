@@ -61,5 +61,9 @@ buildDirectories:
 clean:
 	rm -f *.out $(OBJDIR)/*; rmdir obj;
 
+.PHONY: format
+format:
+	./format.sh;
+
 run: all
 	./$(EXECUTABLE)
