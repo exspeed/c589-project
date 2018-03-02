@@ -5,6 +5,8 @@ namespace
 {
 	const GLuint VERTEX_INDEX = 0;
 	const GLuint COLOUR_INDEX = 1;
+
+	const unsigned int VERTEX_COUNT_PER_FACE = 3;
 }
 
 Geometry::Geometry(const Geometry& g)
@@ -105,67 +107,61 @@ void Geometry::InitializeVAO()
 
 void Geometry::Export(const std::string filename) const
 {
-	// Create aiScene, ref: https://github.com/assimp/assimp/issues/203
-	aiScene scene;
-	scene.mFlags = 0;
-scene.mRootNode = new aiNode();
-scene.mNumMeshes = 1;
-scene.mMeshes = new aiMesh*[1];
-scene.mMeshes[0] = new aiMesh();
-scene.mNumMaterials = 0;
-scene.mMaterials = NULL;
-scene.mNumAnimations = 0;
-scene.mAnimations = NULL;
-scene.mNumTextures = 0;
-scene.mTextures = NULL;
-scene.mNumLights = 0;
-scene.mLights = NULL;
-scene.mNumCameras = 0;
-scene.mCameras = NULL;
-scene.mPrivate = NULL;
-	/*
-	scene.mMaterials = new aiMaterial*[ 1 ];
-	scene.mNumMaterials = 1;
-	scene.mMaterials[ 0 ] = new aiMaterial();
+	// Create aiScene, ref: https://github.com/assimp/assimp/issues/1454
+	aiScene *scene   = new aiScene();
+  scene->mRootNode = new aiNode();
 
-	scene.mMeshes = new aiMesh*[ 1 ];
-	scene.mNumMeshes = 1;
+	// Add materials (Currently not supported)
+  scene->mMaterials    = new aiMaterial *[1];
+  scene->mMaterials[0] = nullptr;
+  scene->mNumMaterials = 1;
 
-	scene.mMeshes[ 0 ] = new aiMesh();
-	scene.mMeshes[ 0 ]->mMaterialIndex = 0;	
+  scene->mMaterials[0] = new aiMaterial();
 
-	scene.mRootNode = new aiNode();
-	scene.mRootNode->mMeshes = new unsigned int[ 1 ];
-	scene.mRootNode->mMeshes[ 0 ] = 0;
-	scene.mRootNode->mNumMeshes = 1;
-*/
-	auto pMesh = scene.mMeshes[ 0 ];
-	pMesh->mVertices = new aiVector3D[ vertices.size() ];
-	pMesh->mNumVertices = vertices.size();
+	// Create mesh
+  scene->mMeshes    = new aiMesh *[1];
+  scene->mMeshes[0] = nullptr;
+  scene->mNumMeshes = 1;
 
-	int j = 0;
-	for ( auto itr = vertices.begin(); itr != vertices.end(); ++itr ) 
+  scene->mMeshes[0] = new aiMesh();
+  scene->mMeshes[0]->mMaterialIndex = 0;
+
+  scene->mRootNode->mMeshes    = new unsigned int[1];
+  scene->mRootNode->mMeshes[0] = 0;
+  scene->mRootNode->mNumMeshes = 1;
+
+  auto pMesh = scene->mMeshes[0];
+
+  pMesh->mVertices    = new aiVector3D[vertices.size()];
+  pMesh->mNumVertices = vertices.size();
+
+	// Fill mesh with verticecs
+	for(int i = 0; i < vertices.size(); ++i)
 	{
-		pMesh->mVertices[ itr - vertices.begin() ] = aiVector3D( vertices[j].x, vertices[j].y, vertices[j].z );
-		++j;
+		pMesh->mVertices[i] = aiVector3D(vertices[i].x, vertices[i].y, vertices[i].z);
 	}
-	
+
+	// Fill face data
+	pMesh->mNumFaces = vertices.size() / VERTEX_COUNT_PER_FACE;
+	pMesh->mFaces    = new aiFace[pMesh->mNumFaces];
+
+	for(int i = 0; i < pMesh->mNumFaces; ++i) {
+		aiFace& face     = pMesh->mFaces[i];
+		face.mIndices    = new unsigned int[3];
+		face.mNumIndices = VERTEX_COUNT_PER_FACE;
+
+		for(int j = 0; j < VERTEX_COUNT_PER_FACE; ++j)
+		{
+			int idx = (i * VERTEX_COUNT_PER_FACE) + j;
+			face.mIndices[j] = idx;
+		}
+	}
 
 	// Export
 	Assimp::Exporter exporter;
 	const char* formatId = "obj";
 	const char* exportDir = "exports/";
-	auto ret = exporter.Export(&scene, formatId, exportDir + filename + "." + formatId);
-	if(ret != AI_SUCCESS) std::cout << "FAIL" << std::endl;
-	else std::cout << "SUCCESS" << std::endl;
-}
-
-void Geometry::Export(const aiScene* scene) const
-{
-	Assimp::Exporter exporter;
-	const char* formatId = "obj";
-	const char* exportDir = "exports/";
-	auto ret = exporter.Export(scene, formatId, "exports/ASD.obj");
+	auto ret = exporter.Export(scene, formatId, exportDir + filename + "." + formatId);
 	if(ret != AI_SUCCESS) std::cout << "FAIL" << std::endl;
 	else std::cout << "SUCCESS" << std::endl;
 }
