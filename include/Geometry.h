@@ -33,10 +33,10 @@ public:
     void ToggleSelectedGeometry();
     bool IsSelectedGeometry();
 
-	void Export(const std::string filename) const;
-	void Export(const aiScene* scene) const;
-	void Load() const;
-	void Destroy() const;
+    void Export( const std::string filename ) const;
+    void Export( const aiScene* scene ) const;
+    void Load() const;
+    void Destroy() const;
 
 private:
     bool selected = 0;

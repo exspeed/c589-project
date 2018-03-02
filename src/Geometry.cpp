@@ -3,12 +3,11 @@
 #include "Geometry.h"
 #include <iostream>
 
-namespace
-{
-	const GLuint VERTEX_INDEX = 0;
-	const GLuint COLOUR_INDEX = 1;
+namespace {
+    const GLuint VERTEX_INDEX = 0;
+    const GLuint COLOUR_INDEX = 1;
 
-	const unsigned int VERTEX_COUNT_PER_FACE = 3;
+    const unsigned int VERTEX_COUNT_PER_FACE = 3;
 }
 
 Geometry::Geometry( const Geometry& g )
@@ -22,35 +21,33 @@ Geometry::Geometry( const Geometry& g )
     Load();
 }
 
-Geometry::Geometry(const std::string filename, GLenum r)
-	: vertexBuffer(0)
-	, colourBuffer(0)
-	, vertexArray(0)
-	, vertices({})
-	, colours({})
-	, renderMode(r)
-{
-	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(filename, NULL);
-	if(!scene) 
-	{
-		printf("Unable to load mesh: %s\n", importer.GetErrorString());
-	}
+Geometry::Geometry( const std::string filename, GLenum r )
+    : vertexBuffer( 0 )
+    , colourBuffer( 0 )
+    , vertexArray( 0 )
+    , vertices( {} )
+, colours( {} )
+, renderMode( r ) {
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile( filename, NULL );
 
-	for(int i = 0; i < scene->mNumMeshes; i++)
-	{
-		auto mesh = scene->mMeshes[i];
-		for(int j = 0; j < mesh->mNumVertices; j++)
-		{
-			aiVector3t<float> vec = mesh->mVertices[j];
-			vertices.push_back(glm::vec3(vec.x, vec.y, vec.z));
-			colours.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
-		}
-	}
+    if ( !scene ) {
+        printf( "Unable to load mesh: %s\n", importer.GetErrorString() );
+    }
 
-	InitializeVAO();
-	Load();
-	Export("ASD");
+    for ( int i = 0; i < scene->mNumMeshes; i++ ) {
+        auto mesh = scene->mMeshes[i];
+
+        for ( int j = 0; j < mesh->mNumVertices; j++ ) {
+            aiVector3t<float> vec = mesh->mVertices[j];
+            vertices.push_back( glm::vec3( vec.x, vec.y, vec.z ) );
+            colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
+        }
+    }
+
+    InitializeVAO();
+    Load();
+    Export( "ASD" );
 }
 
 Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r )
@@ -104,65 +101,66 @@ void Geometry::InitializeVAO() {
     glBindVertexArray( 0 );
 }
 
-void Geometry::Export(const std::string filename) const
-{
-	// Create aiScene, ref: https://github.com/assimp/assimp/issues/1454
-	aiScene *scene   = new aiScene();
-  scene->mRootNode = new aiNode();
+void Geometry::Export( const std::string filename ) const {
+    // Create aiScene, ref: https://github.com/assimp/assimp/issues/1454
+    aiScene* scene   = new aiScene();
+    scene->mRootNode = new aiNode();
 
-	// Add materials (Currently not supported)
-  scene->mMaterials    = new aiMaterial *[1];
-  scene->mMaterials[0] = nullptr;
-  scene->mNumMaterials = 1;
+    // Add materials (Currently not supported)
+    scene->mMaterials    = new aiMaterial *[1];
+    scene->mMaterials[0] = nullptr;
+    scene->mNumMaterials = 1;
 
-  scene->mMaterials[0] = new aiMaterial();
+    scene->mMaterials[0] = new aiMaterial();
 
-	// Create mesh
-  scene->mMeshes    = new aiMesh *[1];
-  scene->mMeshes[0] = nullptr;
-  scene->mNumMeshes = 1;
+    // Create mesh
+    scene->mMeshes    = new aiMesh *[1];
+    scene->mMeshes[0] = nullptr;
+    scene->mNumMeshes = 1;
 
-  scene->mMeshes[0] = new aiMesh();
-  scene->mMeshes[0]->mMaterialIndex = 0;
+    scene->mMeshes[0] = new aiMesh();
+    scene->mMeshes[0]->mMaterialIndex = 0;
 
-  scene->mRootNode->mMeshes    = new unsigned int[1];
-  scene->mRootNode->mMeshes[0] = 0;
-  scene->mRootNode->mNumMeshes = 1;
+    scene->mRootNode->mMeshes    = new unsigned int[1];
+    scene->mRootNode->mMeshes[0] = 0;
+    scene->mRootNode->mNumMeshes = 1;
 
-  auto pMesh = scene->mMeshes[0];
+    auto pMesh = scene->mMeshes[0];
 
-  pMesh->mVertices    = new aiVector3D[vertices.size()];
-  pMesh->mNumVertices = vertices.size();
+    pMesh->mVertices    = new aiVector3D[vertices.size()];
+    pMesh->mNumVertices = vertices.size();
 
-	// Fill mesh with verticecs
-	for(int i = 0; i < vertices.size(); ++i)
-	{
-		pMesh->mVertices[i] = aiVector3D(vertices[i].x, vertices[i].y, vertices[i].z);
-	}
+    // Fill mesh with verticecs
+    for ( int i = 0; i < vertices.size(); ++i ) {
+        pMesh->mVertices[i] = aiVector3D( vertices[i].x, vertices[i].y, vertices[i].z );
+    }
 
-	// Fill face data
-	pMesh->mNumFaces = vertices.size() / VERTEX_COUNT_PER_FACE;
-	pMesh->mFaces    = new aiFace[pMesh->mNumFaces];
+    // Fill face data
+    pMesh->mNumFaces = vertices.size() / VERTEX_COUNT_PER_FACE;
+    pMesh->mFaces    = new aiFace[pMesh->mNumFaces];
 
-	for(int i = 0; i < pMesh->mNumFaces; ++i) {
-		aiFace& face     = pMesh->mFaces[i];
-		face.mIndices    = new unsigned int[3];
-		face.mNumIndices = VERTEX_COUNT_PER_FACE;
+    for ( int i = 0; i < pMesh->mNumFaces; ++i ) {
+        aiFace& face     = pMesh->mFaces[i];
+        face.mIndices    = new unsigned int[3];
+        face.mNumIndices = VERTEX_COUNT_PER_FACE;
 
-		for(int j = 0; j < VERTEX_COUNT_PER_FACE; ++j)
-		{
-			int idx = (i * VERTEX_COUNT_PER_FACE) + j;
-			face.mIndices[j] = idx;
-		}
-	}
+        for ( int j = 0; j < VERTEX_COUNT_PER_FACE; ++j ) {
+            int idx = ( i * VERTEX_COUNT_PER_FACE ) + j;
+            face.mIndices[j] = idx;
+        }
+    }
 
-	// Export
-	Assimp::Exporter exporter;
-	const char* formatId = "obj";
-	const char* exportDir = "exports/";
-	auto ret = exporter.Export(scene, formatId, exportDir + filename + "." + formatId);
-	if(ret != AI_SUCCESS) std::cout << "FAIL" << std::endl;
-	else std::cout << "SUCCESS" << std::endl;
+    // Export
+    Assimp::Exporter exporter;
+    const char* formatId = "obj";
+    const char* exportDir = "exports/";
+    auto ret = exporter.Export( scene, formatId, exportDir + filename + "." + formatId );
+
+    if ( ret != AI_SUCCESS ) {
+        std::cout << "FAIL" << std::endl;
+    } else {
+        std::cout << "SUCCESS" << std::endl;
+    }
 }
 
 void Geometry::Load() const {
