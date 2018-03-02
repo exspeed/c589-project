@@ -1,3 +1,5 @@
+#include <glad/glad.h>
+
 #include "Geometry.h"
 #include <iostream>
 
@@ -9,16 +11,15 @@ namespace
 	const unsigned int VERTEX_COUNT_PER_FACE = 3;
 }
 
-Geometry::Geometry(const Geometry& g)
-	: vertexBuffer(g.vertexBuffer)
-	, colourBuffer(g.colourBuffer)
-	, vertexArray(g.vertexArray)
-	, vertices(g.vertices)
-	, colours(g.colours)
-	, renderMode(g.renderMode)
-{
-	InitializeVAO();
-	Load();
+Geometry::Geometry( const Geometry& g )
+    : vertexBuffer( g.vertexBuffer )
+    , colourBuffer( g.colourBuffer )
+    , vertexArray( g.vertexArray )
+    , vertices( g.vertices )
+    , colours( g.colours )
+    , renderMode( g.renderMode ) {
+    InitializeVAO();
+    Load();
 }
 
 Geometry::Geometry(const std::string filename, GLenum r)
@@ -52,57 +53,55 @@ Geometry::Geometry(const std::string filename, GLenum r)
 	Export("ASD");
 }
 
-Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r)
-	: vertexBuffer(0)
-	, colourBuffer(0)
-	, vertexArray(0)
-	, vertices(std::move(v))
-	, colours(std::move(c))
-	, renderMode(r)
-{
-	InitializeVAO();
-	Load();
+Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r )
+    : vertexBuffer( 0 )
+    , colourBuffer( 0 )
+    , vertexArray( 0 )
+    , vertices( std::move( v ) )
+    , colours( std::move( c ) )
+    , renderMode( r ) {
+    InitializeVAO();
+    Load();
 }
 
-void Geometry::InitializeVAO()
-{
-	// Generate Vertex Buffer Objects
-	// Create an array buffer object for storing our vertices
-	glGenBuffers(1, &vertexBuffer);
+void Geometry::InitializeVAO() {
+    // Generate Vertex Buffer Objects
+    // Create an array buffer object for storing our vertices
+    glGenBuffers( 1, &vertexBuffer );
 
-	// Create another one for storing our colours
-	glGenBuffers(1, &colourBuffer);
+    // Create another one for storing our colours
+    glGenBuffers( 1, &colourBuffer );
 
-	// Set up Vertex Array Object
-	// Create a vertex array object encapsulating all our vertex attributes
-	glGenVertexArrays(1, &vertexArray);
-	glBindVertexArray(vertexArray);
+    // Set up Vertex Array Object
+    // Create a vertex array object encapsulating all our vertex attributes
+    glGenVertexArrays( 1, &vertexArray );
+    glBindVertexArray( vertexArray );
 
-	// Associate the position array with the vertex array object
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glVertexAttribPointer(
-		VERTEX_INDEX,		//Attribute index 
-		3, 					//# of components
-		GL_FLOAT, 			//Type of component
-		GL_FALSE, 			//Should be normalized?
-		0,		//Stride - can use 0 if tightly packed
-		0);					//Offset to first element
-	glEnableVertexAttribArray(VERTEX_INDEX);
+    // Associate the position array with the vertex array object
+    glBindBuffer( GL_ARRAY_BUFFER, vertexBuffer );
+    glVertexAttribPointer(
+        VERTEX_INDEX,       //Attribute index
+        3,                  //# of components
+        GL_FLOAT,           //Type of component
+        GL_FALSE,           //Should be normalized?
+        0,      //Stride - can use 0 if tightly packed
+        0 );                //Offset to first element
+    glEnableVertexAttribArray( VERTEX_INDEX );
 
-	// Associate the colour array with the vertex array object
-	glBindBuffer(GL_ARRAY_BUFFER, colourBuffer);
-	glVertexAttribPointer(
-		COLOUR_INDEX,		//Attribute index 
-		3, 					//# of components
-		GL_FLOAT, 			//Type of component
-		GL_FALSE, 			//Should be normalized?
-		0, 		//Stride - can use 0 if tightly packed
-		0);					//Offset to first element
-	glEnableVertexAttribArray(COLOUR_INDEX);
+    // Associate the colour array with the vertex array object
+    glBindBuffer( GL_ARRAY_BUFFER, colourBuffer );
+    glVertexAttribPointer(
+        COLOUR_INDEX,       //Attribute index
+        3,                  //# of components
+        GL_FLOAT,           //Type of component
+        GL_FALSE,           //Should be normalized?
+        0,      //Stride - can use 0 if tightly packed
+        0 );                //Offset to first element
+    glEnableVertexAttribArray( COLOUR_INDEX );
 
-	// Unbind our buffers, resetting to default state
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+    // Unbind our buffers, resetting to default state
+    glBindBuffer( GL_ARRAY_BUFFER, 0 );
+    glBindVertexArray( 0 );
 }
 
 void Geometry::Export(const std::string filename) const
@@ -166,25 +165,32 @@ void Geometry::Export(const std::string filename) const
 	else std::cout << "SUCCESS" << std::endl;
 }
 
-void Geometry::Load() const
-{
-	// create an array buffer object for storing our vertices
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), &vertices.front(), GL_STATIC_DRAW);
+void Geometry::Load() const {
+    // create an array buffer object for storing our vertices
+    glBindBuffer( GL_ARRAY_BUFFER, vertexBuffer );
+    glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * vertices.size(), &vertices.front(), GL_STATIC_DRAW );
 
-	// create another one for storing our colours
-	glBindBuffer(GL_ARRAY_BUFFER, colourBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * colours.size(), &colours.front(), GL_STATIC_DRAW);
+    // create another one for storing our colours
+    glBindBuffer( GL_ARRAY_BUFFER, colourBuffer );
+    glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * colours.size(), &colours.front(), GL_STATIC_DRAW );
 
-	//Unbind buffer to reset to default state
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //Unbind buffer to reset to default state
+    glBindBuffer( GL_ARRAY_BUFFER, 0 );
 }
 
+void Geometry::ToggleSelectedGeometry() {
+    selected = !selected;
+}
+
+bool Geometry::IsSelectedGeometry() {
+    return selected;
+}
+
+
 // Deallocate geometry-related objects
-void Geometry::Destroy() const 
-{
-	// Destroy our vertex array object and associated buffers
-	glDeleteVertexArrays(1, &vertexArray);
-	glDeleteBuffers(1, &vertexBuffer);
-	glDeleteBuffers(1, &colourBuffer);
+void Geometry::Destroy() const {
+    // Destroy our vertex array object and associated buffers
+    glDeleteVertexArrays( 1, &vertexArray );
+    glDeleteBuffers( 1, &vertexBuffer );
+    glDeleteBuffers( 1, &colourBuffer );
 }
