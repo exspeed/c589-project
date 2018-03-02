@@ -21,6 +21,7 @@ OS_NAME:=$(shell uname -s)
 ifeq ($(OS_NAME),Darwin)
 	LIBDIR=
 	LIBS += -framework OpenGL `pkg-config --static --libs glfw3` 
+	LIBS += -lassimp
 
 endif
 ifeq ($(OS_NAME),Linux)
@@ -59,6 +60,10 @@ buildDirectories:
 .PHONY: clean
 clean:
 	rm -f *.out $(OBJDIR)/*; rmdir obj;
+
+.PHONY: format
+format:
+	./format.sh;
 
 run: all
 	./$(EXECUTABLE)
