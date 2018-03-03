@@ -13,16 +13,13 @@
 
 class Scene {
 public:
-    std::vector<bool> selected;
-
     Scene( Shader* prog, Shader* progOutline, Camera* cam );
     void AddGeometry( Geometry* g );
     void ClearGeometries();
     int GetGeometriesSize();
+    Geometry* getGeometry( int i );
     void ToggleSelectedGeometry( int i );
-
     void Render() const;
-
 
 private:
     Shader* program;

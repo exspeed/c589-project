@@ -28,8 +28,7 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
 }
 
 void Camera::UpdateViewMatrix() {
-    ViewMatrix = glm::lookAt
-                 (
+    ViewMatrix = glm::lookAt (
                      pos,
                      forward,
                      up

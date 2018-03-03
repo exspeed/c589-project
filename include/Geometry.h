@@ -27,6 +27,8 @@ public:
     std::vector<glm::vec3> colours;
     std::vector<glm::vec3> normals;
 
+	glm::mat4 ModelMatrix;
+
     Geometry( const Geometry& g );
     Geometry( const std::string filename, GLenum );
     Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r );
