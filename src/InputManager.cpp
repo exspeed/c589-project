@@ -87,10 +87,18 @@ void InputManager::KeyRotate() {
     for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) { 
         Geometry* geometry = scene->getGeometry( i );
         if ( geometry->IsSelectedGeometry() ) {
-            if ( glfwGetKey( window, GLFW_KEY_Q ) == GLFW_PRESS ) {
+            if ( glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS ) {
                 geometry->ModelMatrix = glm::rotate(geometry->ModelMatrix, 0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
-            } else if (glfwGetKey( window, GLFW_KEY_E ) == GLFW_PRESS ) {
+            } else if (glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS ) {
                 geometry->ModelMatrix = glm::rotate(geometry->ModelMatrix, -0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+            } else if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS ) {
+                geometry->ModelMatrix = glm::rotate(geometry->ModelMatrix, 0.05f, glm::vec3(1.0f, 0.0f, 0.0f));
+            } else if (glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS ) {
+                geometry->ModelMatrix = glm::rotate(geometry->ModelMatrix, -0.05f, glm::vec3(1.0f, 0.0f, 0.0f));
+            } else if (glfwGetKey( window, GLFW_KEY_Q ) == GLFW_PRESS ) {
+                geometry->ModelMatrix = glm::rotate(geometry->ModelMatrix, 0.05f, glm::vec3(0.0f, 0.0f, 1.0f));
+            } else if (glfwGetKey( window, GLFW_KEY_E ) == GLFW_PRESS ) {
+                geometry->ModelMatrix = glm::rotate(geometry->ModelMatrix, -0.05f, glm::vec3(0.0f, 0.0f, 1.0f));
             }
         }
     }

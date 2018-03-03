@@ -53,8 +53,6 @@ int main( int argc, char* argv[] ) {
 
     CheckGLErrors();
 
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
     // Main Loop
     while ( !glfwWindowShouldClose( window ) ) {
         inputManager->CheckInput();
