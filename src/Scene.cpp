@@ -45,7 +45,7 @@ void Scene::Render() const {
             program->use();
             glStencilMask( 0x00 );
 
-		    // create model matrix
+            // create model matrix
             glm::mat4 MVP = camera->ProjectionMatrix * camera->ViewMatrix * geometries[i]->ModelMatrix;
             program->setMat4( "MVP", MVP );
 
@@ -83,7 +83,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     float tenpercentscale = 1.1f;
-    glm::mat4 model = scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
+    glm::mat4 model = scale( geometry->ModelMatrix, glm::vec3( tenpercentscale ) );
     MVP = camera->ProjectionMatrix * camera->ViewMatrix * model;
     programOutline->setMat4( "MVP", MVP );
 

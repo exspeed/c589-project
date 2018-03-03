@@ -21,9 +21,9 @@
 
 static InputManager* inputManager = nullptr;
 
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
     assert( inputManager != nullptr );
-    inputManager->KeyInput(key, action);
+    inputManager->KeyInput( key, action );
 }
 
 void ScrollCallback( GLFWwindow* window, double xoffset, double yoffset ) {
@@ -39,7 +39,7 @@ int main( int argc, char* argv[] ) {
     Initialize( window );
 
     glfwSetScrollCallback( window, ScrollCallback );
-    glfwSetKeyCallback( window, &KeyCallback);
+    glfwSetKeyCallback( window, &KeyCallback );
     Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
     // Create Geometry

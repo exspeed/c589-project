@@ -13,7 +13,7 @@ public:
     void ScrollWheel( double xoffset, double yoffset );
     void CheckInput();
 
-    void KeyInput( const int key, const int action);
+    void KeyInput( const int key, const int action );
 
 private:
     float cursorX = 0.0f;

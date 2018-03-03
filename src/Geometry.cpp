@@ -7,29 +7,27 @@ namespace {
     const GLuint COLOUR_INDEX = 1;
 }
 
-Geometry::Geometry(const Geometry& g)
-	: vertexBuffer(g.vertexBuffer)
-	, colourBuffer(g.colourBuffer)
-	, vertexArray(g.vertexArray)
-	, vertices(g.vertices)
-	, colours(g.colours)
-	, renderMode(g.renderMode)
-	, ModelMatrix(g.ModelMatrix)
-{
-	InitializeVAO();
-	Load();
+Geometry::Geometry( const Geometry& g )
+    : vertexBuffer( g.vertexBuffer )
+    , colourBuffer( g.colourBuffer )
+    , vertexArray( g.vertexArray )
+    , vertices( g.vertices )
+    , colours( g.colours )
+    , renderMode( g.renderMode )
+    , ModelMatrix( g.ModelMatrix ) {
+    InitializeVAO();
+    Load();
 }
 
-Geometry::Geometry(const std::string filename, GLenum r)
-	: vertexBuffer(0)
-	, colourBuffer(0)
-	, vertexArray(0)
-	, vertices({})
-	, colours({})
-	, renderMode(r)
-    , ModelMatrix(glm::mat4(1.0f))
-{
-	Assimp::Importer importer;
+Geometry::Geometry( const std::string filename, GLenum r )
+    : vertexBuffer( 0 )
+    , colourBuffer( 0 )
+    , vertexArray( 0 )
+    , vertices( {} )
+, colours( {} )
+, renderMode( r )
+, ModelMatrix( glm::mat4( 1.0f ) ) {
+    Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile( filename, NULL );
 
     if ( !scene ) {
@@ -46,21 +44,20 @@ Geometry::Geometry(const std::string filename, GLenum r)
         }
     }
 
-	InitializeVAO();
-	Load();
+    InitializeVAO();
+    Load();
 }
 
-Geometry::Geometry(std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r)
-	: vertexBuffer(0)
-	, colourBuffer(0)
-	, vertexArray(0)
-	, vertices(std::move(v))
-	, colours(std::move(c))
-	, renderMode(r)
-    , ModelMatrix(glm::mat4(1.0f))
-{
-	InitializeVAO();
-	Load();
+Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r )
+    : vertexBuffer( 0 )
+    , colourBuffer( 0 )
+    , vertexArray( 0 )
+    , vertices( std::move( v ) )
+    , colours( std::move( c ) )
+    , renderMode( r )
+    , ModelMatrix( glm::mat4( 1.0f ) ) {
+    InitializeVAO();
+    Load();
 }
 
 void Geometry::InitializeVAO() {
