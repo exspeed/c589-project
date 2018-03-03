@@ -13,8 +13,6 @@
 
 class Scene {
 public:
-    std::vector<bool> selected;
-
     Scene( Shader* prog, Shader* progOutline, Camera* cam );
     void AddGeometry( Geometry* g );
     void ClearGeometries();
