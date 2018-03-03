@@ -8,7 +8,6 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "assimp/Exporter.hpp"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/mesh.h"
@@ -22,7 +21,6 @@ public:
     GLuint  vertexArray;
     GLenum  renderMode;
 
-
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
 
@@ -33,12 +31,10 @@ public:
     void ToggleSelectedGeometry();
     bool IsSelectedGeometry();
 
-    void Export( const std::string filename ) const;
-    void Export( const aiScene* scene ) const;
     void Load() const;
     void Destroy() const;
 
 private:
-    bool selected = 0;
+    bool selected = false;
     void InitializeVAO();
 };

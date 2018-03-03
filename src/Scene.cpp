@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 
+#include "Exporter.h"
 #include "Scene.h"
-#include "Camera.h"
 
 Scene::Scene( Shader* prog, Shader* progOutline, Camera* cam ):
     program( prog )
@@ -22,7 +22,26 @@ void Scene::ClearGeometries() {
     geometries.clear();
 }
 
-int Scene::GetGeometriesSize() {
+void Scene::ExportSelectedGeometries() const {
+    std::vector<Geometry*> selected;
+    for(auto g : geometries) {
+        if(g->IsSelectedGeometry()) {
+            selected.push_back(g);
+        }
+    }
+
+    Exporter exporter;
+    std::string s = "Exported";
+    exporter.ExportGeometries(geometries, s);
+}
+
+void Scene::ExportAllGeometries() const {
+    Exporter exporter;
+    std::string s = "Exported";
+    exporter.ExportGeometries(geometries, s);
+}
+
+int Scene::GetGeometriesSize() const {
     return geometries.size();
 }
 

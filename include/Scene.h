@@ -18,11 +18,12 @@ public:
     Scene( Shader* prog, Shader* progOutline, Camera* cam );
     void AddGeometry( Geometry* g );
     void ClearGeometries();
-    int GetGeometriesSize();
+    void ExportSelectedGeometries() const;
+    void ExportAllGeometries() const;
+    int GetGeometriesSize() const;
     void ToggleSelectedGeometry( int i );
 
     void Render() const;
-
 
 private:
     Shader* program;

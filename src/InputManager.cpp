@@ -51,6 +51,8 @@ void InputManager::KeyInput() {
         camera->Zoom( true );
     } else if ( glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS ) {
         camera->Zoom( false );
+    } else if ( glfwGetKey( window, GLFW_KEY_ENTER ) == GLFW_PRESS ) {
+        scene->ExportAllGeometries();
     } else if ( glfwGetKey( window, GLFW_KEY_LEFT_SHIFT ) == GLFW_PRESS ) {
         shiftKey = true;
     } else if ( glfwGetKey( window, GLFW_KEY_LEFT_SHIFT ) == GLFW_RELEASE ) {
