@@ -5,6 +5,7 @@
 namespace {
     const GLuint VERTEX_INDEX = 0;
     const GLuint COLOUR_INDEX = 1;
+    const GLuint NORMAL_INDEX = 2;
 }
 
 Geometry::Geometry( const Geometry& g )
@@ -17,7 +18,6 @@ Geometry::Geometry( const Geometry& g )
     InitializeVAO();
     Load();
 }
-
 Geometry::Geometry( const std::string filename, GLenum r )
     : vertexBuffer( 0 )
     , colourBuffer( 0 )
@@ -39,6 +39,10 @@ Geometry::Geometry( const std::string filename, GLenum r )
             aiVector3t<float> vec = mesh->mVertices[j];
             vertices.push_back( glm::vec3( vec.x, vec.y, vec.z ) );
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
+
+            aiVector3t<float> nom = mesh->mNormals[j];
+					
+            normals.push_back( glm::vec3( nom.x, nom.y, nom.z ) );
         }
     }
 
@@ -64,6 +68,8 @@ void Geometry::InitializeVAO() {
 
     // Create another one for storing our colours
     glGenBuffers( 1, &colourBuffer );
+
+    glGenBuffers( 1, &normalBuffer );
 
     // Set up Vertex Array Object
     // Create a vertex array object encapsulating all our vertex attributes
@@ -92,6 +98,16 @@ void Geometry::InitializeVAO() {
         0 );                //Offset to first element
     glEnableVertexAttribArray( COLOUR_INDEX );
 
+    glBindBuffer( GL_ARRAY_BUFFER, normalBuffer );
+    glVertexAttribPointer(
+        NORMAL_INDEX,       //Attribute index
+        3,                  //# of components
+        GL_FLOAT,           //Type of component
+        GL_TRUE,           //Should be normalized?
+        0,      //Stride - can use 0 if tightly packed
+        0 );                //Offset to first element
+    glEnableVertexAttribArray( NORMAL_INDEX );
+
     // Unbind our buffers, resetting to default state
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
     glBindVertexArray( 0 );
@@ -105,6 +121,9 @@ void Geometry::Load() const {
     // create another one for storing our colours
     glBindBuffer( GL_ARRAY_BUFFER, colourBuffer );
     glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * colours.size(), &colours.front(), GL_STATIC_DRAW );
+
+    glBindBuffer( GL_ARRAY_BUFFER, normalBuffer );
+    glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * normals.size(), &normals.front(), GL_STATIC_DRAW );
 
     //Unbind buffer to reset to default state
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
@@ -125,4 +144,5 @@ void Geometry::Destroy() const {
     glDeleteVertexArrays( 1, &vertexArray );
     glDeleteBuffers( 1, &vertexBuffer );
     glDeleteBuffers( 1, &colourBuffer );
+    glDeleteBuffers( 1, &normalBuffer );
 }

@@ -1,3 +1,4 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include "InputManager.h"
 
 InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )

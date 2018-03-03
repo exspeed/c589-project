@@ -1,5 +1,4 @@
 #include <glad/glad.h>
-
 #include "Scene.h"
 #include "Camera.h"
 
@@ -43,8 +42,10 @@ void Scene::Render() const {
             program->use();
             glStencilMask( 0x00 );
             glm::mat4 model = glm::mat4( 1.0 ); // placeholder
-            glm::mat4 MVP = camera->ProjectionMatrix * camera->ViewMatrix * model;
-            program->setMat4( "MVP", MVP );
+				    model = glm::scale ( glm::vec3( 1.1f, 1.1f, 1.1f ) );
+    				program->setMat4( "Model", model );
+    				program->setMat4( "View", camera->ViewMatrix );
+    				program->setMat4( "Projection", camera->ProjectionMatrix );
 
             glBindVertexArray( geometries[i]->vertexArray );
             glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
@@ -65,9 +66,9 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     glStencilMask( 0xFF );
 
     glm::mat4 model = glm::mat4( 1.0 ); // placeholder
-    glm::mat4 MVP = camera->ProjectionMatrix * camera->ViewMatrix * model;
-
-    program->setMat4( "MVP", MVP );
+    program->setMat4( "Model", model );
+    program->setMat4( "View", camera->ViewMatrix );
+    program->setMat4( "Projection", camera->ProjectionMatrix );
 
     // bind our shader program and the vertex array object containing our
     // scene geometry, then tell OpenGL to draw our geometry
@@ -81,8 +82,9 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     model = glm::scale ( glm::vec3( 1.1f, 1.1f, 1.1f ) );
-    MVP = camera->ProjectionMatrix * camera->ViewMatrix * model;
-    programOutline->setMat4( "MVP", MVP );
+    programOutline->setMat4( "Model", model );
+    programOutline->setMat4( "View", camera->ViewMatrix );
+    programOutline->setMat4( "Projection", camera->ProjectionMatrix );
 
     glBindVertexArray( geometry->vertexArray );
     glDrawArrays( geometry->renderMode, 0, geometry->vertices.size() );
