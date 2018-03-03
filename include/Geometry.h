@@ -21,9 +21,10 @@ public:
     GLuint  vertexArray;
     GLenum  renderMode;
 
-
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
+
+	glm::mat4 ModelMatrix;
 
     Geometry( const Geometry& g );
     Geometry( const std::string filename, GLenum );
