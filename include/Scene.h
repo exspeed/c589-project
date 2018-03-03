@@ -17,7 +17,7 @@ public:
     void AddGeometry( Geometry* g );
     void ClearGeometries();
     int GetGeometriesSize();
-    Geometry* getGeometry( int i );
+    Geometry* GetGeometry( int i );
     void ToggleSelectedGeometry( int i );
     void Render() const;
 

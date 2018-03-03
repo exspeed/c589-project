@@ -26,7 +26,7 @@ int Scene::GetGeometriesSize() {
     return geometries.size();
 }
 
-Geometry* Scene::getGeometry( int i ) {
+Geometry* Scene::GetGeometry( int i ) {
     return geometries[i];
 }
 
