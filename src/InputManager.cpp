@@ -120,7 +120,7 @@ void InputManager::KeyInput( const int key, const int action ) {
         }
     }
 
-    else if ( action == GLFW_RELEASE ) {
+    if ( action == GLFW_RELEASE ) {
         // Camera
         switch ( key ) {
             case GLFW_KEY_LEFT_SHIFT:
@@ -131,7 +131,7 @@ void InputManager::KeyInput( const int key, const int action ) {
         }
     }
 
-    else if ( action == GLFW_REPEAT ) {
+    if ( action == GLFW_PRESS | action == GLFW_REPEAT ) {
         for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
             Geometry* geometry = scene->GetGeometry( i );
 
@@ -142,7 +142,6 @@ void InputManager::KeyInput( const int key, const int action ) {
             switch ( key ) {
                 case GLFW_KEY_A:
                     geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix, -GEOMETRY_ROTATION_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) );
-                    std::cout << "HERE" << std::endl;
                     break;
 
                 case GLFW_KEY_D:
