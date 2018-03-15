@@ -21,13 +21,14 @@
 
 static InputManager* inputManager = nullptr;
 
-void scroll_callback( GLFWwindow* window, double xoffset, double yoffset ) {
-    if ( inputManager == nullptr ) {
-        std::cout << "WHOOPS: inputManager is NULL\n";
-        return;
-    } else {
-        inputManager->ScrollWheel( xoffset, yoffset ); //forward input
-    }
+void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
+    assert( inputManager != nullptr );
+    inputManager->KeyInput( key, action );
+}
+
+void ScrollCallback( GLFWwindow* window, double xoffset, double yoffset ) {
+    assert( inputManager != nullptr );
+    inputManager->ScrollWheel( xoffset, yoffset ); //forward input
 }
 
 // PROGRAM ENTRY POINT
@@ -37,7 +38,8 @@ int main( int argc, char* argv[] ) {
     GLFWwindow* window = nullptr;
     Initialize( window );
 
-    glfwSetScrollCallback( window, scroll_callback );
+    glfwSetScrollCallback( window, ScrollCallback );
+    glfwSetKeyCallback( window, KeyCallback );
     Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
     // Create Geometry

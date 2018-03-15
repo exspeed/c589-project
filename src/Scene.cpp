@@ -25,7 +25,7 @@ int Scene::GetGeometriesSize() {
     return geometries.size();
 }
 
-Geometry* Scene::getGeometry( int i ) {
+Geometry* Scene::GetGeometry( int i ) {
     return geometries[i];
 }
 
@@ -46,6 +46,7 @@ void Scene::Render() const {
     				program->setMat4( "Model", geometries[i]->ModelMatrix );
     				program->setMat4( "View", camera->ViewMatrix );
     				program->setMat4( "Projection", camera->ProjectionMatrix );
+
 
             glBindVertexArray( geometries[i]->vertexArray );
             glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
@@ -85,6 +86,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->setMat4( "Model", model );
     programOutline->setMat4( "View", camera->ViewMatrix );
     programOutline->setMat4( "Projection", camera->ProjectionMatrix );
+
 
     glBindVertexArray( geometry->vertexArray );
     glDrawArrays( geometry->renderMode, 0, geometry->vertices.size() );

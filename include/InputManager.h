@@ -13,14 +13,13 @@ public:
     void ScrollWheel( double xoffset, double yoffset );
     void CheckInput();
 
-private:
-    float cursorX = 0;
-    float cursorY = 0;
-    bool shiftKey = 0;
-    bool wireframe = 0;
-    const float mouseSensitivity = 0.005;
+    void KeyInput( const int key, const int action );
 
-    void KeyInput();
-    void KeyRotate();
+private:
+    float cursorX = 0.0f;
+    float cursorY = 0.0f;
+    bool shiftKey = false;
+    bool wireframe = false;
+
     void MouseInput();
 };
