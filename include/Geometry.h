@@ -18,11 +18,14 @@ public:
     GLuint  vertexBuffer;
     GLuint  textureBuffer;
     GLuint  colourBuffer;
+    GLuint  normalBuffer;
+
     GLuint  vertexArray;
     GLenum  renderMode;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
+    std::vector<glm::vec3> normals;
 
     glm::mat4 ModelMatrix;
 

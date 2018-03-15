@@ -1,5 +1,4 @@
 #include <glad/glad.h>
-
 #include "Scene.h"
 #include "Camera.h"
 
@@ -44,10 +43,10 @@ void Scene::Render() const {
         if ( !geometries[i]->IsSelectedGeometry() ) {
             program->use();
             glStencilMask( 0x00 );
+    				program->setMat4( "Model", geometries[i]->ModelMatrix );
+    				program->setMat4( "View", camera->ViewMatrix );
+    				program->setMat4( "Projection", camera->ProjectionMatrix );
 
-            // create model matrix
-            glm::mat4 MVP = camera->ProjectionMatrix * camera->ViewMatrix * geometries[i]->ModelMatrix;
-            program->setMat4( "MVP", MVP );
 
             glBindVertexArray( geometries[i]->vertexArray );
             glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
@@ -67,9 +66,9 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     glStencilFunc( GL_ALWAYS, 1, 0xFF );
     glStencilMask( 0xFF );
 
-    glm::mat4 MVP = camera->ProjectionMatrix * camera->ViewMatrix * geometry->ModelMatrix;
-
-    program->setMat4( "MVP", MVP );
+    program->setMat4( "Model", geometry->ModelMatrix );
+    program->setMat4( "View", camera->ViewMatrix );
+    program->setMat4( "Projection", camera->ProjectionMatrix );
 
     // bind our shader program and the vertex array object containing our
     // scene geometry, then tell OpenGL to draw our geometry
@@ -83,9 +82,11 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     float tenpercentscale = 1.1f;
-    glm::mat4 model = scale( geometry->ModelMatrix, glm::vec3( tenpercentscale ) );
-    MVP = camera->ProjectionMatrix * camera->ViewMatrix * model;
-    programOutline->setMat4( "MVP", MVP );
+    glm::mat4 model = scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
+    programOutline->setMat4( "Model", model );
+    programOutline->setMat4( "View", camera->ViewMatrix );
+    programOutline->setMat4( "Projection", camera->ProjectionMatrix );
+
 
     glBindVertexArray( geometry->vertexArray );
     glDrawArrays( geometry->renderMode, 0, geometry->vertices.size() );

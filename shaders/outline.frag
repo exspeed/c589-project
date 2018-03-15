@@ -8,7 +8,7 @@ out vec4 FragmentColour;
 
 void main(void)
 {
-	
-	FragmentColour = vec4(0.04, 0.28, 0.26, 1.0);
+///127-255-0	
+	FragmentColour = vec4(0.5, 1.0, 0, 1.0);
 	
 }
