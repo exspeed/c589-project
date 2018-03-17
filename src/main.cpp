@@ -43,14 +43,25 @@ int main( int argc, char* argv[] ) {
     Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
     // Create Geometry
+	std::vector<glm::vec3> vert;
+	vert.push_back(glm::vec3(0.5,0,1));
+	vert.push_back(glm::vec3(-0.5,0,-1));
+	
+	std::vector<glm::vec3> color;
+	vert.push_back(glm::vec3(1,1,1));
+	vert.push_back(glm::vec3(1,1,1));
+
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES );
+	Geometry* fracture = new Geometry( vert, color, GL_LINES );
 
     // Create Camera
     Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
+	Shader programLine("shaders/line.vert","shaders/line.frag");
     Shader programOutline( "shaders/vertex.glsl", "shaders/outline.frag" );
     Scene* scene = new Scene( &program, &programOutline, camera );
     scene->AddGeometry( geometry );
 
+	
     inputManager = new InputManager( window, camera, scene );
 
     CheckGLErrors();
@@ -60,6 +71,10 @@ int main( int argc, char* argv[] ) {
         inputManager->CheckInput();
         // call function to draw our scene
         scene->Render();
+		
+		programLine.use();
+		glBindVertexArray( fracture->vertexArray );
+		glDrawArrays( fracture->renderMode, 0, fracture->vertices.size() );
 
         glfwSwapBuffers( window );
 

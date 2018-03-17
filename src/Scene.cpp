@@ -36,6 +36,7 @@ void Scene::ToggleSelectedGeometry( int i ) {
 // Rendering function that draws our scene to the frame buffer
 void Scene::Render() const {
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
+	glEnable( GL_DEPTH_TEST );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
     // Draw non stencil objects here
