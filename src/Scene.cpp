@@ -93,7 +93,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     float tenpercentscale = 1.1f;
-    glm::mat4 model = scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
+    glm::mat4 model = glm::scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
     programOutline->setMat4( "Model", model );
     programOutline->setMat4( "View", camera->ViewMatrix );
     programOutline->setMat4( "Projection", camera->ProjectionMatrix );

@@ -4,6 +4,8 @@
 namespace {
     const float MOUSE_SENSITIVITY = 0.005f;
     const float GEOMETRY_ROTATION_SPEED = 0.05f;
+    const float GEOMETRY_SCALE_UP = 1.1f;
+    const float GEOMETRY_SCALE_DOWN = 0.9f;
 }
 
 InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )
@@ -182,9 +184,9 @@ void InputManager::ScrollWheel( double xoffset, double yoffset ) {
             }
 
             if ( yoffset == 1 ) {
-                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( 1.1f, 1.1f, 1.1f ) ) ;
+                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( GEOMETRY_SCALE_UP ) ) ;
             } else if ( yoffset == -1 ) {
-                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( 0.9f, 0.9f, 0.9f ) );
+                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( GEOMETRY_SCALE_DOWN ) );
             }
         }
     } else {
