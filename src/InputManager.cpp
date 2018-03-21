@@ -134,7 +134,7 @@ void InputManager::KeyInput( const int key, const int action ) {
         }
     }
 
-    if ( ( action == GLFW_PRESS ) | ( action == GLFW_REPEAT ) ) {
+    if ( ( action == GLFW_PRESS ) || ( action == GLFW_REPEAT ) ) {
         for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
             Geometry* geometry = scene->GetGeometry( i );
 
