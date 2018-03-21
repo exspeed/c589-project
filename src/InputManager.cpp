@@ -132,7 +132,7 @@ void InputManager::KeyInput( const int key, const int action ) {
         }
     }
 
-    if ( action == GLFW_PRESS | action == GLFW_REPEAT ) {
+    if ( ( action == GLFW_PRESS ) | ( action == GLFW_REPEAT ) ) {
         for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
             Geometry* geometry = scene->GetGeometry( i );
 
@@ -173,9 +173,25 @@ void InputManager::KeyInput( const int key, const int action ) {
 }
 
 void InputManager::ScrollWheel( double xoffset, double yoffset ) {
-    if ( yoffset == 1 ) {
-        camera->Zoom( true );
-    } else if ( yoffset == -1 ) {
-        camera->Zoom( false );
+    if ( scene->AnyGeometrySelected() == true) {
+        for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
+            Geometry* geometry = scene->GetGeometry( i );
+
+            if ( !geometry->IsSelectedGeometry() ) {
+                continue;
+            }
+
+            if ( yoffset == 1 ) {
+                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( 1.1f, 1.1f, 1.1f ) ) ;
+            } else if ( yoffset == -1 ) {
+                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( 0.9f, 0.9f, 0.9f ) );
+            }
+        }
+    } else {
+        if ( yoffset == 1 ) {
+            camera->Zoom( true );
+        } else if ( yoffset == -1 ) {
+            camera->Zoom( false );
+        }
     }
 }

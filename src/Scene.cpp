@@ -33,6 +33,17 @@ void Scene::ToggleSelectedGeometry( int i ) {
     geometries[i]->ToggleSelectedGeometry();
 }
 
+bool Scene::AnyGeometrySelected() {
+    for ( int i  = 0; i < geometries.size(); i++ ) {
+        Geometry* geometry = geometries[i];
+
+        if (geometry->IsSelectedGeometry()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Rendering function that draws our scene to the frame buffer
 void Scene::Render() const {
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
