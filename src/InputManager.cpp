@@ -175,7 +175,7 @@ void InputManager::KeyInput( const int key, const int action ) {
 }
 
 void InputManager::ScrollWheel( double xoffset, double yoffset ) {
-    if ( scene->AnyGeometrySelected() ) {
+    if ( scene->HasAnyGeometrySelected() ) {
         for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
             Geometry* geometry = scene->GetGeometry( i );
 
