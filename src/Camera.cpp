@@ -52,14 +52,12 @@ void Camera::RotateAround( float deltaX, float deltaY ) {
 }
 
 
-void Camera::Zoom( bool in ) {
+void Camera::Zoom( double yoffset ) {
     const float zoomSpeed = 0.2;
 
     glm::vec3 direction = zoomSpeed * ( glm::normalize( forward - pos ) );
 
-    if ( !in ) {
-        direction = -direction;
-    }
+    direction *= yoffset;
 
     pos = pos + direction;
 

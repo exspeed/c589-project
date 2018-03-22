@@ -190,10 +190,6 @@ void InputManager::ScrollWheel( double xoffset, double yoffset ) {
             }
         }
     } else {
-        if ( yoffset == 1 ) {
-            camera->Zoom( true );
-        } else if ( yoffset == -1 ) {
-            camera->Zoom( false );
-        }
+        camera->Zoom( yoffset );
     }
 }
