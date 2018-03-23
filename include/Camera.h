@@ -12,7 +12,7 @@ public:
 
     Camera( glm::vec3 position, glm::vec3 fwd, glm::vec3 head );
     void RotateAround( float deltaX, float deltaY );
-    void Zoom( bool in );
+    void Zoom( double yoffset );
     void Panning( float deltaX, float deltaY );
 
 private:

@@ -33,6 +33,17 @@ void Scene::ToggleSelectedGeometry( int i ) {
     geometries[i]->ToggleSelectedGeometry();
 }
 
+bool Scene::HasAnyGeometrySelected() {
+    for ( int i  = 0; i < geometries.size(); i++ ) {
+        Geometry* geometry = geometries[i];
+
+        if (geometry->IsSelectedGeometry()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Rendering function that draws our scene to the frame buffer
 void Scene::Render() const {
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
@@ -82,7 +93,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     float tenpercentscale = 1.1f;
-    glm::mat4 model = scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
+    glm::mat4 model = glm::scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
     programOutline->setMat4( "Model", model );
     programOutline->setMat4( "View", camera->ViewMatrix );
     programOutline->setMat4( "Projection", camera->ProjectionMatrix );

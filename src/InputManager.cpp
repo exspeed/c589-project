@@ -4,6 +4,8 @@
 namespace {
     const float MOUSE_SENSITIVITY = 0.005f;
     const float GEOMETRY_ROTATION_SPEED = 0.05f;
+    const float GEOMETRY_SCALE_UP = 1.1f;
+    const float GEOMETRY_SCALE_DOWN = 0.9f;
 }
 
 InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )
@@ -121,7 +123,7 @@ void InputManager::KeyInput( const int key, const int action ) {
         }
     }
 
-    else if ( action == GLFW_RELEASE ) {
+    if ( action == GLFW_RELEASE ) {
         // Camera
         switch ( key ) {
             case GLFW_KEY_LEFT_SHIFT:
@@ -132,7 +134,7 @@ void InputManager::KeyInput( const int key, const int action ) {
         }
     }
 
-    else if ( action == GLFW_REPEAT ) {
+    if ( ( action == GLFW_PRESS ) || ( action == GLFW_REPEAT ) ) {
         for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
             Geometry* geometry = scene->GetGeometry( i );
 
@@ -143,7 +145,6 @@ void InputManager::KeyInput( const int key, const int action ) {
             switch ( key ) {
                 case GLFW_KEY_A:
                     geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix, -GEOMETRY_ROTATION_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) );
-                    std::cout << "HERE" << std::endl;
                     break;
 
                 case GLFW_KEY_D:
@@ -174,9 +175,21 @@ void InputManager::KeyInput( const int key, const int action ) {
 }
 
 void InputManager::ScrollWheel( double xoffset, double yoffset ) {
-    if ( yoffset == 1 ) {
-        camera->Zoom( true );
-    } else if ( yoffset == -1 ) {
-        camera->Zoom( false );
+    if ( scene->HasAnyGeometrySelected() ) {
+        for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
+            Geometry* geometry = scene->GetGeometry( i );
+
+            if ( !geometry->IsSelectedGeometry() ) {
+                continue;
+            }
+
+            if ( yoffset == 1 ) {
+                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( GEOMETRY_SCALE_UP ) ) ;
+            } else if ( yoffset == -1 ) {
+                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( GEOMETRY_SCALE_DOWN ) );
+            }
+        }
+    } else {
+        camera->Zoom( yoffset );
     }
 }
