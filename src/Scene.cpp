@@ -2,10 +2,8 @@
 #include "Scene.h"
 #include "Camera.h"
 
-Scene::Scene( Shader* prog, Shader* progOutline, Camera* cam ):
-    program( prog )
-    , programOutline( progOutline )
-    , camera( cam ) {
+Scene::Scene( Camera* cam ):
+     camera( cam ) {
 
 }
 
@@ -34,7 +32,7 @@ void Scene::ToggleSelectedGeometry( int i ) {
 }
 
 bool Scene::HasAnyGeometrySelected() {
-    for ( int i  = 0; i < geometries.size(); i++ ) {
+    for ( int i  = 0; i < (int) geometries.size(); i++ ) {
         Geometry* geometry = geometries[i];
 
         if (geometry->IsSelectedGeometry()) {
@@ -50,18 +48,20 @@ void Scene::Render() const {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
 
     // Draw non stencil objects here
-    for ( int i = 0; i < geometries.size(); i++ ) {
+    for ( int i = 0; i < (int) geometries.size(); i++ ) {
         if ( !geometries[i]->IsSelectedGeometry() ) {
-            program->use();
+
+						Shader* program = geometries[i]->program;
+						program->use();
             glStencilMask( 0x00 );
     				program->setMat4( "Model", geometries[i]->ModelMatrix );
     				program->setMat4( "View", camera->ViewMatrix );
     				program->setMat4( "Projection", camera->ProjectionMatrix );
 
-
             glBindVertexArray( geometries[i]->vertexArray );
             glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
         } else {
+						
             RenderStencil( geometries[i] );
         }
     }
@@ -73,6 +73,7 @@ void Scene::Render() const {
 
 
 void Scene::RenderStencil( Geometry* geometry ) const {
+		Shader* program = geometry->program;
     program->use();
     glStencilFunc( GL_ALWAYS, 1, 0xFF );
     glStencilMask( 0xFF );
@@ -90,6 +91,8 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     glStencilMask( 0x00 );
     glDisable( GL_DEPTH_TEST );
 
+
+		Shader* programOutline = geometry->programOutline;
     programOutline->use();
 
     float tenpercentscale = 1.1f;

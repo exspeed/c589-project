@@ -43,13 +43,21 @@ int main( int argc, char* argv[] ) {
     Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
     // Create Geometry
-    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES );
 
     // Create Camera
-    Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
-    Shader programOutline( "shaders/vertex.glsl", "shaders/outline.frag" );
-    Scene* scene = new Scene( &program, &programOutline, camera );
+    Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
+    Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+
+    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline);
+
+		//geometry->program = &program;
+		//geometry->programOutline = &programOutline;
+
+
+    Scene* scene = new Scene(camera );
     scene->AddGeometry( geometry );
+
+
 
     inputManager = new InputManager( window, camera, scene );
 

@@ -10,35 +10,44 @@ namespace {
 
 Geometry::Geometry( const Geometry& g )
     : vertexBuffer( g.vertexBuffer )
+		, textureBuffer(g.textureBuffer)
     , colourBuffer( g.colourBuffer )
     , vertexArray( g.vertexArray )
+    , renderMode( g.renderMode )
+	  , program(g.program)
+		, programOutline(g.programOutline)
     , vertices( g.vertices )
     , colours( g.colours )
-    , renderMode( g.renderMode )
+    , normals( g.normals )
     , ModelMatrix( g.ModelMatrix ) {
     InitializeVAO();
     Load();
 }
 
-Geometry::Geometry( const std::string filename, GLenum r )
-    : vertexBuffer( 0 )
-    , colourBuffer( 0 )
-    , vertexArray( 0 )
-    , vertices( {} )
-, colours( {} )
+Geometry::Geometry( const std::string filename, GLenum r, Shader* s1, Shader* s2 )
+: vertexBuffer( 0 )
+, textureBuffer(0)
+, colourBuffer( 0 )
+, vertexArray( 0 )
 , renderMode( r )
-, ModelMatrix( glm::mat4( 1.0f ) ) {
+, program(s1)
+, programOutline(s2)
+, vertices( {} )
+, colours( {} )
+, normals( {} )
+, ModelMatrix( glm::mat4( 1.0f ) ) 
+{
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile( filename, NULL );
+    const aiScene* scene = importer.ReadFile( filename, 0 );
 
     if ( !scene ) {
         printf( "Unable to load mesh: %s\n", importer.GetErrorString() );
     }
 
-    for ( int i = 0; i < scene->mNumMeshes; i++ ) {
+    for ( int i = 0; i < (int) scene->mNumMeshes; i++ ) {
         auto mesh = scene->mMeshes[i];
 
-        for ( int j = 0; j < mesh->mNumVertices; j++ ) {
+        for ( int j = 0; j < (int) mesh->mNumVertices; j++ ) {
             aiVector3t<float> vec = mesh->mVertices[j];
             vertices.push_back( glm::vec3( vec.x, vec.y, vec.z ) );
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
@@ -55,11 +64,16 @@ Geometry::Geometry( const std::string filename, GLenum r )
 
 Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r )
     : vertexBuffer( 0 )
+    , textureBuffer( 0 )
     , colourBuffer( 0 )
+    , normalBuffer( 0 )
     , vertexArray( 0 )
+    , renderMode( r )
+		, program(nullptr)
+		, programOutline(nullptr)
     , vertices( std::move( v ) )
     , colours( std::move( c ) )
-    , renderMode( r )
+    , normals( {} )
     , ModelMatrix( glm::mat4( 1.0f ) ) {
     InitializeVAO();
     Load();
