@@ -19,7 +19,7 @@ public:
     int GetGeometriesSize();
     Geometry* GetGeometry( int i );
     void ToggleSelectedGeometry( int i );
-    bool AnyGeometrySelected();
+    bool HasAnyGeometrySelected();
     void Render() const;
 
 private:

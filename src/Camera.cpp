@@ -57,7 +57,9 @@ void Camera::Zoom( double yoffset ) {
 
     glm::vec3 direction = zoomSpeed * ( glm::normalize( forward - pos ) );
 
-    direction *= yoffset;
+    if ( yoffset != 0 ) {
+        direction *= yoffset;
+    }
 
     pos = pos + direction;
 

@@ -33,7 +33,7 @@ void Scene::ToggleSelectedGeometry( int i ) {
     geometries[i]->ToggleSelectedGeometry();
 }
 
-bool Scene::AnyGeometrySelected() {
+bool Scene::HasAnyGeometrySelected() {
     for ( int i  = 0; i < geometries.size(); i++ ) {
         Geometry* geometry = geometries[i];
 
