@@ -48,9 +48,9 @@ int main( int argc, char* argv[] ) {
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
     Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
 
-    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline);
+    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
 
-    Scene* scene = new Scene(camera );
+    Scene* scene = new Scene( camera );
     scene->AddGeometry( geometry );
 
 

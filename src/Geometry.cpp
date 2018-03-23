@@ -10,12 +10,12 @@ namespace {
 
 Geometry::Geometry( const Geometry& g )
     : vertexBuffer( g.vertexBuffer )
-		, textureBuffer(g.textureBuffer)
+    , textureBuffer( g.textureBuffer )
     , colourBuffer( g.colourBuffer )
     , vertexArray( g.vertexArray )
     , renderMode( g.renderMode )
-	  , program(g.program)
-		, programOutline(g.programOutline)
+    , program( g.program )
+    , programOutline( g.programOutline )
     , vertices( g.vertices )
     , colours( g.colours )
     , normals( g.normals )
@@ -25,18 +25,17 @@ Geometry::Geometry( const Geometry& g )
 }
 
 Geometry::Geometry( const std::string filename, GLenum r, Shader* s1, Shader* s2 )
-: vertexBuffer( 0 )
-, textureBuffer(0)
-, colourBuffer( 0 )
-, vertexArray( 0 )
-, renderMode( r )
-, program(s1)
-, programOutline(s2)
-, vertices( {} )
+    : vertexBuffer( 0 )
+    , textureBuffer( 0 )
+    , colourBuffer( 0 )
+    , vertexArray( 0 )
+    , renderMode( r )
+    , program( s1 )
+    , programOutline( s2 )
+    , vertices( {} )
 , colours( {} )
 , normals( {} )
-, ModelMatrix( glm::mat4( 1.0f ) ) 
-{
+, ModelMatrix( glm::mat4( 1.0f ) ) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile( filename, 0 );
 
@@ -44,16 +43,16 @@ Geometry::Geometry( const std::string filename, GLenum r, Shader* s1, Shader* s2
         printf( "Unable to load mesh: %s\n", importer.GetErrorString() );
     }
 
-    for ( int i = 0; i < (int) scene->mNumMeshes; i++ ) {
+    for ( int i = 0; i < ( int ) scene->mNumMeshes; i++ ) {
         auto mesh = scene->mMeshes[i];
 
-        for ( int j = 0; j < (int) mesh->mNumVertices; j++ ) {
+        for ( int j = 0; j < ( int ) mesh->mNumVertices; j++ ) {
             aiVector3t<float> vec = mesh->mVertices[j];
             vertices.push_back( glm::vec3( vec.x, vec.y, vec.z ) );
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
 
             aiVector3t<float> nom = mesh->mNormals[j];
-					
+
             normals.push_back( glm::vec3( nom.x, nom.y, nom.z ) );
         }
     }
@@ -69,12 +68,12 @@ Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
-		, program(nullptr)
-		, programOutline(nullptr)
+    , program( nullptr )
+    , programOutline( nullptr )
     , vertices( std::move( v ) )
     , colours( std::move( c ) )
     , normals( {} )
-    , ModelMatrix( glm::mat4( 1.0f ) ) {
+, ModelMatrix( glm::mat4( 1.0f ) ) {
     InitializeVAO();
     Load();
 }

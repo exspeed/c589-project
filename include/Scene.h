@@ -13,7 +13,7 @@
 
 class Scene {
 public:
-    Scene(Camera* cam );
+    Scene( Camera* cam );
     void AddGeometry( Geometry* g );
     void ClearGeometries();
     int GetGeometriesSize();

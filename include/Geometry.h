@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
-#include "Shader.h" 
+#include "Shader.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/mesh.h"
@@ -23,8 +23,8 @@ public:
     GLuint  vertexArray;
     GLenum  renderMode;
 
-		Shader* program;
-		Shader* programOutline;
+    Shader* program;
+    Shader* programOutline;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
