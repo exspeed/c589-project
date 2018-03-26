@@ -28,6 +28,10 @@ Geometry* Scene::GetGeometry( int i ) {
 }
 
 void Scene::ToggleSelectedGeometry( int i ) {
+    if ( i < 0 || i >= geometries.size() ) {
+        return;
+    }
+
     geometries[i]->ToggleSelectedGeometry();
 }
 
@@ -58,6 +62,7 @@ void Scene::Render() const {
             program->setMat4( "Model", geometries[i]->ModelMatrix );
             program->setMat4( "View", camera->ViewMatrix );
             program->setMat4( "Projection", camera->ProjectionMatrix );
+
 
             glBindVertexArray( geometries[i]->vertexArray );
             glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
@@ -110,5 +115,5 @@ void Scene::RenderStencil( Geometry* geometry ) const {
 
     glBindVertexArray( 0 );
     glStencilMask( 0xFF );
-
+    glClear( GL_STENCIL_BUFFER_BIT );
 }
