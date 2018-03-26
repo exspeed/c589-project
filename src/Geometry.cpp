@@ -36,7 +36,7 @@ Geometry::Geometry( const std::string filename, GLenum r )
 , normals( {} )
 , ModelMatrix( glm::mat4( 1.0f ) ) {
     Assimp::Importer importer;
-    auto import_flags = aiProcess_FindDegenerates | aiProcess_FindInvalidData | aiProcess_FixInfacingNormals | aiProcess_ImproveCacheLocality | aiProcess_Triangulate;
+    auto import_flags = aiProcess_FindDegenerates | aiProcess_FindInvalidData | aiProcess_FixInfacingNormals | aiProcess_ImproveCacheLocality | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices;
     const aiScene* scene = importer.ReadFile( filename, import_flags );
 
     if ( !scene ) {
@@ -230,7 +230,6 @@ void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
         triangles->push_back( 3 * i + 1 );
         triangles->push_back( 3 * i + 2 );
     }
-
 
     out.triangles = &triangles->front();
 }
