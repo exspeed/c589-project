@@ -13,7 +13,7 @@
 
 class Scene {
 public:
-    Scene( Shader* prog, Shader* progOutline, Camera* cam );
+    Scene( Camera* cam );
     void AddGeometry( Geometry* g );
     void ClearGeometries();
     int GetGeometriesSize();
@@ -23,8 +23,6 @@ public:
     void Render() const;
 
 private:
-    Shader* program;
-    Shader* programOutline;
     Camera* camera;
 
     std::vector<Geometry*> geometries;

@@ -16,6 +16,8 @@ Geometry::Geometry( const Geometry& g )
     , normalBuffer( g.normalBuffer )
     , vertexArray( g.vertexArray )
     , renderMode( g.renderMode )
+    , program( g.program )
+    , programOutline( g.programOutline )
     , vertices( g.vertices )
     , colours( g.colours )
     , normals( g.normals )
@@ -24,13 +26,15 @@ Geometry::Geometry( const Geometry& g )
     Load();
 }
 
-Geometry::Geometry( const std::string filename, GLenum r )
+Geometry::Geometry( const std::string filename, GLenum r, Shader* s1, Shader* s2 )
     : vertexBuffer( 0 )
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
+    , program( s1 )
+    , programOutline( s2 )
     , vertices( {} )
 , colours( {} )
 , normals( {} )
@@ -43,10 +47,10 @@ Geometry::Geometry( const std::string filename, GLenum r )
         printf( "Unable to load mesh: %s\n", importer.GetErrorString() );
     }
 
-    for ( int i = 0; i < scene->mNumMeshes; i++ ) {
+    for ( int i = 0; i < ( int ) scene->mNumMeshes; i++ ) {
         auto mesh = scene->mMeshes[i];
 
-        for ( int j = 0; j < mesh->mNumVertices; j++ ) {
+        for ( int j = 0; j < ( int ) mesh->mNumVertices; j++ ) {
             aiVector3t<float> vec = mesh->mVertices[j];
             vertices.push_back( glm::vec3( vec.x, vec.y, vec.z ) );
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
@@ -61,13 +65,15 @@ Geometry::Geometry( const std::string filename, GLenum r )
     Load();
 }
 
-Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r )
+Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r, Shader* s, Shader* s2 )
     : vertexBuffer( 0 )
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
+    , program( s )
+    , programOutline( s2 )
     , vertices( std::move( v ) )
     , colours( std::move( c ) )
     , normals( std::move( n ) )
@@ -76,13 +82,15 @@ Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vec
     Load();
 }
 
-Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r )
+Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* s, Shader* s2 )
     : vertexBuffer( 0 )
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
+    , program( s )
+    , programOutline( s2 )
     , ModelMatrix( glm::mat4( 1.0f ) ) {
 
     vertices.clear();
