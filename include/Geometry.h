@@ -21,6 +21,7 @@ public:
     GLuint  textureBuffer;
     GLuint  colourBuffer;
     GLuint  normalBuffer;
+    GLuint  faceBuffer;
 
     GLuint  vertexArray;
     GLenum  renderMode;
@@ -31,6 +32,7 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
     std::vector<glm::vec3> normals;
+    std::vector<GLuint> faces;
 
     glm::mat4 ModelMatrix;
 

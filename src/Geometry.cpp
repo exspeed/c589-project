@@ -14,6 +14,7 @@ Geometry::Geometry( const Geometry& g )
     , textureBuffer( g.textureBuffer )
     , colourBuffer( g.colourBuffer )
     , normalBuffer( g.normalBuffer )
+    , faceBuffer( g.faceBuffer )
     , vertexArray( g.vertexArray )
     , renderMode( g.renderMode )
     , program( g.program )
@@ -21,6 +22,7 @@ Geometry::Geometry( const Geometry& g )
     , vertices( g.vertices )
     , colours( g.colours )
     , normals( g.normals )
+    , faces( g.faces )
     , ModelMatrix( g.ModelMatrix ) {
     InitializeVAO();
     Load();
@@ -31,16 +33,21 @@ Geometry::Geometry( const std::string filename, GLenum r, Shader* geo, Shader* s
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
+    , faceBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
     , program( geo )
     , programOutline( stencil )
-    , vertices( {} )
-, colours( {} )
-, normals( {} )
-, ModelMatrix( glm::mat4( 1.0f ) ) {
+    , vertices( std::vector<glm::vec3>() )
+    , colours( std::vector<glm::vec3>() )
+    , normals( std::vector<glm::vec3>() )
+    , faces( std::vector<GLuint>() )
+    , ModelMatrix( glm::mat4( 1.0f ) ) {
     Assimp::Importer importer;
-    auto import_flags = aiProcess_FindDegenerates | aiProcess_FindInvalidData | aiProcess_FixInfacingNormals | aiProcess_ImproveCacheLocality | aiProcess_Triangulate | aiProcess_JoinIdenticalVertices;
+    auto import_flags = aiProcess_FindDegenerates | aiProcess_FindInvalidData |
+                        aiProcess_FixInfacingNormals | aiProcess_ImproveCacheLocality |
+                        aiProcess_Triangulate | aiProcess_JoinIdenticalVertices |
+                        aiProcess_OptimizeMeshes;
     const aiScene* scene = importer.ReadFile( filename, import_flags );
 
     if ( !scene ) {
@@ -50,7 +57,7 @@ Geometry::Geometry( const std::string filename, GLenum r, Shader* geo, Shader* s
     for ( int i = 0; i < ( int ) scene->mNumMeshes; i++ ) {
         auto mesh = scene->mMeshes[i];
 
-        for ( int j = 0; j < ( int ) mesh->mNumVertices; j++ ) {
+        for ( uint j = 0; j < mesh->mNumVertices; j++ ) {
             aiVector3t<float> vec = mesh->mVertices[j];
             vertices.push_back( glm::vec3( vec.x, vec.y, vec.z ) );
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
@@ -58,6 +65,15 @@ Geometry::Geometry( const std::string filename, GLenum r, Shader* geo, Shader* s
             aiVector3t<float> nom = mesh->mNormals[j];
 
             normals.push_back( glm::vec3( nom.x, nom.y, nom.z ) );
+        }
+
+        // With aiProcess_Triangulate, we are guaranteed that face.mNumIndices = 3
+        for ( uint j = 0; j < mesh->mNumFaces; ++j ) {
+            aiFace face = mesh->mFaces[j];
+
+            for ( uint k = 0; k < face.mNumIndices; ++k ) {
+                faces.push_back( face.mIndices[k] );
+            }
         }
     }
 
@@ -70,6 +86,7 @@ Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vec
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
+    , faceBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
     , program( geo )
@@ -78,6 +95,13 @@ Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vec
     , colours( std::move( c ) )
     , normals( std::move( n ) )
     , ModelMatrix( glm::mat4( 1.0f ) ) {
+
+    for ( int i = 0; i < vertices.size() / 3; ++i ) {
+        faces.push_back( 3 * i );
+        faces.push_back( 3 * i + 1 );
+        faces.push_back( 3 * i + 2 );
+    }
+
     InitializeVAO();
     Load();
 }
@@ -87,6 +111,7 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
+    , faceBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
     , program( geo )
@@ -96,6 +121,7 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
     vertices.clear();
     colours.clear();
     normals.clear();
+    faces.clear();
 
     for ( int i = 0; i < trimesh.n_triangles; ++i ) {
         // Determine points on each face
@@ -125,10 +151,11 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
         glm::vec3 l = a - b;
         glm::vec3 r = b - c;
 
-        // Push colours and normals
+        // Push colours, normals, and faces
         for ( int j = 0; j < 3; ++j ) {
             colours.push_back( glm::vec3( 1.0f, 0.f, 0.f ) );
             normals.push_back( glm::normalize( glm::cross( l, r ) ) );
+            faces.push_back( trimesh.triangles[3 * i] + j );
         }
     }
 
@@ -144,7 +171,11 @@ void Geometry::InitializeVAO() {
     // Create another one for storing our colours
     glGenBuffers( 1, &colourBuffer );
 
+    // Create another one for normals
     glGenBuffers( 1, &normalBuffer );
+
+    // Create another one for faces
+    glGenBuffers( 1, &faceBuffer );
 
     // Set up Vertex Array Object
     // Create a vertex array object encapsulating all our vertex attributes
@@ -189,16 +220,21 @@ void Geometry::InitializeVAO() {
 }
 
 void Geometry::Load() const {
-    // create an array buffer object for storing our vertices
+    // Load vertices
     glBindBuffer( GL_ARRAY_BUFFER, vertexBuffer );
     glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * vertices.size(), &vertices.front(), GL_STATIC_DRAW );
 
-    // create another one for storing our colours
+    // Load colours
     glBindBuffer( GL_ARRAY_BUFFER, colourBuffer );
     glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * colours.size(), &colours.front(), GL_STATIC_DRAW );
 
+    // Load normals
     glBindBuffer( GL_ARRAY_BUFFER, normalBuffer );
     glBufferData( GL_ARRAY_BUFFER, sizeof( glm::vec3 ) * normals.size(), &normals.front(), GL_STATIC_DRAW );
+
+    // Load faces
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, faceBuffer );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, faces.size() * sizeof( unsigned int ), &faces[0], GL_STATIC_DRAW );
 
     //Unbind buffer to reset to default state
     glBindBuffer( GL_ARRAY_BUFFER, 0 );
