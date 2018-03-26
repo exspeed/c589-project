@@ -265,6 +265,6 @@ void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
 
     out.n_vertices = nvertices->size();
     out.vertices = &nvertices->front().x;
-    out.n_triangles = nfaces->size();
+    out.n_triangles = nfaces->size() / 3;
     out.triangles = &nfaces->front();
 }
