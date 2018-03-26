@@ -26,15 +26,15 @@ Geometry::Geometry( const Geometry& g )
     Load();
 }
 
-Geometry::Geometry( const std::string filename, GLenum r, Shader* s1, Shader* s2 )
+Geometry::Geometry( const std::string filename, GLenum r, Shader* geo, Shader* stencil )
     : vertexBuffer( 0 )
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
-    , program( s1 )
-    , programOutline( s2 )
+    , program( geo )
+    , programOutline( stencil )
     , vertices( {} )
 , colours( {} )
 , normals( {} )
@@ -65,15 +65,15 @@ Geometry::Geometry( const std::string filename, GLenum r, Shader* s1, Shader* s2
     Load();
 }
 
-Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r, Shader* s, Shader* s2 )
+Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r, Shader* geo, Shader* stencil )
     : vertexBuffer( 0 )
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
-    , program( s )
-    , programOutline( s2 )
+    , program( geo )
+    , programOutline( stencil )
     , vertices( std::move( v ) )
     , colours( std::move( c ) )
     , normals( std::move( n ) )
@@ -82,15 +82,15 @@ Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vec
     Load();
 }
 
-Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* s, Shader* s2 )
+Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* stencil )
     : vertexBuffer( 0 )
     , textureBuffer( 0 )
     , colourBuffer( 0 )
     , normalBuffer( 0 )
     , vertexArray( 0 )
     , renderMode( r )
-    , program( s )
-    , programOutline( s2 )
+    , program( geo )
+    , programOutline( stencil )
     , ModelMatrix( glm::mat4( 1.0f ) ) {
 
     vertices.clear();

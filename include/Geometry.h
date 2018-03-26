@@ -35,9 +35,9 @@ public:
     glm::mat4 ModelMatrix;
 
     Geometry( const Geometry& g );
-    Geometry( const std::string filename, GLenum r, Shader* s = nullptr, Shader* s2 = nullptr );
-    Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r, Shader* s = nullptr, Shader* s2 = nullptr );
-    Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* s = nullptr, Shader* s2 = nullptr );
+    Geometry( const std::string filename, GLenum r, Shader* geo = nullptr, Shader* stencil = nullptr );
+    Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r, Shader* geo = nullptr, Shader* stencil = nullptr );
+    Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo = nullptr, Shader* stencil = nullptr );
 
     void ToggleSelectedGeometry();
     bool IsSelectedGeometry();
