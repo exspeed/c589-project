@@ -10,11 +10,14 @@ namespace {
 
 Geometry::Geometry( const Geometry& g )
     : vertexBuffer( g.vertexBuffer )
+    , textureBuffer( g.textureBuffer )
     , colourBuffer( g.colourBuffer )
+    , normalBuffer( g.normalBuffer )
     , vertexArray( g.vertexArray )
+    , renderMode( g.renderMode )
     , vertices( g.vertices )
     , colours( g.colours )
-    , renderMode( g.renderMode )
+    , normals( g.normals )
     , ModelMatrix( g.ModelMatrix ) {
     InitializeVAO();
     Load();
@@ -22,11 +25,14 @@ Geometry::Geometry( const Geometry& g )
 
 Geometry::Geometry( const std::string filename, GLenum r )
     : vertexBuffer( 0 )
+    , textureBuffer( 0 )
     , colourBuffer( 0 )
+    , normalBuffer( 0 )
     , vertexArray( 0 )
+    , renderMode( r )
     , vertices( {} )
 , colours( {} )
-, renderMode( r )
+, normals( {} )
 , ModelMatrix( glm::mat4( 1.0f ) ) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile( filename, NULL );
@@ -44,7 +50,7 @@ Geometry::Geometry( const std::string filename, GLenum r )
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
 
             aiVector3t<float> nom = mesh->mNormals[j];
-					
+
             normals.push_back( glm::vec3( nom.x, nom.y, nom.z ) );
         }
     }
@@ -53,14 +59,69 @@ Geometry::Geometry( const std::string filename, GLenum r )
     Load();
 }
 
-Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r )
+Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r )
     : vertexBuffer( 0 )
+    , textureBuffer( 0 )
     , colourBuffer( 0 )
+    , normalBuffer( 0 )
     , vertexArray( 0 )
+    , renderMode( r )
     , vertices( std::move( v ) )
     , colours( std::move( c ) )
+    , normals( std::move( n ) )
+    , ModelMatrix( glm::mat4( 1.0f ) ) {
+    InitializeVAO();
+    Load();
+}
+
+Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r )
+    : vertexBuffer( 0 )
+    , textureBuffer( 0 )
+    , colourBuffer( 0 )
+    , normalBuffer( 0 )
+    , vertexArray( 0 )
     , renderMode( r )
     , ModelMatrix( glm::mat4( 1.0f ) ) {
+
+    vertices.clear();
+    colours.clear();
+    normals.clear();
+
+    for ( int i = 0; i < trimesh.n_triangles; ++i ) {
+        // Determine points on each face
+        glm::vec3 a(
+            trimesh.vertices[trimesh.triangles[3 * i]],
+            trimesh.vertices[trimesh.triangles[3 * i] + 1],
+            trimesh.vertices[trimesh.triangles[3 * i] + 2]
+        );
+
+        glm::vec3 b(
+            trimesh.vertices[trimesh.triangles[3 * i + 1]],
+            trimesh.vertices[trimesh.triangles[3 * i + 1] + 1],
+            trimesh.vertices[trimesh.triangles[3 * i + 1] + 2]
+        );
+
+        glm::vec3 c(
+            trimesh.vertices[trimesh.triangles[3 * i + 2]],
+            trimesh.vertices[trimesh.triangles[3 * i + 2] + 1],
+            trimesh.vertices[trimesh.triangles[3 * i + 2] + 2]
+        );
+
+        vertices.push_back( a );
+        vertices.push_back( b );
+        vertices.push_back( c );
+
+        // Calculate normals
+        glm::vec3 l = a - b;
+        glm::vec3 r = b - c;
+
+        // Push colours and normals
+        for ( int j = 0; j < 3; ++j ) {
+            colours.push_back( glm::vec3( 1.0f, 0.f, 0.f ) );
+            normals.push_back( glm::normalize( glm::cross( l, r ) ) );
+        }
+    }
+
     InitializeVAO();
     Load();
 }
