@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 
+#include "assimp/postprocess.h"
 #include "Geometry.h"
 
 namespace {
@@ -35,7 +36,8 @@ Geometry::Geometry( const std::string filename, GLenum r )
 , normals( {} )
 , ModelMatrix( glm::mat4( 1.0f ) ) {
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile( filename, NULL );
+    auto import_flags = aiProcess_FindDegenerates | aiProcess_FindInvalidData | aiProcess_FixInfacingNormals | aiProcess_ImproveCacheLocality | aiProcess_Triangulate;
+    const aiScene* scene = importer.ReadFile( filename, import_flags );
 
     if ( !scene ) {
         printf( "Unable to load mesh: %s\n", importer.GetErrorString() );
