@@ -21,12 +21,12 @@ OS_NAME:=$(shell uname -s)
 ifeq ($(OS_NAME),Darwin)
 	LIBDIR=
 	LIBS += -framework OpenGL `pkg-config --static --libs glfw3` 
-	LIBS += -lassimp
+	LIBS += -lassimp -lcork -lgmp
 
 endif
 ifeq ($(OS_NAME),Linux)
 	LIBS += `pkg-config --static --libs glfw3 gl`
-	LIBS += -lassimp
+	LIBS += -lassimp -lcork -lgmp
 endif
 
 SRCDIR=./src
