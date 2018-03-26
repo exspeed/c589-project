@@ -30,6 +30,10 @@ Geometry* Scene::GetGeometry( int i ) {
 }
 
 void Scene::ToggleSelectedGeometry( int i ) {
+    if ( i < 0 || i >= geometries.size() ) {
+        return;
+    }
+
     geometries[i]->ToggleSelectedGeometry();
 }
 
