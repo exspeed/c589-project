@@ -108,6 +108,7 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             // Wireframe toggle
             case GLFW_KEY_Z:
+                wireframe = !wireframe;
                 ( wireframe )
                 ? glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
                 : glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
