@@ -22,7 +22,7 @@ uniform mat4x4 View;
 uniform mat4x4 Projection;
 
 void main() {
-  normal_face = vec3(Model*vec4(VertexNormal, 0.0f));
+  normal_face = normalize(vec3(Model*vec4(VertexNormal, 0.0f)));
 
   fragPos = vec3(View*Model*vec4(VertexPosition, 1.0f));
 

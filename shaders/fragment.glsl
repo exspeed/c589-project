@@ -22,7 +22,7 @@ void main() {
   vec3 nFace = normalize(normal_face);
   vec3 vPos = normalize(viewPos);
   vec3 lightDir = normalize(lightPos - fragPos);
-  vec3 diffuse = max(dot(normal_face, lightDir),0.0) * objColour;
+  vec3 diffuse = max(dot(normal_face, lightDir),0.0) * objColour * lightColour;
 
   // Specular
   float specularStrength = 0.7;
@@ -32,7 +32,7 @@ void main() {
   vec3 specular = specularStrength * spec * lightColour;
 
 
-  vec3 shade =  ambient +diffuse + specular;
+  vec3 shade = ambient + diffuse + specular;
 
   FragmentColour = vec4(shade, 1.0);
 }
