@@ -123,6 +123,17 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
     normals.clear();
     faces.clear();
 
+    for ( int i = 0; i < trimesh.n_vertices; ++i ) {
+        glm::vec3 v(
+            trimesh.vertices[3 * i],
+            trimesh.vertices[3 * i + 1],
+            trimesh.vertices[3 * i + 2]
+        );
+        vertices.push_back( v );
+        colours.push_back( glm::vec3( 1.0f, 0.f, 0.f ) );
+
+    }
+
     for ( int i = 0; i < trimesh.n_triangles; ++i ) {
         // Determine points on each face
         glm::vec3 a(
@@ -143,19 +154,15 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
             trimesh.vertices[trimesh.triangles[3 * i + 2] + 2]
         );
 
-        vertices.push_back( a );
-        vertices.push_back( b );
-        vertices.push_back( c );
-
         // Calculate normals
         glm::vec3 l = a - b;
         glm::vec3 r = b - c;
+        glm::vec3 n = glm::normalize( glm::cross( l, r ) );
 
         // Push colours, normals, and faces
         for ( int j = 0; j < 3; ++j ) {
-            colours.push_back( glm::vec3( 1.0f, 0.f, 0.f ) );
-            normals.push_back( glm::normalize( glm::cross( l, r ) ) );
-            faces.push_back( trimesh.triangles[3 * i] + j );
+            normals.push_back( n );
+            faces.push_back( trimesh.triangles[3 * i + j] );
         }
     }
 
