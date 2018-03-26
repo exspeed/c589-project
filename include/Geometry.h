@@ -42,6 +42,8 @@ public:
     void Load() const;
     void Destroy() const;
 
+    void GetCorkTriMesh( CorkTriMesh& out );
+
 private:
     bool selected = 0;
     void InitializeVAO();

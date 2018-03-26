@@ -211,3 +211,24 @@ void Geometry::Destroy() const {
     glDeleteBuffers( 1, &colourBuffer );
     glDeleteBuffers( 1, &normalBuffer );
 }
+
+void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
+    // Dynamically create copies of vertices
+    std::vector<glm::vec3>* verts = new std::vector<glm::vec3>( vertices );
+
+    out.n_vertices = verts->size();
+    out.vertices = &verts->begin()->x;
+
+    // Index triangles
+    std::vector<uint>* triangles = new std::vector<uint>();
+    out.n_triangles = verts->size() / 3;
+
+    for ( int i = 0; i < out.n_triangles; ++i ) {
+        triangles->push_back( 3 * i );
+        triangles->push_back( 3 * i + 1 );
+        triangles->push_back( 3 * i + 2 );
+    }
+
+
+    out.triangles = &triangles->front();
+}
