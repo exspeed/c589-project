@@ -267,8 +267,13 @@ void Geometry::Destroy() const {
 
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
     // Dynamically create copies of geometry data
-    std::vector<glm::vec3>* nvertices = new std::vector<glm::vec3>( vertices );
     std::vector<GLuint>* nfaces = new std::vector<GLuint>( faces );
+    std::vector<glm::vec3>* nvertices = new std::vector<glm::vec3>( vertices );
+
+    for ( auto& v : *nvertices ) {
+        glm::vec4 nv = ModelMatrix * glm::vec4( v, 1.f );
+        v = glm::vec3( nv.x, nv.y, nv.z );
+    }
 
     out.n_vertices = nvertices->size();
     out.vertices = &nvertices->front().x;
