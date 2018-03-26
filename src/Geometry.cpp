@@ -44,7 +44,7 @@ Geometry::Geometry( const std::string filename, GLenum r )
             colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
 
             aiVector3t<float> nom = mesh->mNormals[j];
-					
+
             normals.push_back( glm::vec3( nom.x, nom.y, nom.z ) );
         }
     }

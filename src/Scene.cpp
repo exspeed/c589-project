@@ -37,10 +37,11 @@ bool Scene::HasAnyGeometrySelected() {
     for ( int i  = 0; i < geometries.size(); i++ ) {
         Geometry* geometry = geometries[i];
 
-        if (geometry->IsSelectedGeometry()) {
+        if ( geometry->IsSelectedGeometry() ) {
             return true;
         }
     }
+
     return false;
 }
 
@@ -54,9 +55,9 @@ void Scene::Render() const {
         if ( !geometries[i]->IsSelectedGeometry() ) {
             program->use();
             glStencilMask( 0x00 );
-    				program->setMat4( "Model", geometries[i]->ModelMatrix );
-    				program->setMat4( "View", camera->ViewMatrix );
-    				program->setMat4( "Projection", camera->ProjectionMatrix );
+            program->setMat4( "Model", geometries[i]->ModelMatrix );
+            program->setMat4( "View", camera->ViewMatrix );
+            program->setMat4( "Projection", camera->ProjectionMatrix );
 
 
             glBindVertexArray( geometries[i]->vertexArray );
@@ -93,7 +94,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     float tenpercentscale = 1.1f;
-    glm::mat4 model = glm::scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
+    glm::mat4 model = glm::scale( geometry->ModelMatrix, glm::vec3( tenpercentscale ) );
     programOutline->setMat4( "Model", model );
     programOutline->setMat4( "View", camera->ViewMatrix );
     programOutline->setMat4( "Projection", camera->ProjectionMatrix );
@@ -106,5 +107,5 @@ void Scene::RenderStencil( Geometry* geometry ) const {
 
     glBindVertexArray( 0 );
     glStencilMask( 0xFF );
-
+    glClear( GL_STENCIL_BUFFER_BIT );
 }
