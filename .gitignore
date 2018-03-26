@@ -36,3 +36,6 @@ exec
 .vscode/
 
 *.DS_Store
+
+# Cork
+error_log.txt
