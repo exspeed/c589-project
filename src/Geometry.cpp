@@ -259,21 +259,12 @@ void Geometry::Destroy() const {
 }
 
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
-    // Dynamically create copies of vertices
-    std::vector<glm::vec3>* verts = new std::vector<glm::vec3>( vertices );
+    // Dynamically create copies of geometry data
+    std::vector<glm::vec3>* nvertices = new std::vector<glm::vec3>( vertices );
+    std::vector<GLuint>* nfaces = new std::vector<GLuint>( faces );
 
-    out.n_vertices = verts->size();
-    out.vertices = &verts->begin()->x;
-
-    // Index triangles
-    std::vector<uint>* triangles = new std::vector<uint>();
-    out.n_triangles = verts->size() / 3;
-
-    for ( int i = 0; i < out.n_triangles; ++i ) {
-        triangles->push_back( 3 * i );
-        triangles->push_back( 3 * i + 1 );
-        triangles->push_back( 3 * i + 2 );
-    }
-
-    out.triangles = &triangles->front();
+    out.n_vertices = nvertices->size();
+    out.vertices = &nvertices->front().x;
+    out.n_triangles = nfaces->size();
+    out.triangles = &nfaces->front();
 }
