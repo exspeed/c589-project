@@ -15,6 +15,10 @@ public:
     void Zoom( bool in );
     void Panning( float deltaX, float deltaY );
 
+	glm::vec3 GetPosition();
+	glm::vec3 Up();
+	glm::vec3 LookAt();
+	
 private:
     glm::vec3 pos;
     glm::vec3 forward;

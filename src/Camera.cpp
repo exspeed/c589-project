@@ -86,3 +86,17 @@ void Camera::Panning( float deltaX, float deltaY ) {
 
     UpdateViewMatrix();
 }
+
+
+glm::vec3 Camera::GetPosition(){
+	return pos;
+}
+
+glm::vec3 Camera::Up(){
+	return up;
+}
+
+glm::vec3 Camera::LookAt(){
+	return forward;
+}
+
