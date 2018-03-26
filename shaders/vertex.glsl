@@ -12,23 +12,23 @@ layout(location = 0) in vec3 VertexPosition;
 layout(location = 1) in vec3 VertexColour;
 layout(location = 2) in vec3 VertexNormal;
 
-out vec3 objColour;
+out vec3 object_colour;
 out vec3 normal_face;
-out vec3 fragPos;
-out vec3 viewPos;
+out vec3 world_position;
+out vec3 view_position;
 
 uniform mat4x4 Model;
 uniform mat4x4 View;
 uniform mat4x4 Projection;
 
 void main() {
-  normal_face = normalize(vec3(Model*vec4(VertexNormal, 0.0f)));
+  normal_face = (normalize(Model * vec4(VertexNormal, 0.0f))).xyz;
 
-  fragPos = vec3(View*Model*vec4(VertexPosition, 1.0f));
+  world_position = (Model * vec4(VertexPosition, 1.0f)).xyz;
 
-  viewPos = -fragPos;
+  view_position = -normalize((View * vec4(world_position, 1.0f))).xyz;
 
-  gl_Position = Projection*View*Model*vec4(VertexPosition, 1.0f);
+  gl_Position = Projection * View * Model * vec4(VertexPosition, 1.0f);
 
-	objColour = VertexColour;
+	object_colour = VertexColour;
 }
