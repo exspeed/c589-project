@@ -123,6 +123,7 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
     normals.clear();
     faces.clear();
 
+    // Push vertices and colours
     for ( int i = 0; i < trimesh.n_vertices; ++i ) {
         glm::vec3 v(
             trimesh.vertices[3 * i],
@@ -130,36 +131,21 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
             trimesh.vertices[3 * i + 2]
         );
         vertices.push_back( v );
-        colours.push_back( glm::vec3( 1.0f, 0.f, 0.f ) );
-
+        colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
     }
 
     for ( int i = 0; i < trimesh.n_triangles; ++i ) {
         // Determine points on each face
-        glm::vec3 a(
-            trimesh.vertices[trimesh.triangles[3 * i]],
-            trimesh.vertices[trimesh.triangles[3 * i] + 1],
-            trimesh.vertices[trimesh.triangles[3 * i] + 2]
-        );
-
-        glm::vec3 b(
-            trimesh.vertices[trimesh.triangles[3 * i + 1]],
-            trimesh.vertices[trimesh.triangles[3 * i + 1] + 1],
-            trimesh.vertices[trimesh.triangles[3 * i + 1] + 2]
-        );
-
-        glm::vec3 c(
-            trimesh.vertices[trimesh.triangles[3 * i + 2]],
-            trimesh.vertices[trimesh.triangles[3 * i + 2] + 1],
-            trimesh.vertices[trimesh.triangles[3 * i + 2] + 2]
-        );
+        glm::vec3 a = vertices[trimesh.triangles[3 * i + 0]];
+        glm::vec3 b = vertices[trimesh.triangles[3 * i + 1]];
+        glm::vec3 c = vertices[trimesh.triangles[3 * i + 2]];
 
         // Calculate normals
-        glm::vec3 l = a - b;
-        glm::vec3 r = b - c;
-        glm::vec3 n = glm::normalize( glm::cross( l, r ) );
+        glm::vec3 l = b - a;
+        glm::vec3 r = c - a;
+        glm::vec3 n = glm::normalize( glm::cross( r, l ) );
 
-        // Push colours, normals, and faces
+        // Push normals, and faces
         for ( int j = 0; j < 3; ++j ) {
             normals.push_back( n );
             faces.push_back( trimesh.triangles[3 * i + j] );
