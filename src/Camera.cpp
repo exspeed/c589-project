@@ -52,13 +52,13 @@ void Camera::RotateAround( float deltaX, float deltaY ) {
 }
 
 
-void Camera::Zoom( bool in ) {
+void Camera::Zoom( double yoffset ) {
     const float zoomSpeed = 0.2;
 
     glm::vec3 direction = zoomSpeed * ( glm::normalize( forward - pos ) );
 
-    if ( !in ) {
-        direction = -direction;
+    if ( yoffset != 0 ) {
+        direction *= yoffset;
     }
 
     pos = pos + direction;
@@ -85,4 +85,16 @@ void Camera::Panning( float deltaX, float deltaY ) {
     }
 
     UpdateViewMatrix();
+}
+
+glm::vec3 Camera::GetPosition(){
+	return pos;
+}
+
+glm::vec3 Camera::LookAt(){
+	return forward;
+}
+
+glm::vec3 Camera::Up(){
+	return up;
 }
