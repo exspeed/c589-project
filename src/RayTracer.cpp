@@ -1,6 +1,5 @@
 #include "RayTracer.h"
 #include <cmath>
-// https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays
 
 Ray::Ray(glm::vec3 position, glm::vec3 direction): 
 pos(position)
@@ -10,25 +9,63 @@ pos(position)
 
 RayTracer::RayTracer(Camera* camera):cam(camera){}
 
-
-// it is normalized: double x,y [0,1]
-void RayTracer::CastRay(float x, float y){
+// assumes float x, y is between [-1,1]
+Ray RayTracer::CastRay(float x, float y){
+	
 	glm::vec3 cameraPosition = cam->GetPosition();
-	glm::vec3 v = cam->Up();
+	glm::vec3 v = glm::normalize(cam->Up());
+	glm::vec3 n = glm::normalize(cam->LookAtDirection());
+	glm::vec3 u = glm::normalize(glm::cross(v, n));
+	
+	// should receive value from camera
 	float fov = 45.0f * (3.141592653589793 / 180.0);
-	glm::vec3 n = cam->LookAt()* (1/(2*tan(fov)));
-	glm::vec3 u = glm::normalize(glm::cross(v, n)); 
+	float aspect = 1.0f;
+	
+	float height = tan(fov);
+	float width = height*aspect;
+	
+	glm::vec3 po = u*(x*width) + v*(y*height) + cameraPosition + n;
 
-	// normalize by size of window.
-	// double normx = xo/width - 0.5 
-	// double normy = yo/height - 0.5 
-
-	float normx = x - 0.5; 
-	float normy = y - 0.5; 
-	glm::vec3 po = u*normx + v*normy + cameraPosition + n;	
-
-	Ray r(po, po- cameraPosition);
-
+	return Ray(po, po- cameraPosition);
+	
 }
+
+#define EPS 1E-5
+#include <iostream>
+float RayTracer::GetIntersection(Ray ray, glm::vec3 p0, glm::vec3 p1, glm::vec3 p2){
+	glm::vec3 triNormal = glm::normalize(glm::cross(p1-p0, p2-p0));
+	// t = -(P-Q)*n/(R*n)
+	float t = -1;
+	float denom = glm::dot(ray.dir,triNormal);
+	if(denom != 0){ // ray and triangle normal aren't perpendicular
+		t = glm::dot((p1-ray.pos),triNormal)/denom;
+		if(t < 0){
+			std::cout << t << std::endl;
+			return -1;
+		}
+		
+		glm::vec3 intersect = ray.pos + (ray.dir*t);
+		
+		glm::vec3 inter = ray.pos + ray.dir*t;
+		std::cout << inter[0] << " " << inter[1] << " " << inter[2] << std::endl;
+		// check if it hits the triangle,
+		float areaOfTriangle = 0.5 * glm::length(glm::cross(p1-p0, p2-p0));
+		//Barycentric coordinates
+		float u = 0.5* glm::length(glm::cross(p1-p0, intersect-p0));
+		float v = 0.5* glm::length(glm::cross(p2-p0, intersect-p0));
+		float w = 0.5* glm::length(glm::cross(p1-p2, intersect-p2));
+		
+		if(u >= 0.0 && v >= 0.0 && w >=0 &&
+		   u+v+w <= areaOfTriangle+EPS &&
+		   u+v+w >= areaOfTriangle-EPS
+		   ){
+			return t;
+		}
+		
+	}
+	return -1; // did not intersect
+}
+
+
 
 

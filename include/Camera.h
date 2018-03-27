@@ -12,13 +12,13 @@ public:
 
     Camera( glm::vec3 position, glm::vec3 fwd, glm::vec3 head );
     void RotateAround( float deltaX, float deltaY );
-    void Zoom( double yoffset );
+    void Zoom( bool in );
     void Panning( float deltaX, float deltaY );
 
-		glm::vec3 GetPosition();
-		glm::vec3 LookAt();
-		glm::vec3 Up();
-
+	glm::vec3 GetPosition();
+	glm::vec3 Up();
+	glm::vec3 LookAtDirection();
+	
 private:
     glm::vec3 pos;
     glm::vec3 forward;

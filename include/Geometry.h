@@ -7,7 +7,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
-#include "Shader.h"
+
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/mesh.h"
@@ -23,9 +23,6 @@ public:
     GLuint  vertexArray;
     GLenum  renderMode;
 
-    Shader* program;
-    Shader* programOutline;
-
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
     std::vector<glm::vec3> normals;
@@ -33,7 +30,7 @@ public:
     glm::mat4 ModelMatrix;
 
     Geometry( const Geometry& g );
-    Geometry( const std::string filename, GLenum r, Shader* s = nullptr, Shader* s2 = nullptr );
+    Geometry( const std::string filename, GLenum );
     Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r );
 
     void ToggleSelectedGeometry();

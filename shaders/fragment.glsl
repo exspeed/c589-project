@@ -2,37 +2,33 @@
 
 out vec4 FragmentColour;
 
-uniform vec3 lightPos = vec3(0,0,10);
-uniform vec3 lightColour = vec3(1,1,1);
-
-
+in vec3 object_colour;
 in vec3 normal_face;
-in vec3 fragPos;
-in vec3 viewPos;
-in vec3 objColour;
+in vec3 world_position;
+in vec3 view_position;
 
 
 void main() {
+  const float ambient_strength = 0.1;
+  const vec3 light_position = vec3(4,3,5);
+  const vec3 light_colour = vec3(1,1,1);
 
   // Ambient
-  float ambientStrength = 0.1;
-  vec3 ambient = ambientStrength * lightColour;
+  vec3 ambient = ambient_strength * light_colour;
 
   // Diffuse
-  vec3 nFace = normalize(normal_face);
-  vec3 vPos = normalize(viewPos);
-  vec3 lightDir = normalize(lightPos - fragPos);
-  vec3 diffuse = max(dot(normal_face, lightDir),0.0) * objColour;
+  vec3 light_direction = normalize(light_position - world_position);
+  vec3 diffuse = clamp(dot(normal_face, light_direction),0.0, 1.0) * object_colour * light_colour;
 
   // Specular
-  float specularStrength = 0.7;
-  vec3 viewDir = normalize(vPos - fragPos);
-  vec3 reflectDir = reflect(-lightDir, nFace);
-  float spec = pow(max(dot(reflectDir, viewDir),0.0), 256.0);
-  vec3 specular = specularStrength * spec * lightColour;
+  float specular_strength = 0.7;
+  vec3 view_direction = normalize(view_position - world_position);
+  vec3 reflect_direction = reflect(-light_direction, normal_face);
+  float spec = pow(clamp(dot(view_direction, reflect_direction), 0.0, 1.0), 256.0);
+  vec3 specular = specular_strength * spec * light_colour;
 
 
-  vec3 shade =  ambient +diffuse + specular;
+  vec3 colour = ambient + diffuse + specular;
 
-  FragmentColour = vec4(shade, 1.0);
+  FragmentColour = vec4(colour, 1.0);
 }

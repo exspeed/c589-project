@@ -13,6 +13,6 @@ class RayTracer{
 	Camera* cam;	
 public:
 	RayTracer(Camera* cam);
-	void CastRay(float x, float y);
-
+	Ray CastRay(float x, float y);
+	float GetIntersection(Ray r, glm::vec3,  glm::vec3,  glm::vec3);
 };

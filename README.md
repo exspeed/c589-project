@@ -40,3 +40,7 @@ Co-Authors:
 Date:    December 2015
 ==========================================================================
 
+
+references
+Ray Tracing
+https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays
