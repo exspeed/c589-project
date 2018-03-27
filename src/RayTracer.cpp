@@ -1,6 +1,5 @@
 #include "RayTracer.h"
 #include <cmath>
-// https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-generating-camera-rays/generating-camera-rays
 
 Ray::Ray(glm::vec3 position, glm::vec3 direction): 
 pos(position)
