@@ -123,15 +123,24 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
     normals.clear();
     faces.clear();
 
-    // Push vertices and colours
+    // Push vertices
     for ( int i = 0; i < trimesh.n_vertices; ++i ) {
         vertices.emplace_back(
             trimesh.vertices[3 * i],
             trimesh.vertices[3 * i + 1],
             trimesh.vertices[3 * i + 2]
         );
-        colours.emplace_back( 1.0f, 1.0f, 1.0f );
     }
+
+    // Push faces
+    for ( int i = 0; i < trimesh.n_triangles; ++i ) {
+        faces.emplace_back( trimesh.triangles[3 * i + 0] );
+        faces.emplace_back( trimesh.triangles[3 * i + 1] );
+        faces.emplace_back( trimesh.triangles[3 * i + 2] );
+    }
+
+    colours = std::vector<glm::vec3>( vertices.size(), glm::vec3( 1.f, 1.f, 1.f ) );
+    normals = std::vector<glm::vec3>( vertices.size(), glm::vec3( 0.f, 0.f, 0.f ) );
 
     for ( int i = 0; i < trimesh.n_triangles; ++i ) {
         // Determine points on each face
@@ -142,13 +151,17 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
         // Calculate normals
         glm::vec3 l = b - a;
         glm::vec3 r = c - a;
-        glm::vec3 n = glm::normalize( glm::cross( r, l ) );
+        glm::vec3 n = glm::cross( l, r );
 
-        // Push normals, and faces
-        for ( int j = 0; j < 3; ++j ) {
-            normals.push_back( n );
-            faces.push_back( trimesh.triangles[3 * i + j] );
-        }
+        // Aggregate normals
+        normals[trimesh.triangles[3 * i + 0]] += n;
+        normals[trimesh.triangles[3 * i + 1]] += n;
+        normals[trimesh.triangles[3 * i + 2]] += n;
+    }
+
+    for ( int i = 0; i < normals.size(); ++i ) {
+        // Average normals
+        normals[i] = glm::normalize( normals[i] );
     }
 
     InitializeVAO();
