@@ -96,10 +96,10 @@ Geometry::Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vec
     , normals( std::move( n ) )
     , ModelMatrix( glm::mat4( 1.0f ) ) {
 
-    for ( int i = 0; i < vertices.size() / 3; ++i ) {
-        faces.push_back( 3 * i );
-        faces.push_back( 3 * i + 1 );
-        faces.push_back( 3 * i + 2 );
+    for ( int i = 0; i < vertices.size(); i += 3 ) {
+        faces.push_back( i );
+        faces.push_back( i + 1 );
+        faces.push_back( i + 2 );
     }
 
     InitializeVAO();
@@ -125,13 +125,12 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
 
     // Push vertices and colours
     for ( int i = 0; i < trimesh.n_vertices; ++i ) {
-        glm::vec3 v(
+        vertices.emplace_back(
             trimesh.vertices[3 * i],
             trimesh.vertices[3 * i + 1],
             trimesh.vertices[3 * i + 2]
         );
-        vertices.push_back( v );
-        colours.push_back( glm::vec3( 1.0f, 1.0f, 1.0f ) );
+        colours.emplace_back( 1.0f, 1.0f, 1.0f );
     }
 
     for ( int i = 0; i < trimesh.n_triangles; ++i ) {
@@ -251,11 +250,13 @@ void Geometry::Destroy() const {
     glDeleteBuffers( 1, &normalBuffer );
 }
 
+// Temporary - will be abstracted away DO NOT USE YET
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
     // Dynamically create copies of geometry data
     std::vector<GLuint>* nfaces = new std::vector<GLuint>( faces );
     std::vector<glm::vec3>* nvertices = new std::vector<glm::vec3>( vertices );
 
+    // Transform vertex positions to world space
     for ( auto& v : *nvertices ) {
         glm::vec4 nv = ModelMatrix * glm::vec4( v, 1.f );
         v = glm::vec3( nv.x, nv.y, nv.z );
