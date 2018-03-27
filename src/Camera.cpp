@@ -13,9 +13,9 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
     , forward( f )
     , up( u ) {
 
-    ViewMatrix = glm::lookAt (
+    ViewMatrix =glm::lookAt (
                      pos, // Camera position in World Space
-                     forward, // and looks at the origin
+                     forward - pos, // and looks at the origin
                      up  // Head is up (set to 0,-1,0 to look upside-down)
                  );
 
@@ -24,13 +24,13 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
     float near = 0.1f;
     float far = 100.f;
     float aspect = 1.0;
-    ProjectionMatrix = glm::perspective( glm::radians( initialFoV ), aspect, near, far );
+	ProjectionMatrix = glm::perspective( glm::radians( initialFoV ), aspect, near, far );
 }
 
 void Camera::UpdateViewMatrix() {
     ViewMatrix = glm::lookAt (
                      pos,
-                     forward,
+                     forward -pos,
                      up
                  );
 }
@@ -96,7 +96,7 @@ glm::vec3 Camera::Up(){
 	return up;
 }
 
-glm::vec3 Camera::LookAt(){
-	return forward;
+glm::vec3 Camera::LookAtDirection(){
+	return forward - pos;
 }
 

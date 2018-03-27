@@ -17,7 +17,7 @@ public:
 
 	glm::vec3 GetPosition();
 	glm::vec3 Up();
-	glm::vec3 LookAt();
+	glm::vec3 LookAtDirection();
 	
 private:
     glm::vec3 pos;
