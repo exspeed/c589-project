@@ -46,8 +46,8 @@ int main( int argc, char* argv[] ) {
 
     // Create Geometry
 	std::vector<glm::vec3> vert;
-	float start = -0.25;
-	float end = 0.25;
+	float start = -1.0;
+	float end = 1.0;
 	vert.push_back(glm::vec3(start,-0.1,0));
 	vert.push_back(glm::vec3(end,-0.1, 0));
 	
@@ -88,8 +88,6 @@ int main( int argc, char* argv[] ) {
 				std::cout << c[0] << " " << c[1] << " " << c[2] << std::endl;
 
 			}
-			glm::vec3 inter = r.pos + r.dir*t;
-			std::cout << inter[0] << " " << inter[1] << " " << inter[2] << std::endl;
 			break;
 		}
 		

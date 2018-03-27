@@ -38,7 +38,7 @@ float RayTracer::GetIntersection(Ray ray, glm::vec3 p0, glm::vec3 p1, glm::vec3 
 	float t = -1;
 	float denom = glm::dot(ray.dir,triNormal);
 	if(denom != 0){ // ray and triangle normal aren't perpendicular
-		t = glm::dot((p0-ray.pos),triNormal)/denom;
+		t = glm::dot((p1-ray.pos),triNormal)/denom;
 		if(t < 0){
 			std::cout << t << std::endl;
 			return -1;
@@ -46,6 +46,8 @@ float RayTracer::GetIntersection(Ray ray, glm::vec3 p0, glm::vec3 p1, glm::vec3 
 		
 		glm::vec3 intersect = ray.pos + (ray.dir*t);
 		
+		glm::vec3 inter = ray.pos + ray.dir*t;
+		std::cout << inter[0] << " " << inter[1] << " " << inter[2] << std::endl;
 		// check if it hits the triangle,
 		float areaOfTriangle = 0.5 * glm::length(glm::cross(p1-p0, p2-p0));
 		//Barycentric coordinates
