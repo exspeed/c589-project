@@ -46,8 +46,8 @@ int main( int argc, char* argv[] ) {
 
     // Create Geometry
 	std::vector<glm::vec3> vert;
-	float start = -1.0;
-	float end = 1.0;
+	float start = -0.55f;
+	float end = 0.5f;
 	vert.push_back(glm::vec3(start,-0.1,0));
 	vert.push_back(glm::vec3(end,-0.1, 0));
 	
@@ -60,7 +60,7 @@ int main( int argc, char* argv[] ) {
 
     // Create Camera
     Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
-	Shader programLine("shaders/line.vert","shaders/line.frag");
+		Shader programLine("shaders/line.vert","shaders/line.frag");
     Shader programOutline( "shaders/vertex.glsl", "shaders/outline.frag" );
     Scene* scene = new Scene( &program, &programOutline, camera );
     scene->AddGeometry( geometry );
@@ -76,17 +76,11 @@ int main( int argc, char* argv[] ) {
 			glm::mat4 P = camera->ProjectionMatrix;
 			
 			glm::mat4 MVP = glm::mat4( 1.0f );
-			glm::vec4 a = MVP *glm::vec4(geometry->vertices[j], 1);
-			glm::vec4 b = MVP *glm::vec4(geometry->vertices[j+1],1);
-			glm::vec4 c = MVP *glm::vec4(geometry->vertices[j+2],1);
 			
-			float t = tracer.GetIntersection(r, glm::vec3(a[0],a[1],a[2]),glm::vec3(b[0],b[1],b[2]), glm::vec3(c[0],c[1],c[2]));
+			float t = tracer.GetIntersection(r, geometry->vertices[j] ,geometry->vertices[j+1], geometry->vertices[j+2]);
 			if(t > 0 && t < t_min){
 				t_min = t;
-				std::cout << a[0] << " " << a[1] << " " << a[2] << std::endl;
-				std::cout << b[0] << " " << b[1] << " " << b[2] << std::endl;
-				std::cout << c[0] << " " << c[1] << " " << c[2] << std::endl;
-
+				std::cout << "HITHITHITHI\n";
 			}
 			break;
 		}

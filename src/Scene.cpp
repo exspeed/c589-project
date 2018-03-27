@@ -50,7 +50,8 @@ void Scene::Render() const {
 
 
             glBindVertexArray( geometries[i]->vertexArray );
-            glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
+//geometries[i]->vertices.size()
+            glDrawArrays( geometries[i]->renderMode, 0, 3);
         } else {
             RenderStencil( geometries[i] );
         }
