@@ -12,6 +12,8 @@
 #include "assimp/scene.h"
 #include "assimp/mesh.h"
 
+#include "cork.h"
+
 class Geometry {
 public:
     // OpenGL names for array buffer objects, vertex array object
@@ -19,6 +21,7 @@ public:
     GLuint  textureBuffer;
     GLuint  colourBuffer;
     GLuint  normalBuffer;
+    GLuint  faceBuffer;
 
     GLuint  vertexArray;
     GLenum  renderMode;
@@ -29,18 +32,22 @@ public:
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;
     std::vector<glm::vec3> normals;
+    std::vector<GLuint> faces;
 
     glm::mat4 ModelMatrix;
 
     Geometry( const Geometry& g );
-    Geometry( const std::string filename, GLenum r, Shader* s = nullptr, Shader* s2 = nullptr );
-    Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, GLenum r );
+    Geometry( const std::string filename, GLenum r, Shader* geo = nullptr, Shader* stencil = nullptr );
+    Geometry( std::vector<glm::vec3> v, std::vector<glm::vec3> c, std::vector<glm::vec3> n, GLenum r, Shader* geo = nullptr, Shader* stencil = nullptr );
+    Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo = nullptr, Shader* stencil = nullptr );
 
     void ToggleSelectedGeometry();
     bool IsSelectedGeometry();
 
     void Load() const;
     void Destroy() const;
+
+    void GetCorkTriMesh( CorkTriMesh& out );
 
 private:
     bool selected = 0;

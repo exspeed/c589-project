@@ -65,7 +65,14 @@ void Scene::Render() const {
 
 
             glBindVertexArray( geometries[i]->vertexArray );
-            glDrawArrays( geometries[i]->renderMode, 0, geometries[i]->vertices.size() );
+            glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometries[i]->faceBuffer );
+            glDrawElements(
+                GL_TRIANGLES,      // mode
+                geometries[i]->faces.size(),    // count
+                GL_UNSIGNED_INT,   // type
+                ( void* )0         // element array buffer offset
+            );
+
         } else {
 
             RenderStencil( geometries[i] );
@@ -91,7 +98,13 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     // bind our shader program and the vertex array object containing our
     // scene geometry, then tell OpenGL to draw our geometry
     glBindVertexArray( geometry->vertexArray );
-    glDrawArrays( geometry->renderMode, 0, geometry->vertices.size() );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometry->faceBuffer );
+    glDrawElements(
+        GL_TRIANGLES,      // mode
+        geometry->faces.size(),    // count
+        GL_UNSIGNED_INT,   // type
+        ( void* )0         // element array buffer offset
+    );
 
     glStencilFunc( GL_NOTEQUAL, 1, 0xFF );
     glStencilMask( 0x00 );
@@ -109,7 +122,13 @@ void Scene::RenderStencil( Geometry* geometry ) const {
 
 
     glBindVertexArray( geometry->vertexArray );
-    glDrawArrays( geometry->renderMode, 0, geometry->vertices.size() );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometry->faceBuffer );
+    glDrawElements(
+        GL_TRIANGLES,      // mode
+        geometry->faces.size(),    // count
+        GL_UNSIGNED_INT,   // type
+        ( void* )0         // element array buffer offset
+    );
 
     glEnable( GL_DEPTH_TEST );
 
