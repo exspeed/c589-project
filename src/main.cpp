@@ -42,20 +42,28 @@ int main( int argc, char* argv[] ) {
     glfwSetKeyCallback( window, KeyCallback );
     Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
-    // Create Geometry
-
     // Create Camera
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
     Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
     Shader* programLine = new Shader( "shaders/vertex.glsl", "shaders/linefrag.frag");
 
+    // Initial Mesh
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
     // sketching geometry
     Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, programOutline );
 
+    // Hack in crack pattern (for now)
+    Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
+    crack_pattern->Scale( glm::vec3( 0.25f, 0.25f, 0.25f ) );
+    crack_pattern->Translate( glm::vec3( 0.f, 2.f, 0.f ) );
+
+    // Crack
+    Geometry* cracked = Geometry::Crack( geometry, crack_pattern );
+
     Scene* scene = new Scene( camera );
     scene->AddGeometry( geometry );
     scene->AddGeometry( sketch );
+    scene->AddGeometry( cracked );
 
     inputManager = new InputManager( window, camera, scene );
 
