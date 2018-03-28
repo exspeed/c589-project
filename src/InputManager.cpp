@@ -30,11 +30,14 @@ void InputManager::MouseInput() {
             float MVPX = 2.0f * ( xpos / 512.0f ) - 1;
             float MVPY = -2.0f * ( ypos / 512.0f ) + 1;
             if ( xpos != cursorX || ypos != cursorY ) {
-                Geometry* g = scene->GetSketch( 0 );
+                Geometry* g = scene->GetGeometry( 1 );
                 g->vertices.push_back( glm::vec3( MVPX, MVPY, 0.0f ) );
-                g->colours.push_back( glm::vec3( 0.0f, 1.0f, 0.0f ) );
+                g->colours.push_back( glm::vec3( 1.0f, 0.0f, 0.0f ) );
                 g->normals.push_back( glm::vec3( 0.0f, 0.0f, 0.0f ) );
             }
+        }
+        if ( newState == GLFW_RELEASE && oldState == GLFW_PRESS ) {
+            sketching = !sketching;
         }
         oldState = newState;
     } else {

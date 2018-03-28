@@ -47,14 +47,15 @@ int main( int argc, char* argv[] ) {
     // Create Camera
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
     Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+    Shader* programLine = new Shader( "shaders/vertex.glsl", "shaders/linefrag.frag");
 
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
     // sketching geometry
-    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, program, programOutline );
+    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, programOutline );
 
     Scene* scene = new Scene( camera );
     scene->AddGeometry( geometry );
-    scene->AddSketch( sketch );
+    scene->AddGeometry( sketch );
 
     inputManager = new InputManager( window, camera, scene );
 
