@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "assimp/postprocess.h"
 #include "Geometry.h"
@@ -262,6 +263,19 @@ void Geometry::Destroy() const {
     glDeleteBuffers( 1, &colourBuffer );
     glDeleteBuffers( 1, &normalBuffer );
 }
+
+void Geometry::Scale( const glm::vec3 scale ) {
+    ModelMatrix = glm::scale( ModelMatrix, scale );
+}
+
+void Geometry::Translate( const glm::vec3 translate ) {
+    ModelMatrix = glm::translate( ModelMatrix, translate );
+}
+
+void Geometry::Rotate( const glm::vec3 rotate, const float angle ) {
+    ModelMatrix = glm::rotate( ModelMatrix, angle, rotate );
+}
+
 
 // Temporary - will be abstracted away DO NOT USE YET
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
