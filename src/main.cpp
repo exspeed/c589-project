@@ -49,11 +49,12 @@ int main( int argc, char* argv[] ) {
     Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
 
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
+    // sketching geometry
+    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, program, programOutline );
 
     Scene* scene = new Scene( camera );
     scene->AddGeometry( geometry );
-
-
+    scene->AddSketch( sketch );
 
     inputManager = new InputManager( window, camera, scene );
 

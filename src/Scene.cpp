@@ -11,6 +11,10 @@ void Scene::AddGeometry( Geometry* g ) {
     geometries.push_back( g );
 }
 
+void Scene::AddSketch( Geometry* s ) {
+    sketches.push_back( s );  
+}
+
 void Scene::ClearGeometries() {
     for ( auto geometry : geometries ) {
         delete geometry;
@@ -25,6 +29,10 @@ int Scene::GetGeometriesSize() {
 
 Geometry* Scene::GetGeometry( int i ) {
     return geometries[i];
+}
+
+Geometry* Scene::GetSketch( int i ) {
+    return sketches[i];
 }
 
 void Scene::ToggleSelectedGeometry( int i ) {
@@ -51,6 +59,8 @@ bool Scene::HasAnyGeometrySelected() {
 void Scene::Render() const {
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
+    glEnable( GL_DEPTH_TEST );
+    glEnable( GL_STENCIL_TEST );
 
     // Draw non stencil objects here
     for ( int i = 0; i < ( int ) geometries.size(); i++ ) {
@@ -67,7 +77,7 @@ void Scene::Render() const {
             glBindVertexArray( geometries[i]->vertexArray );
             glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometries[i]->faceBuffer );
             glDrawElements(
-                GL_TRIANGLES,      // mode
+                geometries[i]->renderMode,      // mode
                 geometries[i]->faces.size(),    // count
                 GL_UNSIGNED_INT,   // type
                 ( void* )0         // element array buffer offset
@@ -78,7 +88,25 @@ void Scene::Render() const {
             RenderStencil( geometries[i] );
         }
     }
+    
+    //glDisable( GL_DEPTH_TEST );
+    for (int i = 0; i < sketches.size(); i++) {
+        Shader* program = sketches[i]->program;
+        sketches[i]->Load();
+        
+        program->use();
+        program->setMat4( "Model", sketches[i]->ModelMatrix );
+        program->setMat4( "View", glm::mat4(1.0f) );
+        program->setMat4( "Projection", glm::mat4(1.0f) );
 
+        glBindVertexArray( sketches[i]->vertexArray );
+        glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, sketches[i]->vertexBuffer );
+        glDrawArrays(
+            sketches[i]->renderMode, 
+            0,
+            sketches[i]->vertices.size()
+        );
+    }
     // reset state to default (no shader or geometry bound)
     glBindVertexArray( 0 );
     glUseProgram( 0 );

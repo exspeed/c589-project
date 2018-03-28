@@ -14,11 +14,11 @@ void main() {
   const vec3 light_colour = vec3(1,1,1);
 
   // Ambient
-  vec3 ambient = ambient_strength * light_colour;
+  vec3 ambient = ambient_strength * object_colour;
 
   // Diffuse
   vec3 light_direction = normalize(light_position - world_position);
-  vec3 diffuse = clamp(dot(normal_face, light_direction),0.0, 1.0) * object_colour * light_colour;
+  vec3 diffuse = clamp(dot(normal_face, light_direction),0.0, 1.0) * object_colour;
 
   // Specular
   float specular_strength = 0.7;

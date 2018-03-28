@@ -20,6 +20,7 @@ private:
     float cursorY = 0.0f;
     bool shiftKey = false;
     bool wireframe = false;
+    bool sketching = false;
 
     void MouseInput();
 };
