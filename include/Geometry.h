@@ -47,6 +47,10 @@ public:
     void Load() const;
     void Destroy() const;
 
+    void Scale( const glm::vec3 scale );
+    void Translate( const glm::vec3 translate );
+    void Rotate( const glm::vec3 rotate, const float angle );
+
     static Geometry* Crack( Geometry* inp, Geometry* crack );
 
 private:

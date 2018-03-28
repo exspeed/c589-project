@@ -145,27 +145,27 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             switch ( key ) {
                 case GLFW_KEY_A:
-                    geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix, -GEOMETRY_ROTATION_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) );
+                    geometry->Rotate( glm::vec3( 0.0f, 1.0f, 0.0f ), -GEOMETRY_ROTATION_SPEED );
                     break;
 
                 case GLFW_KEY_D:
-                    geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix,  GEOMETRY_ROTATION_SPEED, glm::vec3( 0.0f, 1.0f, 0.0f ) );
+                    geometry->Rotate( glm::vec3( 0.0f, 1.0f, 0.0f ), GEOMETRY_ROTATION_SPEED );
                     break;
 
                 case GLFW_KEY_W:
-                    geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix,  GEOMETRY_ROTATION_SPEED, glm::vec3( 1.0f, 0.0f, 0.0f ) );
+                    geometry->Rotate( glm::vec3( 1.0f, 0.0f, 0.0f ), GEOMETRY_ROTATION_SPEED );
                     break;
 
                 case GLFW_KEY_S:
-                    geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix, -GEOMETRY_ROTATION_SPEED, glm::vec3( 1.0f, 0.0f, 0.0f ) );
+                    geometry->Rotate( glm::vec3( 1.0f, 0.0f, 0.0f ), -GEOMETRY_ROTATION_SPEED );
                     break;
 
                 case GLFW_KEY_Q:
-                    geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix,  GEOMETRY_ROTATION_SPEED, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+                    geometry->Rotate( glm::vec3( 0.0f, 0.0f, 1.0f ), GEOMETRY_ROTATION_SPEED );
                     break;
 
                 case GLFW_KEY_E:
-                    geometry->ModelMatrix = glm::rotate( geometry->ModelMatrix, -GEOMETRY_ROTATION_SPEED, glm::vec3( 0.0f, 0.0f, 1.0f ) );
+                    geometry->Rotate( glm::vec3( 0.0f, 0.0f, 1.0f ), -GEOMETRY_ROTATION_SPEED );
                     break;
 
                 default:
@@ -185,9 +185,9 @@ void InputManager::ScrollWheel( double xoffset, double yoffset ) {
             }
 
             if ( yoffset == 1 ) {
-                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( GEOMETRY_SCALE_UP ) ) ;
+                geometry->Scale( glm::vec3( GEOMETRY_SCALE_UP ) );
             } else if ( yoffset == -1 ) {
-                geometry->ModelMatrix = glm::scale( geometry->ModelMatrix, glm::vec3( GEOMETRY_SCALE_DOWN ) );
+                geometry->Scale( glm::vec3( GEOMETRY_SCALE_DOWN ) );
             }
         }
     } else {
