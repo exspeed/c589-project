@@ -263,6 +263,86 @@ void Geometry::Destroy() const {
     glDeleteBuffers( 1, &normalBuffer );
 }
 
+Geometry* Geometry::operator+( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeUnion( a, b, &out );
+
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    // Return
+    return ret;
+}
+
+Geometry* Geometry::operator-( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeDifference( a, b, &out );
+
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    // Return
+    return ret;
+}
+
+Geometry* Geometry::operator*( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeIntersection( a, b, &out );
+
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    // Return
+    return ret;
+}
+
+Geometry* Geometry::operator/( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeSymmetricDifference( a, b, &out );
+
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    // Return
+    return ret;
+}
+
 // Temporary - will be abstracted away DO NOT USE YET
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
     // Dynamically create copies of geometry data

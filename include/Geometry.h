@@ -47,9 +47,18 @@ public:
     void Load() const;
     void Destroy() const;
 
-    void GetCorkTriMesh( CorkTriMesh& out );
+    // Returns Union of two geometries (OR)
+    Geometry* operator+( Geometry& g );
+    // Returns Difference of two geometries (NOT)
+    Geometry* operator-( Geometry& g );
+    // Returns Intersection of two geometries (AND)
+    Geometry* operator*( Geometry& g );
+    // Returns Symmetric Difference of two geometries (XOR)
+    Geometry* operator/( Geometry& g );
 
 private:
     bool selected = 0;
     void InitializeVAO();
+
+    void GetCorkTriMesh( CorkTriMesh& out );
 };
