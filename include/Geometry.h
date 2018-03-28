@@ -51,9 +51,20 @@ public:
     void Translate( const glm::vec3 translate );
     void Rotate( const glm::vec3 rotate, const float angle );
 
-    void GetCorkTriMesh( CorkTriMesh& out );
+    static Geometry* Crack( Geometry* inp, Geometry* crack );
 
 private:
-    bool selected = 0;
+    bool selected = false;
     void InitializeVAO();
+
+    void GetCorkTriMesh( CorkTriMesh& out );
+
+    // Returns Union of two geometries (OR)
+    Geometry* operator+( Geometry& g );
+    // Returns Difference of two geometries (NOT)
+    Geometry* operator-( Geometry& g );
+    // Returns Intersection of two geometries (AND)
+    Geometry* operator*( Geometry& g );
+    // Returns Symmetric Difference of two geometries (XOR)
+    Geometry* operator/( Geometry& g );
 };

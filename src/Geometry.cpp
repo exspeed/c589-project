@@ -276,8 +276,91 @@ void Geometry::Rotate( const glm::vec3 rotate, const float angle ) {
     ModelMatrix = glm::rotate( ModelMatrix, angle, rotate );
 }
 
+Geometry* Geometry::Crack( Geometry* inp, Geometry* crack ) {
+    Geometry* cracked = *inp - *crack;
+    return cracked;
+}
 
-// Temporary - will be abstracted away DO NOT USE YET
+Geometry* Geometry::operator+( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeUnion( a, b, &out );
+
+    // Dynamically instantiate resulting geometry
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    return ret;
+}
+
+Geometry* Geometry::operator-( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeDifference( a, b, &out );
+
+    // Dynamically instantiate resulting geometry
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    return ret;
+}
+
+Geometry* Geometry::operator*( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeIntersection( a, b, &out );
+
+    // Dynamically instantiate resulting geometry
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    return ret;
+}
+
+Geometry* Geometry::operator/( Geometry& g ) {
+    // Prepare CorkTriMesh
+    CorkTriMesh a, b, out;
+    GetCorkTriMesh( a );
+    g.GetCorkTriMesh( b );
+
+    // Boolean operation
+    computeSymmetricDifference( a, b, &out );
+
+    // Dynamically instantiate resulting geometry
+    Geometry* ret = new Geometry( out, renderMode, program, programOutline );
+
+    // Free up memory
+    freeCorkTriMesh( &a );
+    freeCorkTriMesh( &b );
+    freeCorkTriMesh( &out );
+
+    return ret;
+}
+
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
     // Dynamically create copies of geometry data
     std::vector<GLuint>* nfaces = new std::vector<GLuint>( faces );
