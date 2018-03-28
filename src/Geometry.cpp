@@ -263,6 +263,11 @@ void Geometry::Destroy() const {
     glDeleteBuffers( 1, &normalBuffer );
 }
 
+Geometry* Geometry::Crack( Geometry* inp, Geometry* crack ) {
+    Geometry* cracked = *inp - *crack;
+    return cracked;
+}
+
 Geometry* Geometry::operator+( Geometry& g ) {
     // Prepare CorkTriMesh
     CorkTriMesh a, b, out;
@@ -272,6 +277,7 @@ Geometry* Geometry::operator+( Geometry& g ) {
     // Boolean operation
     computeUnion( a, b, &out );
 
+    // Dynamically instantiate resulting geometry
     Geometry* ret = new Geometry( out, renderMode, program, programOutline );
 
     // Free up memory
@@ -279,7 +285,6 @@ Geometry* Geometry::operator+( Geometry& g ) {
     freeCorkTriMesh( &b );
     freeCorkTriMesh( &out );
 
-    // Return
     return ret;
 }
 
@@ -292,6 +297,7 @@ Geometry* Geometry::operator-( Geometry& g ) {
     // Boolean operation
     computeDifference( a, b, &out );
 
+    // Dynamically instantiate resulting geometry
     Geometry* ret = new Geometry( out, renderMode, program, programOutline );
 
     // Free up memory
@@ -299,7 +305,6 @@ Geometry* Geometry::operator-( Geometry& g ) {
     freeCorkTriMesh( &b );
     freeCorkTriMesh( &out );
 
-    // Return
     return ret;
 }
 
@@ -312,6 +317,7 @@ Geometry* Geometry::operator*( Geometry& g ) {
     // Boolean operation
     computeIntersection( a, b, &out );
 
+    // Dynamically instantiate resulting geometry
     Geometry* ret = new Geometry( out, renderMode, program, programOutline );
 
     // Free up memory
@@ -319,7 +325,6 @@ Geometry* Geometry::operator*( Geometry& g ) {
     freeCorkTriMesh( &b );
     freeCorkTriMesh( &out );
 
-    // Return
     return ret;
 }
 
@@ -332,6 +337,7 @@ Geometry* Geometry::operator/( Geometry& g ) {
     // Boolean operation
     computeSymmetricDifference( a, b, &out );
 
+    // Dynamically instantiate resulting geometry
     Geometry* ret = new Geometry( out, renderMode, program, programOutline );
 
     // Free up memory
@@ -339,11 +345,9 @@ Geometry* Geometry::operator/( Geometry& g ) {
     freeCorkTriMesh( &b );
     freeCorkTriMesh( &out );
 
-    // Return
     return ret;
 }
 
-// Temporary - will be abstracted away DO NOT USE YET
 void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
     // Dynamically create copies of geometry data
     std::vector<GLuint>* nfaces = new std::vector<GLuint>( faces );
