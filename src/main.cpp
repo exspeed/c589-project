@@ -51,8 +51,8 @@ int main( int argc, char* argv[] ) {
 
     // Hack in crack pattern (for now)
     Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
-    crack_pattern->ModelMatrix = glm::scale( crack_pattern->ModelMatrix, glm::vec3( 0.25f, 0.25f, 0.25f ) );
-    crack_pattern->ModelMatrix = glm::translate( crack_pattern->ModelMatrix, glm::vec3( 0.f, 2.f, 0.f ) );
+    crack_pattern->Scale( glm::vec3( 0.25f, 0.25f, 0.25f ) );
+    crack_pattern->Translate( glm::vec3( 0.f, 2.f, 0.f ) );
 
     // Crack
     Geometry* cracked = Geometry::Crack( geometry, crack_pattern );
