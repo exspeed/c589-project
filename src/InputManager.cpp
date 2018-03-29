@@ -11,7 +11,9 @@ namespace {
 InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )
     : window( w )
     , camera( cam )
-    , scene( s ) {
+    , scene( s )
+    , sketchCursor( glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR) )
+    , standardCursor( glfwCreateStandardCursor(GLFW_ARROW_CURSOR) ) {
 }
 
 void InputManager::CheckInput() {
@@ -21,27 +23,43 @@ void InputManager::CheckInput() {
 void InputManager::MouseInput() {
     double xpos, ypos;
 
-    if ( shiftKey && glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
-        glfwGetCursorPos( window, &xpos, &ypos );
-        float deltaX = ( xpos - cursorX ) * MOUSE_SENSITIVITY;
-        float deltaY = ( ypos - cursorY ) * MOUSE_SENSITIVITY;
+    if ( sketching ) {
 
-        if ( !( deltaX || deltaY ) ) {
-            return;
+        if ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
+            glfwGetCursorPos( window, &xpos, &ypos );
+            float MVPX = 2.0f * ( xpos / 512.0f ) - 1;
+            float MVPY = -2.0f * ( ypos / 512.0f ) + 1;
+            if ( xpos != cursorX || ypos != cursorY ) {
+                Geometry* g = scene->GetSketch();
+                g->vertices.push_back( glm::vec3( MVPX, MVPY, 0.0f ) );
+                g->colours.push_back( glm::vec3( 1.0f, 0.0f, 0.0f ) );
+                g->normals.push_back( glm::vec3( 0.0f, 0.0f, 0.0f ) );
+                g->Load();
+            }
         }
+    } else {
+        if ( shiftKey && glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
+            glfwGetCursorPos( window, &xpos, &ypos );
+            float deltaX = ( xpos - cursorX ) * MOUSE_SENSITIVITY;
+            float deltaY = ( ypos - cursorY ) * MOUSE_SENSITIVITY;
 
-        camera->Panning( deltaX, deltaY );
-    } else if ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
-        // Get mouse position
-        glfwGetCursorPos( window, &xpos, &ypos );
-        float deltaX = ( xpos - cursorX ) * MOUSE_SENSITIVITY;
-        float deltaY = ( ypos - cursorY ) * MOUSE_SENSITIVITY;
+            if ( !( deltaX || deltaY ) ) {
+                return;
+            }
 
-        if ( !( deltaX || deltaY ) ) {
-            return;
+            camera->Panning( deltaX, deltaY );
+        } else if ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
+            // Get mouse position
+            glfwGetCursorPos( window, &xpos, &ypos );
+            float deltaX = ( xpos - cursorX ) * MOUSE_SENSITIVITY;
+            float deltaY = ( ypos - cursorY ) * MOUSE_SENSITIVITY;
+
+            if ( !( deltaX || deltaY ) ) {
+                return;
+            }
+
+            camera->RotateAround( deltaX, deltaY );
         }
-
-        camera->RotateAround( deltaX, deltaY );
     }
 
     glfwGetCursorPos( window, &xpos, &ypos );
@@ -54,11 +72,11 @@ void InputManager::KeyInput( const int key, const int action ) {
         switch ( key ) {
             // Camera
             case GLFW_KEY_UP:
-                camera->Zoom( true );
+                camera->Zoom( 1 );
                 break;
 
             case GLFW_KEY_DOWN:
-                camera->Zoom( false );
+                camera->Zoom( -1 );
                 break;
 
             case GLFW_KEY_LEFT_SHIFT:
@@ -104,6 +122,18 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             case GLFW_KEY_0:
                 scene->ToggleSelectedGeometry( 9 );
+                break;
+
+            // Sketching toggle
+            case GLFW_KEY_X:
+                sketching = !sketching;
+                ( sketching )
+                ? glfwSetCursor(window, sketchCursor)
+                : glfwSetCursor(window, standardCursor);
+                break;
+            
+            case GLFW_KEY_DELETE:
+                scene->ClearSketch();
                 break;
 
             // Wireframe toggle
