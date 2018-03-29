@@ -3,6 +3,8 @@
 #include "Camera.h"
 #include "Scene.h"
 
+#include <glad/glad.h>
+
 class InputManager {
 public:
     GLFWwindow* window;
@@ -21,6 +23,9 @@ private:
     bool shiftKey = false;
     bool wireframe = false;
     bool sketching = false;
+
+    GLFWcursor* sketchCursor;
+    GLFWcursor* standardCursor;
 
     void MouseInput();
 };
