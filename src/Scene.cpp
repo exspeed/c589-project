@@ -11,6 +11,10 @@ void Scene::AddGeometry( Geometry* g ) {
     geometries.push_back( g );
 }
 
+void Scene::AddSketch( Geometry* g ) {
+    sketch = g;
+}
+
 void Scene::ClearGeometries() {
     for ( auto geometry : geometries ) {
         delete geometry;
@@ -19,12 +23,23 @@ void Scene::ClearGeometries() {
     geometries.clear();
 }
 
+void Scene::ClearSketch() {
+    sketch->vertices.clear();
+    sketch->colours.clear();
+    sketch->normals.clear();
+    sketch->Load();
+}
+
 int Scene::GetGeometriesSize() {
     return geometries.size();
 }
 
 Geometry* Scene::GetGeometry( int i ) {
     return geometries[i];
+}
+
+Geometry* Scene::GetSketch() {
+    return sketch;
 }
 
 void Scene::ToggleSelectedGeometry( int i ) {
@@ -56,51 +71,56 @@ void Scene::Render() const {
 
     // Draw non stencil objects here
     for ( int i = 0; i < ( int ) geometries.size(); i++ ) {
-        if ( !geometries[i]->IsSelectedGeometry() ) {
-            if ( geometries[i]->renderMode == GL_LINE_STRIP ) {
-                Shader* program = geometries[i]->program;
-                geometries[i]->Load();
-                
-                program->use();
-                program->setMat4( "Model", geometries[i]->ModelMatrix );
-                program->setMat4( "View", glm::mat4(1.0f) );
-                program->setMat4( "Projection", glm::mat4(1.0f) );
-
-                glBindVertexArray( geometries[i]->vertexArray );
-                glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometries[i]->vertexBuffer );
-                glDrawArrays(
-                    geometries[i]->renderMode, 
-                    0,
-                    geometries[i]->vertices.size()
-                );
-            } else {
-                Shader* program = geometries[i]->program;
-                program->use();
-                glStencilMask( 0x00 );
-                program->setMat4( "Model", geometries[i]->ModelMatrix );
-                program->setMat4( "View", camera->ViewMatrix );
-                program->setMat4( "Projection", camera->ProjectionMatrix );
-
-
-                glBindVertexArray( geometries[i]->vertexArray );
-                glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometries[i]->faceBuffer );
-                glDrawElements(
-                    geometries[i]->renderMode,      // mode
-                    geometries[i]->faces.size(),    // count
-                    GL_UNSIGNED_INT,   // type
-                    ( void* )0         // element array buffer offset
-                );
-            }
-        } else {
-            RenderStencil( geometries[i] );
-        }
+        geometries[i]->IsSelectedGeometry()
+            ? RenderStencil( geometries[i] )
+            : RenderGeometry( geometries[i] );
     }
 
+    RenderSketch( sketch );
+
+    glDisable( GL_DEPTH_TEST );
+    glDisable( GL_STENCIL_TEST );
     // reset state to default (no shader or geometry bound)
     glBindVertexArray( 0 );
     glUseProgram( 0 );
 }
 
+void Scene::RenderGeometry( Geometry* geometry ) const {
+    Shader* program = geometry->program;
+    
+    program->use();
+    glStencilMask( 0x00 );
+    program->setMat4( "Model", geometry->ModelMatrix );
+    program->setMat4( "View", camera->ViewMatrix );
+    program->setMat4( "Projection", camera->ProjectionMatrix );
+
+
+    glBindVertexArray( geometry->vertexArray );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometry->faceBuffer );
+    glDrawElements(
+        geometry->renderMode,      // mode
+        geometry->faces.size(),    // count
+        GL_UNSIGNED_INT,   // type
+        ( void* )0         // element array buffer offset
+    );
+}
+
+void Scene::RenderSketch( Geometry* sketch ) const {
+    Shader* program = sketch->program;
+                
+    program->use();
+    program->setMat4( "Model", sketch->ModelMatrix );
+    program->setMat4( "View", glm::mat4(1.0f) );
+    program->setMat4( "Projection", glm::mat4(1.0f) );
+
+    glBindVertexArray( sketch->vertexArray );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, sketch->vertexBuffer );
+    glDrawArrays(
+        sketch->renderMode, 
+        0,
+        sketch->vertices.size()
+    );
+}
 
 void Scene::RenderStencil( Geometry* geometry ) const {
     Shader* program = geometry->program;
@@ -137,7 +157,6 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->setMat4( "View", camera->ViewMatrix );
     programOutline->setMat4( "Projection", camera->ProjectionMatrix );
 
-
     glBindVertexArray( geometry->vertexArray );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometry->faceBuffer );
     glDrawElements(
@@ -146,8 +165,6 @@ void Scene::RenderStencil( Geometry* geometry ) const {
         GL_UNSIGNED_INT,   // type
         ( void* )0         // element array buffer offset
     );
-
-    glEnable( GL_DEPTH_TEST );
 
     glBindVertexArray( 0 );
     glStencilMask( 0xFF );

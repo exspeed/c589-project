@@ -50,7 +50,7 @@ int main( int argc, char* argv[] ) {
     // Initial Mesh
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
     // sketching geometry
-    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, programOutline );
+    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, nullptr );
 
     // Hack in crack pattern (for now)
     Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
@@ -62,8 +62,9 @@ int main( int argc, char* argv[] ) {
 
     Scene* scene = new Scene( camera );
     scene->AddGeometry( geometry );
-    scene->AddGeometry( sketch );
-    scene->AddGeometry( cracked );
+    //scene->AddGeometry( cracked );
+
+    scene->AddSketch( sketch );
 
     inputManager = new InputManager( window, camera, scene );
 

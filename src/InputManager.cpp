@@ -22,24 +22,18 @@ void InputManager::MouseInput() {
     double xpos, ypos;
 
     if ( sketching ) {
-        static int oldState = GLFW_RELEASE;
-        int newState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-
-        if ( newState == GLFW_PRESS ) {
+        if ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
             glfwGetCursorPos( window, &xpos, &ypos );
             float MVPX = 2.0f * ( xpos / 512.0f ) - 1;
             float MVPY = -2.0f * ( ypos / 512.0f ) + 1;
             if ( xpos != cursorX || ypos != cursorY ) {
-                Geometry* g = scene->GetGeometry( 1 );
+                Geometry* g = scene->GetSketch();
                 g->vertices.push_back( glm::vec3( MVPX, MVPY, 0.0f ) );
                 g->colours.push_back( glm::vec3( 1.0f, 0.0f, 0.0f ) );
                 g->normals.push_back( glm::vec3( 0.0f, 0.0f, 0.0f ) );
+                g->Load();
             }
         }
-        if ( newState == GLFW_RELEASE && oldState == GLFW_PRESS ) {
-            sketching = !sketching;
-        }
-        oldState = newState;
     } else {
         if ( shiftKey && glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
             glfwGetCursorPos( window, &xpos, &ypos );
@@ -130,6 +124,10 @@ void InputManager::KeyInput( const int key, const int action ) {
             // Sketching toggle
             case GLFW_KEY_X:
                 sketching = !sketching;
+                break;
+            
+            case GLFW_KEY_DELETE:
+                scene->ClearSketch();
                 break;
 
             // Wireframe toggle
