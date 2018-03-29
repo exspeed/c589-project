@@ -11,7 +11,9 @@ namespace {
 InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )
     : window( w )
     , camera( cam )
-    , scene( s ) {
+    , scene( s )
+    , sketchCursor( glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR) )
+    , standardCursor( glfwCreateStandardCursor(GLFW_ARROW_CURSOR) ) {
 }
 
 void InputManager::CheckInput() {
@@ -22,6 +24,7 @@ void InputManager::MouseInput() {
     double xpos, ypos;
 
     if ( sketching ) {
+
         if ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
             glfwGetCursorPos( window, &xpos, &ypos );
             float MVPX = 2.0f * ( xpos / 512.0f ) - 1;
@@ -124,6 +127,9 @@ void InputManager::KeyInput( const int key, const int action ) {
             // Sketching toggle
             case GLFW_KEY_X:
                 sketching = !sketching;
+                ( sketching )
+                ? glfwSetCursor(window, sketchCursor)
+                : glfwSetCursor(window, standardCursor);
                 break;
             
             case GLFW_KEY_DELETE:
