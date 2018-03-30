@@ -42,15 +42,31 @@ int main( int argc, char* argv[] ) {
 
     glfwSetScrollCallback( window, ScrollCallback );
     glfwSetKeyCallback( window, KeyCallback );
-    Camera* camera = new Camera( glm::vec3( 4, 3, 3), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
+    Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
-    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES );
+    // Create Camera
+    Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
+    Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+    Shader* programLine = new Shader( "shaders/vertex.glsl", "shaders/linefrag.frag");
 
-    Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
-		Shader programLine("shaders/line.vert","shaders/line.frag");
-    Shader programOutline( "shaders/vertex.glsl", "shaders/outline.frag" );
-    Scene* scene = new Scene( &program, &programOutline, camera );
+    // Initial Mesh
+    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
+    // sketching geometry
+    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, nullptr );
+
+    // Hack in crack pattern (for now)
+    Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
+    crack_pattern->Scale( glm::vec3( 0.25f, 0.25f, 0.25f ) );
+    crack_pattern->Translate( glm::vec3( 0.f, 2.f, 0.f ) );
+
+    // Crack
+    Geometry* cracked = Geometry::Crack( geometry, crack_pattern );
+
+    Scene* scene = new Scene( program, programOutline, camera );
     scene->AddGeometry( geometry );
+    //scene->AddGeometry( cracked );
+
+    scene->AddSketch( sketch );
 
     inputManager = new InputManager( window, camera, scene );
 
@@ -62,8 +78,6 @@ int main( int argc, char* argv[] ) {
         // call function to draw our scene
         scene->Render();
 		
-				programLine.use();
-
         glfwSwapBuffers( window );
 
         glfwPollEvents();

@@ -15,10 +15,14 @@ class Scene {
 public:
     Scene( Shader* prog, Shader* progOutline, Camera* cam );
     void AddGeometry( Geometry* g );
+    void AddSketch( Geometry* g );
     void ClearGeometries();
+    void ClearSketch();
     int GetGeometriesSize();
     Geometry* GetGeometry( int i );
+    Geometry* GetSketch();
     void ToggleSelectedGeometry( int i );
+		bool HasAnyGeometrySelected();
     void Render() const;
 
 private:
@@ -27,6 +31,9 @@ private:
     Camera* camera;
 
     std::vector<Geometry*> geometries;
+    Geometry* sketch;
     void InitializeVAO( Geometry& g ) const;
+    void RenderGeometry( Geometry* geometry ) const;
+    void RenderSketch( Geometry* geometry ) const;
     void RenderStencil( Geometry* geometry ) const;
 };
