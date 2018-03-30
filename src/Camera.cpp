@@ -11,7 +11,8 @@
 Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
     pos( p )
     , forward( f )
-    , up( u ) {
+    , up( u )
+    , fov(45) {
 
     ViewMatrix = glm::lookAt (
                      pos, // Camera position in World Space
@@ -20,11 +21,10 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
                  );
 
     //perspective (T const &fovy, T const &aspect, T const &near, T const &far)
-    float initialFoV = 45.0f;
     float near = 0.1f;
     float far = 100.f;
     float aspect = 1.0;
-    ProjectionMatrix = glm::perspective( glm::radians( initialFoV ), aspect, near, far );
+    ProjectionMatrix = glm::perspective( glm::radians( fov ), aspect, near, far );
 }
 
 void Camera::UpdateViewMatrix() {
@@ -85,4 +85,18 @@ void Camera::Panning( float deltaX, float deltaY ) {
     }
 
     UpdateViewMatrix();
+}
+
+glm::vec3 Camera::GetPosition() const{
+    return pos;
+}
+glm::vec3 Camera::Up() const{
+    return up;
+}
+
+glm::vec3 Camera::LookAtDirection() const{
+    return forward-pos;
+}
+float Camera::GetFov() const{
+    return fov;
 }

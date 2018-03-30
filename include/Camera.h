@@ -14,11 +14,17 @@ public:
     void RotateAround( float deltaX, float deltaY );
     void Zoom( double yoffset );
     void Panning( float deltaX, float deltaY );
+    glm::vec3 GetPosition() const;
+    glm::vec3 Up() const;
+    glm::vec3 LookAtDirection() const;
+    float GetFov() const;
+
 
 private:
     glm::vec3 pos;
     glm::vec3 forward;
     glm::vec3 up;
+    float fov;
 
     void UpdateViewMatrix();
 };
