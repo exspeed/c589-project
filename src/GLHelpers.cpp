@@ -32,12 +32,8 @@ void Initialize( GLFWwindow*& window ) {
         std::exit( EXIT_FAILURE );
     }
 
-<<<<<<< HEAD
-    //glEnable( GL_STENCIL_TEST );
-    //glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
-=======
+
     glStencilOp( GL_KEEP, GL_KEEP, GL_REPLACE );
->>>>>>> c3d99632d4b535bff7c60092678a89b0ccbadb3e
     // Query and print out information about our OpenGL environment
     QueryGLVersion();
 }
