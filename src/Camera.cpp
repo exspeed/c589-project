@@ -21,7 +21,7 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
 
     //perspective (T const &fovy, T const &aspect, T const &near, T const &far)
     float initialFoV = 45.0f;
-    float near = 0.1f;
+    float near = 1.0f;
     float far = 100.f;
     float aspect = 1.0;
 	ProjectionMatrix = glm::perspective( glm::radians( initialFoV ), aspect, near, far );

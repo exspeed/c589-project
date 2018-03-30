@@ -14,5 +14,5 @@ void QueryGLVersion();
 bool CheckGLErrors();
 void ErrorCallback( int error, const char* description );
 
-void PrintMat4( glm::mat4 m );
-void PrintVec3( glm::vec3 v );
+void PrintMat4( glm::mat4 const& m );
+void PrintVec3( glm::vec3 const& v );
