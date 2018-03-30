@@ -46,8 +46,8 @@ int main( int argc, char* argv[] ) {
 
     // Create Geometry
 	std::vector<glm::vec3> vert;
-	float start = -0.15f;
-	float y = -.8;
+	float start = -0.15;
+	float y = -0.25;
 	vert.push_back(glm::vec3(start,y,0));
 	
 	std::vector<glm::vec3> color;
@@ -56,9 +56,6 @@ int main( int argc, char* argv[] ) {
 
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES );
 
-		geometry->vertices[0] = glm::vec3(-1,-1, 0.0);
-		geometry->vertices[1] = glm::vec3(-1, 1, 0.0);
-		geometry->vertices[2] = glm::vec3(1, -1, 0.0);
 		Geometry* fracture = new Geometry( vert, color, {},  GL_POINTS );
 
     Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
@@ -88,9 +85,6 @@ int main( int argc, char* argv[] ) {
 	glm::vec3 a = glm::vec3(MVP*glm::vec4(geometry->vertices[0],1));
 	glm::vec3 b = glm::vec3(MVP*glm::vec4(geometry->vertices[0+1],1));
 	glm::vec3 c = glm::vec3(MVP*glm::vec4(geometry->vertices[0+2],1));
-	PrintVec3(a);
-	PrintVec3(b);
-	PrintVec3(c);
 	
 	float t = tracer.GetIntersection(r, a, b, c);
 	if(t > 0 && t < t_min){

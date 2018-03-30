@@ -12,20 +12,18 @@ RayTracer::RayTracer(Camera* camera):cam(camera){}
 
 // assumes float x, y is between [-1,1]
 Ray RayTracer::CastRay(float x, float y){
-	x = -x;
-	y = y;
-	glm::vec3 camPos = cam->GetPosition();
-	glm::vec3 forward = glm::normalize(cam->LookAtDirection());
-	glm::vec3 up = glm::normalize(cam->Up());
-	glm::vec3 right = glm::normalize(glm::cross(up,forward));
+	glm::vec3 camera = cam->GetPosition();
+	glm::vec3 v = glm::normalize(cam->Up());
 
-	float aspectratio = 1;
-	float fov = 45.0f * M_PI/180.0;
-	float h = tan(fov);
-	float w = h *aspectratio;
-	glm::vec3 direction = glm::normalize(x*right*w + y*up*h + forward);
+	float fov = 45 * M_PI/180;
+	glm::vec3 n = glm::normalize(cam->LookAtDirection())*(float)(1/(2*std::tan(fov/2.0)));
+	glm::vec3 u = glm::normalize(glm::cross(n,v));
 
-	return Ray(camPos, direction );
+	float normx = ((x+1)/2) - 0.5;
+	float normy = ((y+1)/2) - 0.5;
+
+	glm::vec3 po = u*normx + v*normy + camera + n;
+	return Ray(po, po - camera );
 	
 }
 
