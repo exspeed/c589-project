@@ -18,11 +18,12 @@ public:
 	glm::vec3 GetPosition();
 	glm::vec3 Up();
 	glm::vec3 LookAtDirection();
+	float GetFov();
 	
 private:
     glm::vec3 pos;
     glm::vec3 forward;
     glm::vec3 up;
-
+		float fov;
     void UpdateViewMatrix();
 };

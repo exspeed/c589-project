@@ -42,21 +42,9 @@ int main( int argc, char* argv[] ) {
 
     glfwSetScrollCallback( window, ScrollCallback );
     glfwSetKeyCallback( window, KeyCallback );
-    Camera* camera = new Camera( glm::vec3( 0, 0, -5.0), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
-
-    // Create Geometry
-	std::vector<glm::vec3> vert;
-	float start = -0.15;
-	float y = -0.25;
-	vert.push_back(glm::vec3(start,y,0));
-	
-	std::vector<glm::vec3> color;
-	vert.push_back(glm::vec3(1,1,1));
-	vert.push_back(glm::vec3(1,1,1));
+    Camera* camera = new Camera( glm::vec3( 4, 3, 3), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
 
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES );
-
-		Geometry* fracture = new Geometry( vert, color, {},  GL_POINTS );
 
     Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
 		Shader programLine("shaders/line.vert","shaders/line.frag");
@@ -64,41 +52,6 @@ int main( int argc, char* argv[] ) {
     Scene* scene = new Scene( &program, &programOutline, camera );
     scene->AddGeometry( geometry );
 
-	glPointSize(3);
-	Geometry* HIT = new Geometry( std::vector<glm::vec3>(), {}, {},  GL_POINTS );
-
-	RayTracer tracer(camera);
-	Ray r = tracer.CastRay( start, y);
-	std::cout << "Ray pos: ";
-	PrintVec3(r.pos);
-	std::cout << "Ray dir: ";
-	PrintVec3(r.dir);
-
-	float t_min = 1000000;
-	glm::mat4 M = geometry->ModelMatrix;
-	glm::mat4 V = camera->ViewMatrix;
-	glm::mat4 P = camera->ProjectionMatrix;
-			
-	glm::mat4 MVP = glm::mat4(1.0f);
-
-
-	glm::vec3 a = glm::vec3(MVP*glm::vec4(geometry->vertices[0],1));
-	glm::vec3 b = glm::vec3(MVP*glm::vec4(geometry->vertices[0+1],1));
-	glm::vec3 c = glm::vec3(MVP*glm::vec4(geometry->vertices[0+2],1));
-	
-	float t = tracer.GetIntersection(r, a, b, c);
-	if(t > 0 && t < t_min){
-		t_min = t;
-	}
-		
-	if(t_min >= 1000000){
-		//std::cout << i << " " << -0.1 << " not hit\n";
-			
-	}else{
-		std::cout << " hit\n";
-	}
-
-		HIT->Load();	
     inputManager = new InputManager( window, camera, scene );
 
     CheckGLErrors();
@@ -110,11 +63,6 @@ int main( int argc, char* argv[] ) {
         scene->Render();
 		
 				programLine.use();
-				glBindVertexArray( fracture->vertexArray );
-				glDrawArrays( fracture->renderMode, 0, fracture->vertices.size() );
-
-				glBindVertexArray( HIT->vertexArray );
-				glDrawArrays( HIT->renderMode, 0, HIT->vertices.size() );
 
         glfwSwapBuffers( window );
 

@@ -53,7 +53,7 @@ void Scene::Render() const {
             glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometries[i]->faceBuffer );
             glDrawElements(
                 GL_TRIANGLES,      // mode
-                3,//geometries[i]->faces.size(),    // count
+                geometries[i]->faces.size(),    // count
                 GL_UNSIGNED_INT,   // type
                 ( void* )0         // element array buffer offset
             );
