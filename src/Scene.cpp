@@ -72,8 +72,8 @@ void Scene::Render() const {
     // Draw non stencil objects here
     for ( int i = 0; i < ( int ) geometries.size(); i++ ) {
         geometries[i]->IsSelectedGeometry()
-            ? RenderStencil( geometries[i] )
-            : RenderGeometry( geometries[i] );
+        ? RenderStencil( geometries[i] )
+        : RenderGeometry( geometries[i] );
     }
 
     RenderSketch( sketch );
@@ -87,7 +87,7 @@ void Scene::Render() const {
 
 void Scene::RenderGeometry( Geometry* geometry ) const {
     Shader* program = geometry->program;
-    
+
     program->use();
     glStencilMask( 0x00 );
     program->setMat4( "Model", geometry->ModelMatrix );
@@ -107,16 +107,16 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
 
 void Scene::RenderSketch( Geometry* sketch ) const {
     Shader* program = sketch->program;
-                
+
     program->use();
     program->setMat4( "Model", sketch->ModelMatrix );
-    program->setMat4( "View", glm::mat4(1.0f) );
-    program->setMat4( "Projection", glm::mat4(1.0f) );
+    program->setMat4( "View", glm::mat4( 1.0f ) );
+    program->setMat4( "Projection", glm::mat4( 1.0f ) );
 
     glBindVertexArray( sketch->vertexArray );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, sketch->vertexBuffer );
     glDrawArrays(
-        sketch->renderMode, 
+        sketch->renderMode,
         0,
         sketch->vertices.size()
     );

@@ -10,27 +10,27 @@
 
 Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
     pos( p )
-    , forward( f )
-    , up( u ) {
+    , target( f )
+    , up( u )
+    , fov( 45 ) {
 
     ViewMatrix = glm::lookAt (
                      pos, // Camera position in World Space
-                     forward, // and looks at the origin
+                     target, // and looks at the origin
                      up  // Head is up (set to 0,-1,0 to look upside-down)
                  );
 
     //perspective (T const &fovy, T const &aspect, T const &near, T const &far)
-    float initialFoV = 45.0f;
     float near = 0.1f;
     float far = 100.f;
     float aspect = 1.0;
-    ProjectionMatrix = glm::perspective( glm::radians( initialFoV ), aspect, near, far );
+    ProjectionMatrix = glm::perspective( glm::radians( fov ), aspect, near, far );
 }
 
 void Camera::UpdateViewMatrix() {
     ViewMatrix = glm::lookAt (
                      pos,
-                     forward,
+                     target,
                      up
                  );
 }
@@ -38,15 +38,15 @@ void Camera::UpdateViewMatrix() {
 void Camera::RotateAround( float deltaX, float deltaY ) {
     // look left and right
     glm::mat4 yaw = glm::rotate( deltaX, up );
-    glm::vec4 fwd = yaw * glm::vec4( forward - pos, 0 );
+    glm::vec4 fwd = yaw * glm::vec4( target - pos, 0 );
 
-    forward = glm::vec3( fwd[0], fwd[1], fwd[2] );
+    target = glm::vec3( fwd[0], fwd[1], fwd[2] );
     // look up and down
-    glm::vec3 bi = glm::normalize( glm::cross( up, ( forward - pos ) ) );
+    glm::vec3 bi = glm::normalize( glm::cross( up, ( target - pos ) ) );
     glm::mat4 roll = glm::rotate( -deltaY, bi );
 
-    fwd = ( roll * ( glm::vec4( forward - pos, 0 ) ) );
-    forward = glm::vec3( fwd[0], fwd[1], fwd[2] );
+    fwd = ( roll * ( glm::vec4( target - pos, 0 ) ) );
+    target = glm::vec3( fwd[0], fwd[1], fwd[2] );
 
     UpdateViewMatrix();
 }
@@ -55,7 +55,7 @@ void Camera::RotateAround( float deltaX, float deltaY ) {
 void Camera::Zoom( double yoffset ) {
     const float zoomSpeed = 0.2;
 
-    glm::vec3 direction = zoomSpeed * ( glm::normalize( forward - pos ) );
+    glm::vec3 direction = zoomSpeed * ( glm::normalize( target - pos ) );
 
     if ( yoffset != 0 ) {
         direction *= yoffset;
@@ -68,7 +68,7 @@ void Camera::Zoom( double yoffset ) {
 
 void Camera::Panning( float deltaX, float deltaY ) {
     const float panningSpeed = 0.1;
-    glm::vec3 bi = glm::normalize( glm::cross( forward - pos, up ) );
+    glm::vec3 bi = glm::normalize( glm::cross( target - pos, up ) );
 
     if ( deltaX > 0 ) {
         pos = pos - panningSpeed * bi;
@@ -76,7 +76,7 @@ void Camera::Panning( float deltaX, float deltaY ) {
         pos = pos + panningSpeed * bi;
     }
 
-    glm::vec3 updir = glm::normalize( glm::cross( bi, forward - pos ) );
+    glm::vec3 updir = glm::normalize( glm::cross( bi, target - pos ) );
 
     if ( deltaY > 0 ) {
         pos = pos + panningSpeed * updir;
@@ -85,4 +85,18 @@ void Camera::Panning( float deltaX, float deltaY ) {
     }
 
     UpdateViewMatrix();
+}
+
+glm::vec3 Camera::GetPosition() const {
+    return pos;
+}
+glm::vec3 Camera::Up() const {
+    return up;
+}
+
+glm::vec3 Camera::LookAtDirection() const {
+    return glm::normalize( target - pos );
+}
+float Camera::GetFov() const {
+    return fov;
 }

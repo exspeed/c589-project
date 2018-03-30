@@ -12,8 +12,8 @@ InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )
     : window( w )
     , camera( cam )
     , scene( s )
-    , sketchCursor( glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR) )
-    , standardCursor( glfwCreateStandardCursor(GLFW_ARROW_CURSOR) ) {
+    , sketchCursor( glfwCreateStandardCursor( GLFW_CROSSHAIR_CURSOR ) )
+    , standardCursor( glfwCreateStandardCursor( GLFW_ARROW_CURSOR ) ) {
 }
 
 void InputManager::CheckInput() {
@@ -29,6 +29,7 @@ void InputManager::MouseInput() {
             glfwGetCursorPos( window, &xpos, &ypos );
             float MVPX = 2.0f * ( xpos / 512.0f ) - 1;
             float MVPY = -2.0f * ( ypos / 512.0f ) + 1;
+
             if ( xpos != cursorX || ypos != cursorY ) {
                 Geometry* g = scene->GetSketch();
                 g->vertices.push_back( glm::vec3( MVPX, MVPY, 0.0f ) );
@@ -128,10 +129,10 @@ void InputManager::KeyInput( const int key, const int action ) {
             case GLFW_KEY_X:
                 sketching = !sketching;
                 ( sketching )
-                ? glfwSetCursor(window, sketchCursor)
-                : glfwSetCursor(window, standardCursor);
+                ? glfwSetCursor( window, sketchCursor )
+                : glfwSetCursor( window, standardCursor );
                 break;
-            
+
             case GLFW_KEY_DELETE:
                 scene->ClearSketch();
                 break;
