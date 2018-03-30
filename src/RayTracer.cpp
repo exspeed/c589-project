@@ -10,7 +10,7 @@ pos(position)
 RayTracer::RayTracer(Camera* camera):cam(camera){
 	v = glm::normalize(cam->Up());
 	float fov = cam->GetFov() * M_PI/180;
-	n = glm::normalize(cam->LookAtDirection())*(float)(1/(2*std::tan(fov/2.0)));
+	n = cam->LookAtDirection()*(float)(1/(2*std::tan(fov/2.0)));
 	u = glm::normalize(glm::cross(n,v));
 }
 

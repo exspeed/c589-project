@@ -95,7 +95,7 @@ glm::vec3 Camera::Up() const{
 }
 
 glm::vec3 Camera::LookAtDirection() const{
-    return target-pos;
+    return glm::normalize(target-pos);
 }
 float Camera::GetFov() const{
     return fov;
