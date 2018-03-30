@@ -12,7 +12,7 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
     pos( p )
     , target( f )
     , up( u )
-    , fov(45) {
+    , fov( 45 ) {
 
     ViewMatrix = glm::lookAt (
                      pos, // Camera position in World Space
@@ -87,16 +87,16 @@ void Camera::Panning( float deltaX, float deltaY ) {
     UpdateViewMatrix();
 }
 
-glm::vec3 Camera::GetPosition() const{
+glm::vec3 Camera::GetPosition() const {
     return pos;
 }
-glm::vec3 Camera::Up() const{
+glm::vec3 Camera::Up() const {
     return up;
 }
 
-glm::vec3 Camera::LookAtDirection() const{
-    return glm::normalize(target-pos);
+glm::vec3 Camera::LookAtDirection() const {
+    return glm::normalize( target - pos );
 }
-float Camera::GetFov() const{
+float Camera::GetFov() const {
     return fov;
 }
