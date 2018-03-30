@@ -26,8 +26,8 @@ public:
     GLuint  vertexArray;
     GLenum  renderMode;
 
-		Shader* program;
-		Shader* programOutline;
+    Shader* program;
+    Shader* programOutline;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> colours;

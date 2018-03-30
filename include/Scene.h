@@ -22,7 +22,7 @@ public:
     Geometry* GetGeometry( int i );
     Geometry* GetSketch();
     void ToggleSelectedGeometry( int i );
-		bool HasAnyGeometrySelected();
+    bool HasAnyGeometrySelected();
     void Render() const;
 
 private:

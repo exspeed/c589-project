@@ -47,7 +47,7 @@ int main( int argc, char* argv[] ) {
     // Create Camera
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
     Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
-    Shader* programLine = new Shader( "shaders/vertex.glsl", "shaders/linefrag.frag");
+    Shader* programLine = new Shader( "shaders/vertex.glsl", "shaders/linefrag.frag" );
 
     // Initial Mesh
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
@@ -77,7 +77,7 @@ int main( int argc, char* argv[] ) {
         inputManager->CheckInput();
         // call function to draw our scene
         scene->Render();
-		
+
         glfwSwapBuffers( window );
 
         glfwPollEvents();

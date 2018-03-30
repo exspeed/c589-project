@@ -63,7 +63,7 @@ bool Scene::HasAnyGeometrySelected() {
 // Rendering function that draws our scene to the frame buffer
 void Scene::Render() const {
     glClearColor( 0.2f, 0.2f, 0.2f, 1.0f );
-	glEnable( GL_DEPTH_TEST );
+    glEnable( GL_DEPTH_TEST );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT );
     glEnable( GL_DEPTH_TEST );
     glEnable( GL_STENCIL_TEST );
@@ -71,8 +71,8 @@ void Scene::Render() const {
     // Draw non stencil objects here
     for ( int i = 0; i < ( int ) geometries.size(); i++ ) {
         geometries[i]->IsSelectedGeometry()
-            ? RenderStencil( geometries[i] )
-            : RenderGeometry( geometries[i] );
+        ? RenderStencil( geometries[i] )
+        : RenderGeometry( geometries[i] );
     }
 
     RenderSketch( sketch );
@@ -86,7 +86,7 @@ void Scene::Render() const {
 
 void Scene::RenderGeometry( Geometry* geometry ) const {
     Shader* program = geometry->program;
-    
+
     program->use();
     glStencilMask( 0x00 );
     program->setMat4( "Model", geometry->ModelMatrix );
@@ -106,16 +106,16 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
 
 void Scene::RenderSketch( Geometry* sketch ) const {
     Shader* program = sketch->program;
-                
+
     program->use();
     program->setMat4( "Model", sketch->ModelMatrix );
-    program->setMat4( "View", glm::mat4(1.0f) );
-    program->setMat4( "Projection", glm::mat4(1.0f) );
+    program->setMat4( "View", glm::mat4( 1.0f ) );
+    program->setMat4( "Projection", glm::mat4( 1.0f ) );
 
     glBindVertexArray( sketch->vertexArray );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, sketch->vertexBuffer );
     glDrawArrays(
-        sketch->renderMode, 
+        sketch->renderMode,
         0,
         sketch->vertices.size()
     );
@@ -148,7 +148,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     programOutline->use();
 
     float tenpercentscale = 1.1f;
-    glm::mat4 model = scale(geometry->ModelMatrix, glm::vec3(tenpercentscale));
+    glm::mat4 model = scale( geometry->ModelMatrix, glm::vec3( tenpercentscale ) );
     programOutline->setMat4( "Model", model );
     programOutline->setMat4( "View", camera->ViewMatrix );
     programOutline->setMat4( "Projection", camera->ProjectionMatrix );
