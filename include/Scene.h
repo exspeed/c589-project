@@ -24,6 +24,7 @@ public:
     void ToggleSelectedGeometry( int i );
     bool HasAnyGeometrySelected();
     void Render() const;
+    void Carve(Geometry * g); 
 
 private:
     Camera* camera;
@@ -34,4 +35,6 @@ private:
     void RenderGeometry( Geometry* geometry ) const;
     void RenderSketch( Geometry* geometry ) const;
     void RenderStencil( Geometry* geometry ) const;
+    
+    bool SketchConfirmed = false;
 };

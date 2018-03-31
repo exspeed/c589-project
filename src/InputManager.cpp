@@ -144,6 +144,9 @@ void InputManager::KeyInput( const int key, const int action ) {
                 ? glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
                 : glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
                 break;
+            case GLFW_KEY_ENTER:
+                scene->Carve(scene->GetGeometry(0));
+                break;
 
             // Misc
             case GLFW_KEY_ESCAPE:

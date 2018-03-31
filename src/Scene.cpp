@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include "Scene.h"
 #include "Camera.h"
+#include "RayTracer.h"
 
 Scene::Scene( Camera* cam ):
     camera( cam ) {
@@ -110,8 +111,13 @@ void Scene::RenderSketch( Geometry* sketch ) const {
 
     program->use();
     program->setMat4( "Model", sketch->ModelMatrix );
-    program->setMat4( "View", glm::mat4( 1.0f ) );
-    program->setMat4( "Projection", glm::mat4( 1.0f ) );
+    if(SketchConfirmed){
+        program->setMat4( "View", camera->ViewMatrix );
+        program->setMat4( "Projection", camera->ProjectionMatrix );
+    }else{
+        program->setMat4( "View", glm::mat4( 1.0f ) );
+        program->setMat4( "Projection", glm::mat4( 1.0f ) );
+    }
 
     glBindVertexArray( sketch->vertexArray );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, sketch->vertexBuffer );
@@ -169,4 +175,34 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     glBindVertexArray( 0 );
     glStencilMask( 0xFF );
     glClear( GL_STENCIL_BUFFER_BIT );
+}
+
+void Scene::Carve(Geometry* g ){
+    RayTracer tracer(camera);
+
+    std::cout << g->normals.size() << std::endl;
+    for(int i = 0 ; i < sketch->vertices.size(); i++){
+        float x = sketch->vertices[i].x; 
+        float y = sketch->vertices[i].y; 
+        Ray r = tracer.CastRay(x,y);
+        float t_min = 10000000;
+        for(int j = 0; j < g->faces.size(); j+=3){
+            int n_idx = j/3;
+            glm::vec3 no = g->normals[n_idx]; // NEED FACE NORMALS
+            int id0 = g->faces[j];
+            int id1 = g->faces[j+1];
+            int id2 = g->faces[j+2];
+
+            glm::vec3 p0 = g->vertices[id0];
+            glm::vec3 p1 = g->vertices[id1];
+            glm::vec3 p2 = g->vertices[id2];
+
+            float t = tracer.GetIntersection(r, p0, p1, p2, no);
+            if(t > 0 && t < t_min){
+                t_min = t;
+            }
+        }
+        sketch->vertices[i] = r.pos + r.dir*t_min;
+    }
+    sketch->Load();
 }
