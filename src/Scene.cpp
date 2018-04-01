@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include <cassert>
+#include <vector>
 #include "Scene.h"
 #include "Camera.h"
 #include "RayTracer.h"
@@ -26,6 +27,7 @@ void Scene::ClearGeometries() {
 }
 
 void Scene::ClearSketch() {
+    SketchConfirmed = false;
     sketch->vertices.clear();
     sketch->colours.clear();
     sketch->normals.clear();
@@ -178,20 +180,27 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     glClear( GL_STENCIL_BUFFER_BIT );
 }
 
+bool Scene::IsSketchConfirmed(){
+    return SketchConfirmed; 
+}
+
 void Scene::Carve(Geometry* g ){
     RayTracer tracer(camera);
 
     assert(sketch->normals.size() == sketch->vertices.size());
 
-    for(int i = 0 ; i < sketch->vertices.size(); i++){
+    std::vector<glm::vec3> sk_vertices;
+    std::vector<glm::vec3> sk_normals;
+    std::vector<glm::vec3> sk_color;
+
+    for(int i = 0 ; i < (int)sketch->vertices.size(); i++){
         float x = sketch->vertices[i].x; 
         float y = sketch->vertices[i].y; 
-        float z = sketch->vertices[i].z; 
         Ray r = tracer.CastRay(x,y);
         float t_min = 10000000;
         glm::vec3 normal;
 
-        for(int j = 0; j < g->faces.size(); j+=3){
+        for(int j = 0; j < (int)g->faces.size(); j+=3){
             int id0 = g->faces[j];
             int id1 = g->faces[j+1];
             int id2 = g->faces[j+2];
@@ -215,10 +224,16 @@ void Scene::Carve(Geometry* g ){
         }
 
         glm::vec3 inter(r.pos + r.dir*t_min); 
-        sketch->vertices[i] = inter; 
-        sketch->normals[i] = normal;
-        sketch->colours[i] =glm::vec3( 1.0f, 0.0f, 1.0f );
-
+        if(t_min != 10000000){
+            sk_vertices.push_back(inter);
+            sk_normals.push_back(normal);
+            sk_color.emplace_back(1.0f, 0.0f, 1.0f);
+        }
     }
+
+    sketch->vertices = sk_vertices;
+    sketch->normals = sk_normals;
+    sketch->colours = sk_color;
+    SketchConfirmed = true; 
     sketch->Load();
 }
