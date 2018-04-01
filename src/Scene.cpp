@@ -1,6 +1,5 @@
 #include <glad/glad.h>
 #include <cassert>
-#include <vector>
 #include "Scene.h"
 #include "Camera.h"
 #include "RayTracer.h"
