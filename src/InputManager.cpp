@@ -127,10 +127,12 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             // Sketching toggle
             case GLFW_KEY_X:
+                if(!scene->IsSketchConfirmed()){
                 sketching = !sketching;
                 ( sketching )
                 ? glfwSetCursor( window, sketchCursor )
                 : glfwSetCursor( window, standardCursor );
+                }
                 break;
 
             case GLFW_KEY_DELETE:
@@ -143,6 +145,13 @@ void InputManager::KeyInput( const int key, const int action ) {
                 ( wireframe )
                 ? glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
                 : glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+                break;
+            case GLFW_KEY_ENTER:
+                if(!scene->IsSketchConfirmed()){
+                    scene->Carve(scene->GetGeometry(0));
+                    sketching = !sketching;
+                    glfwSetCursor( window, standardCursor );
+                }
                 break;
 
             // Misc

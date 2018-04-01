@@ -33,7 +33,6 @@ float RayTracer::GetIntersection( Ray ray, glm::vec3 p0, glm::vec3 p1, glm::vec3
 
     if ( denom != 0 ) { // ray and triangle normal aren't perpendicular
         t = glm::dot( ( p2 - ray.pos ), triNormal ) / denom;
-        std::cout << "t: " << t << std::endl;
 
         if ( t < 0 ) {
             std::cout << "Behind " << t << std::endl;

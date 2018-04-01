@@ -1,6 +1,8 @@
 #include <glad/glad.h>
+#include <cassert>
 #include "Scene.h"
 #include "Camera.h"
+#include "RayTracer.h"
 
 Scene::Scene( Camera* cam ):
     camera( cam ) {
@@ -24,6 +26,7 @@ void Scene::ClearGeometries() {
 }
 
 void Scene::ClearSketch() {
+    SketchConfirmed = false;
     sketch->vertices.clear();
     sketch->colours.clear();
     sketch->normals.clear();
@@ -106,12 +109,18 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
 }
 
 void Scene::RenderSketch( Geometry* sketch ) const {
+    glDisable(GL_DEPTH_TEST);
     Shader* program = sketch->program;
 
     program->use();
     program->setMat4( "Model", sketch->ModelMatrix );
-    program->setMat4( "View", glm::mat4( 1.0f ) );
-    program->setMat4( "Projection", glm::mat4( 1.0f ) );
+    if(SketchConfirmed){
+        program->setMat4( "View", camera->ViewMatrix );
+        program->setMat4( "Projection", camera->ProjectionMatrix );
+    }else{
+        program->setMat4( "View", glm::mat4( 1.0f ) );
+        program->setMat4( "Projection", glm::mat4( 1.0f ) );
+    }
 
     glBindVertexArray( sketch->vertexArray );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, sketch->vertexBuffer );
@@ -169,4 +178,62 @@ void Scene::RenderStencil( Geometry* geometry ) const {
     glBindVertexArray( 0 );
     glStencilMask( 0xFF );
     glClear( GL_STENCIL_BUFFER_BIT );
+}
+
+bool Scene::IsSketchConfirmed(){
+    return SketchConfirmed; 
+}
+
+void Scene::Carve(Geometry* g ){
+    RayTracer tracer(camera);
+
+    assert(sketch->normals.size() == sketch->vertices.size());
+
+    std::vector<glm::vec3> sk_vertices;
+    std::vector<glm::vec3> sk_normals;
+    std::vector<glm::vec3> sk_color;
+
+    for(int i = 0 ; i < (int)sketch->vertices.size(); i++){
+        float x = sketch->vertices[i].x; 
+        float y = sketch->vertices[i].y; 
+        Ray r = tracer.CastRay(x,y);
+        float t_min = 10000000;
+        glm::vec3 normal;
+
+        for(int j = 0; j < (int)g->faces.size(); j+=3){
+            int id0 = g->faces[j];
+            int id1 = g->faces[j+1];
+            int id2 = g->faces[j+2];
+
+            glm::vec3 n0 = g->normals[id0]; 
+            glm::vec3 n1 = g->normals[id1]; 
+            glm::vec3 n2 = g->normals[id2]; 
+
+            //face normal 
+            glm::vec3 no = glm::normalize(glm::cross(n1-n0, n2-n0));
+            glm::vec3 p0 = g->vertices[id0];
+            glm::vec3 p1 = g->vertices[id1];
+            glm::vec3 p2 = g->vertices[id2];
+
+
+            float t = tracer.GetIntersection(r, p0, p1, p2, no);
+            if(t > 0 && t < t_min){
+                t_min = t;
+                normal = no;
+            }
+        }
+
+        glm::vec3 inter(r.pos + r.dir*t_min); 
+        if(t_min != 10000000){
+            sk_vertices.push_back(inter);
+            sk_normals.push_back(normal);
+            sk_color.emplace_back(1.0f, 0.0f, 1.0f);
+        }
+    }
+
+    sketch->vertices = sk_vertices;
+    sketch->normals = sk_normals;
+    sketch->colours = sk_color;
+    SketchConfirmed = true; 
+    sketch->Load();
 }
