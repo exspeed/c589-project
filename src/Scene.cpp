@@ -109,6 +109,7 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
 }
 
 void Scene::RenderSketch( Geometry* sketch ) const {
+    glDisable(GL_DEPTH_TEST);
     Shader* program = sketch->program;
 
     program->use();

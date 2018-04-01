@@ -147,9 +147,11 @@ void InputManager::KeyInput( const int key, const int action ) {
                 : glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
                 break;
             case GLFW_KEY_ENTER:
-                scene->Carve(scene->GetGeometry(0));
-                sketching = !sketching;
-                glfwSetCursor( window, standardCursor );
+                if(!scene->IsSketchConfirmed()){
+                    scene->Carve(scene->GetGeometry(0));
+                    sketching = !sketching;
+                    glfwSetCursor( window, standardCursor );
+                }
                 break;
 
             // Misc
