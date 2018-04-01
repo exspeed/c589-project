@@ -1,4 +1,5 @@
 #include <glad/glad.h>
+#include <cassert>
 #include "Scene.h"
 #include "Camera.h"
 #include "RayTracer.h"
@@ -180,29 +181,44 @@ void Scene::RenderStencil( Geometry* geometry ) const {
 void Scene::Carve(Geometry* g ){
     RayTracer tracer(camera);
 
-    std::cout << g->normals.size() << std::endl;
+    assert(sketch->normals.size() == sketch->vertices.size());
+
     for(int i = 0 ; i < sketch->vertices.size(); i++){
         float x = sketch->vertices[i].x; 
         float y = sketch->vertices[i].y; 
+        float z = sketch->vertices[i].z; 
         Ray r = tracer.CastRay(x,y);
         float t_min = 10000000;
+        glm::vec3 normal;
+
         for(int j = 0; j < g->faces.size(); j+=3){
-            int n_idx = j/3;
-            glm::vec3 no = g->normals[n_idx]; // NEED FACE NORMALS
             int id0 = g->faces[j];
             int id1 = g->faces[j+1];
             int id2 = g->faces[j+2];
 
+            glm::vec3 n0 = g->normals[id0]; 
+            glm::vec3 n1 = g->normals[id1]; 
+            glm::vec3 n2 = g->normals[id2]; 
+
+            //face normal 
+            glm::vec3 no = glm::normalize(glm::cross(n1-n0, n2-n0));
             glm::vec3 p0 = g->vertices[id0];
             glm::vec3 p1 = g->vertices[id1];
             glm::vec3 p2 = g->vertices[id2];
 
+
             float t = tracer.GetIntersection(r, p0, p1, p2, no);
             if(t > 0 && t < t_min){
                 t_min = t;
+                normal = no;
             }
         }
-        sketch->vertices[i] = r.pos + r.dir*t_min;
+
+        glm::vec3 inter(r.pos + r.dir*t_min); 
+        sketch->vertices[i] = inter; 
+        sketch->normals[i] = normal;
+        sketch->colours[i] =glm::vec3( 1.0f, 0.0f, 1.0f );
+
     }
     sketch->Load();
 }

@@ -32,8 +32,8 @@ void ScrollCallback( GLFWwindow* window, double xoffset, double yoffset ) {
 }
 
 // PROGRAM ENTRY POINT
+#include <assert.h> 
 int main( int argc, char* argv[] ) {
-
     // Initialize OpenGL and creat the window
     GLFWwindow* window = nullptr;
     Initialize( window );

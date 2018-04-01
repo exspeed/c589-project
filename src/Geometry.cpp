@@ -153,7 +153,6 @@ Geometry::Geometry( const CorkTriMesh& trimesh, GLenum r, Shader* geo, Shader* s
         glm::vec3 l = b - a;
         glm::vec3 r = c - a;
         glm::vec3 n = glm::cross( l, r );
-        std::cout << n[0] << " " << n[1] << " " << n[2] << std::endl;
         // Aggregate normals
         normals[trimesh.triangles[3 * i + 0]] += n;
         normals[trimesh.triangles[3 * i + 1]] += n;
