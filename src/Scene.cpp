@@ -211,9 +211,10 @@ void Scene::Carve(Geometry* g ){
 
             //face normal 
             glm::vec3 no = glm::normalize(glm::cross(n1-n0, n2-n0));
-            glm::vec3 p0 = g->vertices[id0];
-            glm::vec3 p1 = g->vertices[id1];
-            glm::vec3 p2 = g->vertices[id2];
+
+            glm::vec3 p0 = glm::vec3(g->ModelMatrix*glm::vec4(g->vertices[id0],1));
+            glm::vec3 p1 = glm::vec3(g->ModelMatrix*glm::vec4(g->vertices[id1],1));// g->vertices[id1];
+            glm::vec3 p2 = glm::vec3(g->ModelMatrix*glm::vec4(g->vertices[id2],1));// g->vertices[id2];
 
 
             float t = tracer.GetIntersection(r, p0, p1, p2, no);
