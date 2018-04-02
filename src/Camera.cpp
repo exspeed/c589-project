@@ -8,10 +8,10 @@
 
 
 
-Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
-    pos( p )
-    , target( f )
-    , up( u )
+Camera::Camera( glm::vec3 position, glm::vec3 fwd, glm::vec3 head, glm::vec2 windowRes ):
+    pos( position )
+    , target( fwd )
+    , up( head )
     , fov( 45 ) {
 
     ViewMatrix = glm::lookAt (
@@ -20,11 +20,10 @@ Camera::Camera( glm::vec3 p, glm::vec3 f, glm::vec3 u ):
                      up  // Head is up (set to 0,-1,0 to look upside-down)
                  );
 
+    screen = windowRes;
+
     //perspective (T const &fovy, T const &aspect, T const &near, T const &far)
-    float near = 0.1f;
-    float far = 100.f;
-    float aspect = 1.0;
-    ProjectionMatrix = glm::perspective( glm::radians( fov ), aspect, near, far );
+    ProjectionMatrix = glm::perspective( glm::radians( fov ), GetAspectRatio(), near, far );
 }
 
 void Camera::UpdateViewMatrix() {
@@ -97,6 +96,20 @@ glm::vec3 Camera::Up() const {
 glm::vec3 Camera::LookAtDirection() const {
     return glm::normalize( target - pos );
 }
+
 float Camera::GetFov() const {
     return fov;
+}
+
+void Camera::SetScreenResolution( const glm::vec2 s ) {
+    screen = s;
+    ProjectionMatrix = glm::perspective( glm::radians( fov ), GetAspectRatio(), near, far );
+}
+
+glm::vec2 Camera::GetScreenResolution() const {
+    return screen;
+}
+
+float Camera::GetAspectRatio() const {
+    return ( float ) screen.x / ( float ) screen.y;
 }
