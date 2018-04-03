@@ -24,8 +24,9 @@ public:
     void ToggleSelectedGeometry( int i );
     bool HasAnyGeometrySelected();
     void Render() const;
-    void Carve(Geometry * g); 
     bool IsSketchConfirmed();
+    void Carve(Geometry * g); 
+    void CrackPattern(Geometry * g); 
 
 private:
     Camera* camera;

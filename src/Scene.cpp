@@ -234,6 +234,137 @@ void Scene::Carve(Geometry* g ){
     sketch->vertices = sk_vertices;
     sketch->normals = sk_normals;
     sketch->colours = sk_color;
+
     SketchConfirmed = true; 
+
     sketch->Load();
+
+    // ONLY FOR TESTING
+    sketch->vertices.clear();
+    sketch->normals.clear();
+    sketch->colours.clear();
+
+    glm::vec3 a1 = glm::vec3(-0.5f, 0, 0);
+    glm::vec3 b1 = glm::vec3(0.5f, 0, 0);
+    //glm::vec3 c1 = glm::vec3(1.0f, 0, 0);
+    sketch->vertices.push_back(a1);
+    sketch->vertices.push_back(b1);
+    //sketch->vertices.push_back(c1);
+    sketch->normals.emplace_back(0, 1, 0);
+    sketch->normals.emplace_back(0, 1, 0);
+    //sketch->normals.emplace_back(0, 1, 0);
+
+    sketch->colours.emplace_back(1.0, 0, 1.0);
+    sketch->colours.emplace_back(1.0, 0, 1.0);
+    //sketch->colours.emplace_back(1.0, 0, 1.0);
+
+    sketch->Load();
+
+    CrackPattern(sketch);
+}
+
+void Scene::CrackPattern(Geometry* sketch){
+    // create triangles
+    std::vector<glm::vec3> sk_vertices;
+    std::vector<GLuint> sk_faces;
+
+    // Get the triangle
+    const float DEPTH = 0.2; 
+    const float WIDTH = 0.1;
+    for(int i = 0; i < (int)sketch->vertices.size(); i++){
+
+        glm::vec3 v0 = sketch->vertices[i];
+        glm::vec3 v1 = sketch->vertices[i+1];
+
+        glm::vec3 no = sketch->normals[i]; // assumes it's normalized
+
+        glm::vec3 perp = glm::normalize(glm::cross(no, v1-v0));
+
+        glm::vec3 left = v0 + perp * WIDTH;
+        glm::vec3 right = v0 -perp * WIDTH;
+        glm::vec3 in = v0+ no *DEPTH; // in the triangle 
+
+        sk_vertices.push_back(in);
+        sk_vertices.push_back(left); 
+        sk_vertices.push_back(right);
+    }
+    // Figure out face indeces for whole mesh
+    // faces goes counterclockwise
+    for(int i = 0; i < (int)sk_vertices.size(); i+=6){ // skip 2 triangles
+        int a = i;
+        int b = i+3;
+        // make 7 faces
+        sk_faces.push_back(a);
+        sk_faces.push_back(a+1);
+        sk_faces.push_back(a+2);
+
+        // all sides
+        sk_faces.push_back(a);
+        sk_faces.push_back(a+2);
+        sk_faces.push_back(b);
+
+        sk_faces.push_back(a+2);
+        sk_faces.push_back(b+1);
+        sk_faces.push_back(b);
+        
+        sk_faces.push_back(a+2);
+        sk_faces.push_back(a+1);
+        sk_faces.push_back(b+2);
+
+        sk_faces.push_back(a+2);
+        sk_faces.push_back(b+1);
+        sk_faces.push_back(b+2);
+
+        sk_faces.push_back(a);
+        sk_faces.push_back(a+1);
+        sk_faces.push_back(b);
+
+        sk_faces.push_back(a+1);
+        sk_faces.push_back(b+2);
+        sk_faces.push_back(b);
+    }
+    // add last face
+    int last = sk_vertices.size();
+    sk_faces.push_back(last-3);
+    sk_faces.push_back(last-2);
+    sk_faces.push_back(last-1);
+
+    // Calculate vertex normals per face
+    std::vector<glm::vec3> sk_colours( sk_vertices.size(), glm::vec3( 0.88f, 0.61f, 0.596f ) );
+    std::vector<glm::vec3> normals( sk_vertices.size(), glm::vec3( 0.f, 0.f, 0.f ) );
+
+/*
+    int triangles = sk_faces.size()/3;
+    std::cout << triangles << std::endl;
+    std::cout << sk_vertices.size() << std::endl;
+    for ( int i = 0; i < triangles; ++i ) {
+        // Determine points on each face
+        glm::vec3 a = sk_vertices[sk_faces[3 * i + 0]];
+        glm::vec3 b = sk_vertices[sk_faces[3 * i + 1]];
+        glm::vec3 c = sk_vertices[sk_faces[3 * i + 2]];
+        // Calculate normals
+        glm::vec3 l = b - a;
+        glm::vec3 r = c - a;
+        glm::vec3 n = glm::cross( l, r );
+        // Aggregate normals
+        normals[sk_faces[3 * i + 0]] += n;
+        normals[sk_faces[3 * i + 1]] += n;
+        normals[sk_faces[3 * i + 2]] += n;
+    }
+
+    for ( int i = 0; i < (int) normals.size(); ++i ) {
+        // Average normals
+        normals[i] = glm::normalize( normals[i] );
+    }
+*/
+    //delete sketch;
+
+    Shader* program = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+
+    // temp
+    geometries[0] = new Geometry( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, nullptr );
+    geometries[0]->faces = sk_faces;
+    geometries[0]->Load();
+
+
 }
