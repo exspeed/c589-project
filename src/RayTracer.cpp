@@ -16,8 +16,9 @@ RayTracer::RayTracer( Camera* camera ): cam( camera ) {
 // assumes float x, y is between [-1,1]
 Ray RayTracer::CastRay( float x, float y ) {
     glm::vec3 camera = cam->GetPosition();
-    float normx = ( ( x + 1 ) / 2 ) - 0.5;
-    float normy = ( ( y + 1 ) / 2 ) - 0.5;
+    float aspect = cam->GetAspectRatio();
+    float normx = ( ( ( x + 1 ) / ( 2 ) ) - 0.5 ) * aspect;
+    float normy = ( ( ( y + 1 ) / ( 2 ) ) - 0.5 );
 
     glm::vec3 po = u * normx + v * normy + camera + n;
     return Ray( po, po - camera );
