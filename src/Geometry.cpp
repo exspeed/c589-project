@@ -307,8 +307,9 @@ std::vector<glm::vec3> Geometry::ArcLengthParameterize(std::vector<glm::vec3> ve
     }
     
     // Find the nearest power of 2 using log base 2
-    int nearestPowerOf2 = floor(log2f((float)vertices.size()))+1;
-    int numPoints = pow(2, nearestPowerOf2)-1;
+    int nearestPowerOf2 = floor(log2f((float)vertices.size())) + 1;
+    int incNumPoints = 3;
+    int numPoints = pow(2, nearestPowerOf2+incNumPoints)-3; // -3 just makes it so we remove 1 chaikin reverse subdivision point so we have an even # of cps
     float distance = (float) length/(float) numPoints;
 
     // subdivide the line many times
@@ -323,6 +324,7 @@ std::vector<glm::vec3> Geometry::ArcLengthParameterize(std::vector<glm::vec3> ve
     glm::vec3 pi;
     glm::vec3 pj;
     float deltad;
+    
     arclengthParameterizedCPs.push_back(subdividedCPs.front());
     for ( int i = 0; i < subdividedCPs.size()-1; i++) {
         pi = subdividedCPs[i];
@@ -374,7 +376,7 @@ std::vector<glm::vec3> Geometry::ChaikinReverseSubdivision(std::vector<glm::vec3
         Cj = -0.25f*F[i] + 0.75f*F[i+1] + 0.75f*F[i+2] - 0.25f*F[i+3];
         C.push_back(Cj);
     }
-    Cj = -0.25f*F[F.size()-4] + 0.75f*F[F.size()-3] + F[F.size()-2] - 0.5f*F.back();
+    Cj = -0.25f*F[F.size()-4] + 0.75f*F[F.size()-3] + F[F.size()-2] - 0.5f*F.back();    // F.back = f.size()-1
     C.push_back(Cj);
     C.push_back(F.back());
 
