@@ -139,6 +139,10 @@ void InputManager::KeyInput( const int key, const int action ) {
                 scene->ClearSketch();
                 break;
 
+            case GLFW_KEY_K:
+                scene->SmoothSketch();
+                break;
+
             // Wireframe toggle
             case GLFW_KEY_Z:
                 wireframe = !wireframe;

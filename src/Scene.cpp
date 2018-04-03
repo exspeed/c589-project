@@ -33,6 +33,11 @@ void Scene::ClearSketch() {
     sketch->Load();
 }
 
+void Scene::SmoothSketch() {
+    sketch->SmoothLine();
+    sketch->Load();
+}
+
 int Scene::GetGeometriesSize() {
     return geometries.size();
 }
@@ -111,6 +116,7 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
 void Scene::RenderSketch( Geometry* sketch ) const {
     glDisable(GL_DEPTH_TEST);
     Shader* program = sketch->program;
+    glPointSize(10.f);
 
     program->use();
     program->setMat4( "Model", sketch->ModelMatrix );
