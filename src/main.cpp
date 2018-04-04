@@ -49,7 +49,7 @@ int main( int argc, char* argv[] ) {
     // Initial Mesh
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
     // sketching geometry
-    Geometry* sketch = new Geometry( {}, {}, {}, GL_POINTS, programLine, nullptr );
+    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, nullptr );
 
     // Hack in crack pattern (for now)
     Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );

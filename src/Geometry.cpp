@@ -275,19 +275,27 @@ void Geometry::Rotate( const glm::vec3 rotate, const float angle ) {
     ModelMatrix = glm::rotate( ModelMatrix, angle, rotate );
 }
 
+// http://www.inesc-id.pt/ficheiros/publicacoes/2502.pdf source/reference paper
+
 void Geometry::SmoothLine() {
     std::vector<glm::vec3> ALPCPs;  // Arc Length Parametereized Control Points
     std::vector<glm::vec3> RCSCPs;  // Reverse Chaikin Subdivision Control Points
 
     ALPCPs = ArcLengthParameterize(vertices);
 
-    RCSCPs = ChaikinReverseSubdivision(ALPCPs);
-    RCSCPs = ChaikinReverseSubdivision(RCSCPs);
-    RCSCPs = ChaikinReverseSubdivision(ALPCPs);
+    RCSCPs = ALPCPs;
+    const int numReverseSubdivisions = 3;
 
-    std::cout << vertices.size() << std::endl;    
-    std::cout << ALPCPs.size() << std::endl;
-    std::cout << RCSCPs.size() << std::endl;
+    // reverse chaikin subdivision 3 times
+    for(int i = 0; i < numReverseSubdivisions; i++) {
+        RCSCPs = ChaikinReverseSubdivision(RCSCPs);
+    }
+
+    // chaikin subdivision 4 times 
+    const int numSubdivisions = 4;
+    for(int i = 0; i < numSubdivisions; i++) {
+        RCSCPs = ChaikinSubdivision(RCSCPs);
+    }
 
     vertices = RCSCPs;
     colours.clear();
@@ -308,8 +316,7 @@ std::vector<glm::vec3> Geometry::ArcLengthParameterize(std::vector<glm::vec3> ve
     
     // Find the nearest power of 2 using log base 2
     int nearestPowerOf2 = floor(log2f((float)vertices.size())) + 1;
-    int incNumPoints = 3;
-    int numPoints = pow(2, nearestPowerOf2+incNumPoints)-3; // -3 just makes it so we remove 1 chaikin reverse subdivision point so we have an even # of cps
+    int numPoints = pow(2, nearestPowerOf2)-3; // -3 just makes it so we remove 1 chaikin reverse subdivision point so we have an even # of cps
     float distance = (float) length/(float) numPoints;
 
     // subdivide the line many times
@@ -381,6 +388,26 @@ std::vector<glm::vec3> Geometry::ChaikinReverseSubdivision(std::vector<glm::vec3
     C.push_back(F.back());
 
     return C;
+}
+
+std::vector<glm::vec3> Geometry::ChaikinSubdivision(std::vector<glm::vec3> C) {
+    std::vector<glm::vec3> F;
+    F.push_back(C.front());
+    glm::vec3 F1 = 0.5f * C[0] + 0.5f * C[1];
+    F.push_back(F1);
+
+    glm::vec3 Fi;
+    glm::vec3 Fj;
+    for ( int i = 2; i < C.size()-1; ++i) {
+        Fi = 0.75f*C[i-1] + 0.25f*C[i];
+        Fj = 0.25f*C[i-1] + 0.75f*C[i];
+        F.push_back(Fi);
+        F.push_back(Fj);
+    }
+    Fi = 0.5f*C[C.size()-2] + 0.5f*C[C.size()-1];
+    F.push_back(Fi);
+    F.push_back(C.back());
+    return F;
 }
 
 Geometry* Geometry::Crack( Geometry* inp, Geometry* crack ) {
