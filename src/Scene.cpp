@@ -297,11 +297,7 @@ void Scene::CrackPattern(Geometry* sketch){
     sk_vertices.push_back(left); 
     sk_vertices.push_back(right);
 
-    // Figure out face indeces for whole mesh
-    // faces goes counterclockwise
-    // figure out the range, too many faces
 
-    std::cout << sk_vertices.size() << std::endl;;
     for(int i = 0; i < (int)sk_vertices.size()-3; i+=3){ 
         int a = i;
         int b = i+3;
@@ -344,8 +340,6 @@ void Scene::CrackPattern(Geometry* sketch){
     // Calculate vertex normals per face
     std::vector<glm::vec3> sk_colours( sk_vertices.size(), glm::vec3( 0.88f, 0.61f, 0.596f ) );
     std::vector<glm::vec3> normals( sk_vertices.size(), glm::vec3( 0.f, 0.f, 0.f ) );
-
-    //delete sketch;
 
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
 
