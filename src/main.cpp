@@ -20,6 +20,7 @@
 #include "InputManager.h"
 
 static InputManager* inputManager = nullptr;
+Camera* camera;
 
 void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
     assert( inputManager != nullptr );
@@ -31,6 +32,14 @@ void ScrollCallback( GLFWwindow* window, double xoffset, double yoffset ) {
     inputManager->ScrollWheel( xoffset, yoffset ); //forward input
 }
 
+void FramebufferCallback( GLFWwindow* window, int width, int height ) {
+    glViewport( 0, 0, width, height );
+
+    if ( camera != nullptr ) {
+        camera->SetScreenResolution( glm::vec2( ( float ) width, ( float ) height ) );
+    }
+}
+
 // PROGRAM ENTRY POINT
 int main( int argc, char* argv[] ) {
     // Initialize OpenGL and creat the window
@@ -39,7 +48,11 @@ int main( int argc, char* argv[] ) {
 
     glfwSetScrollCallback( window, ScrollCallback );
     glfwSetKeyCallback( window, KeyCallback );
-    Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
+    glfwSetFramebufferSizeCallback( window, FramebufferCallback );
+
+    int width, height;
+    glfwGetWindowSize( window, &width, &height );
+    camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ),  glm::vec2( width, height ) );
 
     // Create Camera
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
