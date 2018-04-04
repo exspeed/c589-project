@@ -13,8 +13,16 @@ void Scene::AddGeometry( Geometry* g ) {
     geometries.push_back( g );
 }
 
+
 void Scene::AddSketch( Geometry* g ) {
     sketch = g;
+}
+
+void Scene::DeleteGeometry( int i ) {
+    if( i < geometries.size()){
+       delete geometries[i];
+       geometries.erase(geometries.begin()+i);
+    }
 }
 
 void Scene::ClearGeometries() {
@@ -90,6 +98,9 @@ void Scene::Render() const {
 
 void Scene::RenderGeometry( Geometry* geometry ) const {
     Shader* program = geometry->program;
+    if(program == nullptr){
+        std::cout << "problem geometry\n";
+    }
 
     program->use();
     glStencilMask( 0x00 );
@@ -133,6 +144,9 @@ void Scene::RenderSketch( Geometry* sketch ) const {
 
 void Scene::RenderStencil( Geometry* geometry ) const {
     Shader* program = geometry->program;
+    if(program == nullptr){
+        std::cout << "problem stencil\n";
+    }
     program->use();
     glStencilFunc( GL_ALWAYS, 1, 0xFF );
     glStencilMask( 0xFF );
@@ -232,31 +246,15 @@ void Scene::Carve(Geometry* g ){
     }
 
     sketch->vertices = sk_vertices;
+    if(sketch->vertices.size() == 0){
+        std::cout << "No sketch captured\n";
+        return;
+    }
     sketch->normals = sk_normals;
     sketch->colours = sk_color;
 
     SketchConfirmed = true; 
 
-    sketch->Load();
-
-    // ONLY FOR TESTING
-    sketch->vertices.clear();
-    sketch->normals.clear();
-    sketch->colours.clear();
-
-    glm::vec3 a1 = glm::vec3(-0.5f, 0, 0);
-    glm::vec3 b1 = glm::vec3(0.5f, 0, 0);
-    glm::vec3 c1 = glm::vec3(1.0f, 0, 0.3);
-    sketch->vertices.push_back(a1);
-    sketch->vertices.push_back(b1);
-    sketch->vertices.push_back(c1);
-    sketch->normals.emplace_back(0, 1, 0);
-    sketch->normals.emplace_back(0, 1, 0);
-    sketch->normals.emplace_back(0, 1, 0);
-
-    sketch->colours.emplace_back(1.0, 0, 1.0);
-    sketch->colours.emplace_back(1.0, 0, 1.0);
-    sketch->colours.emplace_back(1.0, 0, 1.0);
     sketch->Load();
 
     CrackPattern(sketch);
@@ -290,7 +288,9 @@ void Scene::CrackPattern(Geometry* sketch){
     // Figure out face indeces for whole mesh
     // faces goes counterclockwise
     // figure out the range, too many faces
-    for(int i = 0; i < (int)sk_vertices.size(); i+=6){ 
+
+    std::cout << sk_vertices.size() << std::endl;;
+    for(int i = 0; i < (int)sk_vertices.size()-3; i+=3){ 
         int a = i;
         int b = i+3;
         // make 7 faces
@@ -305,7 +305,7 @@ void Scene::CrackPattern(Geometry* sketch){
         sk_faces.push_back(a+2);
         sk_faces.push_back(b+1);
         sk_faces.push_back(b);
-        
+
         sk_faces.push_back(a+2);
         sk_faces.push_back(a+1);
         sk_faces.push_back(b+2);
@@ -314,7 +314,6 @@ void Scene::CrackPattern(Geometry* sketch){
         sk_faces.push_back(b+1);
         sk_faces.push_back(b+2);
 
-/*
         sk_faces.push_back(a);
         sk_faces.push_back(a+1);
         sk_faces.push_back(b);
@@ -322,15 +321,12 @@ void Scene::CrackPattern(Geometry* sketch){
         sk_faces.push_back(a+1);
         sk_faces.push_back(b+2);
         sk_faces.push_back(b);
-        */
     }
     // add last face
     int last = sk_vertices.size();
-    /*
     sk_faces.push_back(last-3);
     sk_faces.push_back(last-2);
     sk_faces.push_back(last-1);
-    */
 
     // Calculate vertex normals per face
     std::vector<glm::vec3> sk_colours( sk_vertices.size(), glm::vec3( 0.88f, 0.61f, 0.596f ) );
@@ -340,12 +336,10 @@ void Scene::CrackPattern(Geometry* sketch){
 
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
 
-    // temp
-    geometries[0] = new Geometry( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, nullptr );
-    geometries[0]->faces = sk_faces;
-    geometries[0]->Load();
-
-    std::cout << sk_faces.size() << std::endl;;
+    Geometry* sk = new Geometry( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, program );
+    sk->faces = sk_faces;
+    sk->Load();
+    AddGeometry(sk);
 
 
 }

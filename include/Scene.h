@@ -16,6 +16,7 @@ public:
     Scene( Camera* cam );
     void AddGeometry( Geometry* g );
     void AddSketch( Geometry* g );
+    void DeleteGeometry( int i );
     void ClearGeometries();
     void ClearSketch();
     int GetGeometriesSize();
@@ -23,6 +24,7 @@ public:
     Geometry* GetSketch();
     void ToggleSelectedGeometry( int i );
     bool HasAnyGeometrySelected();
+    std::vector<Geometry*> GetGeometrySelected();
     void Render() const;
     bool IsSketchConfirmed();
     void Carve(Geometry * g); 
