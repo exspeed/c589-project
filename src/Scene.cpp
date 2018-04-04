@@ -220,15 +220,11 @@ void Scene::Carve( Geometry* g ) {
             int id1 = g->faces[j + 1];
             int id2 = g->faces[j + 2];
 
-            glm::vec3 n0 = g->normals[id0];
-            glm::vec3 n1 = g->normals[id1];
-            glm::vec3 n2 = g->normals[id2];
-
             //face normal
-            glm::vec3 no = glm::normalize( glm::cross( n1 - n0, n2 - n0 ) );
             glm::vec3 p0 = g->vertices[id0];
             glm::vec3 p1 = g->vertices[id1];
             glm::vec3 p2 = g->vertices[id2];
+            glm::vec3 no = glm::normalize( glm::cross( p2 - p0,p1 - p0 ) );
 
 
             float t = tracer.GetIntersection( r, p0, p1, p2, no );
@@ -271,8 +267,7 @@ void Scene::CrackPattern(Geometry* sketch){
     // Get the triangle
     const float DEPTH = 0.1; 
     const float WIDTH = 0.05;
-    for(int i = 0; i < (int)sketch->vertices.size(); i++){
-
+    for(int i = 0; i < (int)sketch->vertices.size()-1; i++){
         glm::vec3 v0 = sketch->vertices[i];
         glm::vec3 v1 = sketch->vertices[i+1];
 
@@ -288,6 +283,20 @@ void Scene::CrackPattern(Geometry* sketch){
         sk_vertices.push_back(left); 
         sk_vertices.push_back(right);
     }
+
+    int last = sketch->vertices.size()-1;
+    glm::vec3 no = glm::normalize(sketch->normals[last]); // assumes it's normalized
+    glm::vec3 perp = glm::normalize(glm::cross(no,sketch->vertices[last]-sketch->vertices[last-1]));
+
+    glm::vec3 v0 = sketch->vertices[last];
+    glm::vec3 left = v0 + perp * WIDTH;
+    glm::vec3 right = v0 -perp * WIDTH;
+    glm::vec3 in = v0+ no *DEPTH; // in the triangle 
+
+    sk_vertices.push_back(in);
+    sk_vertices.push_back(left); 
+    sk_vertices.push_back(right);
+
     // Figure out face indeces for whole mesh
     // faces goes counterclockwise
     // figure out the range, too many faces
@@ -296,37 +305,38 @@ void Scene::CrackPattern(Geometry* sketch){
     for(int i = 0; i < (int)sk_vertices.size()-3; i+=3){ 
         int a = i;
         int b = i+3;
+
         // make 7 faces
         sk_faces.push_back(a);
         sk_faces.push_back(a+1);
         sk_faces.push_back(a+2);
 
         sk_faces.push_back(a);
-        sk_faces.push_back(a+2);
-        sk_faces.push_back(b);
-
-        sk_faces.push_back(a+2);
-        sk_faces.push_back(b+1);
-        sk_faces.push_back(b);
-
-        sk_faces.push_back(a+2);
         sk_faces.push_back(a+1);
-        sk_faces.push_back(b+2);
+        sk_faces.push_back(b);
 
-        sk_faces.push_back(a+2);
+        sk_faces.push_back(b);
         sk_faces.push_back(b+1);
-        sk_faces.push_back(b+2);
+        sk_faces.push_back(a+1);
 
         sk_faces.push_back(a);
-        sk_faces.push_back(a+1);
+        sk_faces.push_back(a+2);
         sk_faces.push_back(b);
 
-        sk_faces.push_back(a+1);
-        sk_faces.push_back(b+2);
         sk_faces.push_back(b);
+        sk_faces.push_back(b+2);
+        sk_faces.push_back(a+2);
+
+        sk_faces.push_back(a+2);
+        sk_faces.push_back(a+1);
+        sk_faces.push_back(b+1);
+
+        sk_faces.push_back(b+1);
+        sk_faces.push_back(b+2);
+        sk_faces.push_back(a+2);
     }
     // add last face
-    int last = sk_vertices.size();
+    last = sk_vertices.size();
     sk_faces.push_back(last-3);
     sk_faces.push_back(last-2);
     sk_faces.push_back(last-1);
