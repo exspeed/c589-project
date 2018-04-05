@@ -51,6 +51,13 @@ public:
     void Translate( const glm::vec3 translate );
     void Rotate( const glm::vec3 rotate, const float angle );
 
+    void SmoothLine();
+    std::vector<glm::vec3> ArcLengthParameterize( std::vector<glm::vec3> vertices );
+    std::vector<glm::vec3> Subdivide( std::vector<glm::vec3> vertices );
+    std::vector<glm::vec3> ChaikinReverseSubdivision( std::vector<glm::vec3> F );
+    std::vector<glm::vec3> ChaikinSubdivision( std::vector<glm::vec3> C );
+
+
     static Geometry* Crack( Geometry* inp, Geometry* crack );
 
 private:
