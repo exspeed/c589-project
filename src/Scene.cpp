@@ -13,8 +13,16 @@ void Scene::AddGeometry( Geometry* g ) {
     geometries.push_back( g );
 }
 
+
 void Scene::AddSketch( Geometry* g ) {
     sketch = g;
+}
+
+void Scene::DeleteGeometry( int i ) {
+    if ( i < geometries.size() ) {
+        delete geometries[i];
+        geometries.erase( geometries.begin() + i );
+    }
 }
 
 void Scene::ClearGeometries() {
@@ -96,6 +104,11 @@ void Scene::Render() const {
 void Scene::RenderGeometry( Geometry* geometry ) const {
     Shader* program = geometry->program;
 
+    if ( program == nullptr ) {
+        std::cerr << "Invalid Geometry shader" << std::endl;
+        return;
+    }
+
     program->use();
     glStencilMask( 0x00 );
     program->setMat4( "Model", geometry->ModelMatrix );
@@ -139,6 +152,11 @@ void Scene::RenderSketch( Geometry* sketch ) const {
 
 void Scene::RenderStencil( Geometry* geometry ) const {
     Shader* program = geometry->program;
+
+    if ( program == nullptr ) {
+        std::cerr << "Invalid Stencil shader" << std::endl;
+    }
+
     program->use();
     glStencilFunc( GL_ALWAYS, 1, 0xFF );
     glStencilMask( 0xFF );
@@ -191,6 +209,12 @@ bool Scene::IsSketchConfirmed() {
 }
 
 void Scene::Carve( Geometry* g ) {
+
+    if ( sketch->vertices.size() == 0 ) {
+        std::cout << "No sketch captured\n";
+        return;
+    }
+
     RayTracer tracer( camera );
 
     assert( sketch->normals.size() == sketch->vertices.size() );
@@ -199,6 +223,7 @@ void Scene::Carve( Geometry* g ) {
     std::vector<glm::vec3> sk_normals;
     std::vector<glm::vec3> sk_color;
 
+    // Project sketch unto Geometry
     for ( int i = 0 ; i < ( int )sketch->vertices.size(); i++ ) {
         float x = sketch->vertices[i].x;
         float y = sketch->vertices[i].y;
@@ -206,21 +231,17 @@ void Scene::Carve( Geometry* g ) {
         float t_min = 10000000;
         glm::vec3 normal;
 
+        // Find Ray-Mesh intersection
         for ( int j = 0; j < ( int )g->faces.size(); j += 3 ) {
             int id0 = g->faces[j];
             int id1 = g->faces[j + 1];
             int id2 = g->faces[j + 2];
 
-            glm::vec3 n0 = glm::vec3( g->ModelMatrix * glm::vec4( g->normals[id0], 1 ) );
-            glm::vec3 n1 = glm::vec3( g->ModelMatrix * glm::vec4( g->normals[id1], 1 ) );
-            glm::vec3 n2 = glm::vec3( g->ModelMatrix * glm::vec4( g->normals[id2], 1 ) );
-
-            //face normal
-            glm::vec3 no = glm::normalize( glm::cross( n1 - n0, n2 - n0 ) );
-
-            glm::vec3 p0 = glm::vec3( g->ModelMatrix * glm::vec4( g->vertices[id0], 1 ) );
-            glm::vec3 p1 = glm::vec3( g->ModelMatrix * glm::vec4( g->vertices[id1], 1 ) );
-            glm::vec3 p2 = glm::vec3( g->ModelMatrix * glm::vec4( g->vertices[id2], 1 ) );
+            // Face normal
+            glm::vec3 p0 = g->vertices[id0];
+            glm::vec3 p1 = g->vertices[id1];
+            glm::vec3 p2 = g->vertices[id2];
+            glm::vec3 no = glm::normalize( glm::cross( p2 - p0, p1 - p0 ) );
 
             float t = tracer.GetIntersection( r, p0, p1, p2, no );
 
@@ -242,6 +263,103 @@ void Scene::Carve( Geometry* g ) {
     sketch->vertices = sk_vertices;
     sketch->normals = sk_normals;
     sketch->colours = sk_color;
-    SketchConfirmed = true;
     sketch->Load();
+
+    SketchConfirmed = true;
+
+    CrackPattern( sketch );
+}
+
+void Scene::CrackPattern( Geometry* sketch ) {
+    // create triangles
+    std::vector<glm::vec3> sk_vertices;
+    std::vector<GLuint> sk_faces;
+
+    // Find triangle for each control point on sketch except for last
+    const float DEPTH = 0.1f;
+    const float WIDTH = 0.05f;
+
+    for ( int i = 0; i < ( int )sketch->vertices.size() - 1; i++ ) {
+        glm::vec3 v0 = sketch->vertices[i];
+        glm::vec3 v1 = sketch->vertices[i + 1];
+
+        glm::vec3 no = glm::normalize( sketch->normals[i] );
+
+        glm::vec3 perp = glm::normalize( glm::cross( no, v1 - v0 ) );
+
+        // TODO: Add offset
+        glm::vec3 left = v0 + perp * WIDTH;
+        glm::vec3 right = v0 - perp * WIDTH;
+        glm::vec3 in = v0 + no * DEPTH;
+
+        sk_vertices.push_back( in );
+        sk_vertices.push_back( left );
+        sk_vertices.push_back( right );
+    }
+
+    // Add last triangle
+    int last = sketch->vertices.size() - 1;
+    glm::vec3 no = glm::normalize( sketch->normals[last] );
+    glm::vec3 perp = glm::normalize( glm::cross( no, sketch->vertices[last] - sketch->vertices[last - 1] ) );
+
+    glm::vec3 v0 = sketch->vertices[last];
+    glm::vec3 left = v0 + perp * WIDTH;
+    glm::vec3 right = v0 - perp * WIDTH;
+    glm::vec3 in = v0 + no * DEPTH;
+
+    sk_vertices.push_back( in );
+    sk_vertices.push_back( left );
+    sk_vertices.push_back( right );
+
+    // Populate face indeces
+    for ( int i = 0; i < ( int )sk_vertices.size() - 3; i += 3 ) {
+        int a = i;
+        int b = i + 3;
+
+        // Form Triangle Prism
+        sk_faces.push_back( a );
+        sk_faces.push_back( a + 1 );
+        sk_faces.push_back( a + 2 );
+
+        sk_faces.push_back( a );
+        sk_faces.push_back( a + 1 );
+        sk_faces.push_back( b );
+
+        sk_faces.push_back( b );
+        sk_faces.push_back( b + 1 );
+        sk_faces.push_back( a + 1 );
+
+        sk_faces.push_back( a );
+        sk_faces.push_back( a + 2 );
+        sk_faces.push_back( b );
+
+        sk_faces.push_back( b );
+        sk_faces.push_back( b + 2 );
+        sk_faces.push_back( a + 2 );
+
+        sk_faces.push_back( a + 2 );
+        sk_faces.push_back( a + 1 );
+        sk_faces.push_back( b + 1 );
+
+        sk_faces.push_back( b + 1 );
+        sk_faces.push_back( b + 2 );
+        sk_faces.push_back( a + 2 );
+    }
+
+    // Add last face
+    last = sk_vertices.size();
+    sk_faces.push_back( last - 3 );
+    sk_faces.push_back( last - 2 );
+    sk_faces.push_back( last - 1 );
+
+    // Instantiate Geometry
+    std::vector<glm::vec3> sk_colours( sk_vertices.size(), glm::vec3( 0.88f, 0.61f, 0.596f ) );
+    std::vector<glm::vec3> normals( sk_vertices.size(), glm::vec3( 0.f, 0.f, 0.f ) );
+
+    Shader* program = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+
+    Geometry* sk = new Geometry( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, program );
+    sk->faces = sk_faces;
+    sk->Load();
+    AddGeometry( sk );
 }

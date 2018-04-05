@@ -139,6 +139,15 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             case GLFW_KEY_DELETE:
                 scene->ClearSketch();
+
+                for ( int i = 0; i < scene->GetGeometriesSize(); i++ ) {
+                    Geometry* g = scene->GetGeometry( i );
+
+                    if ( g->IsSelectedGeometry() ) {
+                        scene->DeleteGeometry( i );
+                    }
+                }
+
                 break;
 
             case GLFW_KEY_K:
