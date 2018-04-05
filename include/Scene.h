@@ -27,8 +27,8 @@ public:
     std::vector<Geometry*> GetGeometrySelected();
     void Render() const;
     bool IsSketchConfirmed();
-    void Carve(Geometry * g); 
-    void CrackPattern(Geometry * g); 
+    void Carve( Geometry* g );
+    void CrackPattern( Geometry* g );
 
 private:
     Camera* camera;
