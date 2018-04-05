@@ -27,8 +27,9 @@ void InputManager::MouseInput() {
 
         if ( glfwGetMouseButton( window, GLFW_MOUSE_BUTTON_LEFT ) == GLFW_PRESS ) {
             glfwGetCursorPos( window, &xpos, &ypos );
-            float MVPX = 2.0f * ( xpos / 512.0f ) - 1;
-            float MVPY = -2.0f * ( ypos / 512.0f ) + 1;
+            glm::vec2 screenRes = camera->GetScreenResolution();
+            float MVPX = 2.0f * ( xpos / screenRes.x ) - 1;
+            float MVPY = -2.0f * ( ypos / screenRes.y ) + 1;
 
             if ( xpos != cursorX || ypos != cursorY ) {
                 Geometry* g = scene->GetSketch();
@@ -127,12 +128,13 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             // Sketching toggle
             case GLFW_KEY_X:
-                if(!scene->IsSketchConfirmed()){
-                sketching = !sketching;
-                ( sketching )
-                ? glfwSetCursor( window, sketchCursor )
-                : glfwSetCursor( window, standardCursor );
+                if ( !scene->IsSketchConfirmed() ) {
+                    sketching = !sketching;
+                    ( sketching )
+                    ? glfwSetCursor( window, sketchCursor )
+                    : glfwSetCursor( window, standardCursor );
                 }
+
                 break;
 
             case GLFW_KEY_DELETE:
@@ -150,13 +152,15 @@ void InputManager::KeyInput( const int key, const int action ) {
                 ? glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
                 : glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
                 break;
+
             case GLFW_KEY_ENTER:
-                if(!scene->IsSketchConfirmed()){
+                if ( !scene->IsSketchConfirmed() ) {
+                    scene->Carve( scene->GetGeometry( 0 ) );
                     scene->SmoothSketch();
-                    scene->Carve(scene->GetGeometry(0));
                     sketching = !sketching;
                     glfwSetCursor( window, standardCursor );
                 }
+
                 break;
 
             // Misc
