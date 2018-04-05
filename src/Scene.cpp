@@ -6,7 +6,6 @@
 
 Scene::Scene( Camera* cam ):
     camera( cam ) {
-
 }
 
 void Scene::AddGeometry( Geometry* g ) {
@@ -241,7 +240,7 @@ void Scene::Carve( Geometry* g ) {
             glm::vec3 p0 = g->vertices[id0];
             glm::vec3 p1 = g->vertices[id1];
             glm::vec3 p2 = g->vertices[id2];
-            glm::vec3 no = glm::normalize( glm::cross( p2 - p0, p1 - p0 ) );
+            glm::vec3 no = glm::normalize( glm::cross( p1 - p0, p2 - p0 ) );
 
             float t = tracer.GetIntersection( r, p0, p1, p2, no );
 
@@ -276,21 +275,20 @@ void Scene::CrackPattern( Geometry* sketch ) {
     std::vector<GLuint> sk_faces;
 
     // Find triangle for each control point on sketch except for last
-    const float DEPTH = 0.1f;
-    const float WIDTH = 0.05f;
+    const float DEPTH = 0.005f;
+    const float WIDTH = 0.005f;
+    const float OFFSET = 0.025f;
 
     for ( int i = 0; i < ( int )sketch->vertices.size() - 1; i++ ) {
         glm::vec3 v0 = sketch->vertices[i];
         glm::vec3 v1 = sketch->vertices[i + 1];
 
         glm::vec3 no = glm::normalize( sketch->normals[i] );
-
         glm::vec3 perp = glm::normalize( glm::cross( no, v1 - v0 ) );
 
-        // TODO: Add offset
-        glm::vec3 left = v0 + perp * WIDTH;
-        glm::vec3 right = v0 - perp * WIDTH;
-        glm::vec3 in = v0 + no * DEPTH;
+        glm::vec3 in = v0 - ( no * DEPTH );
+        glm::vec3 left = v0 + ( perp * WIDTH ) + ( no *  OFFSET );
+        glm::vec3 right = v0 - ( perp * WIDTH ) + ( no * OFFSET );
 
         sk_vertices.push_back( in );
         sk_vertices.push_back( left );
@@ -303,9 +301,9 @@ void Scene::CrackPattern( Geometry* sketch ) {
     glm::vec3 perp = glm::normalize( glm::cross( no, sketch->vertices[last] - sketch->vertices[last - 1] ) );
 
     glm::vec3 v0 = sketch->vertices[last];
-    glm::vec3 left = v0 + perp * WIDTH;
-    glm::vec3 right = v0 - perp * WIDTH;
-    glm::vec3 in = v0 + no * DEPTH;
+    glm::vec3 in = v0 - ( no * DEPTH );
+    glm::vec3 left = v0 + ( perp * WIDTH ) + ( no * OFFSET );
+    glm::vec3 right = v0 - ( perp * WIDTH ) + ( no * OFFSET );
 
     sk_vertices.push_back( in );
     sk_vertices.push_back( left );
@@ -317,9 +315,11 @@ void Scene::CrackPattern( Geometry* sketch ) {
         int b = i + 3;
 
         // Form Triangle Prism
+        /* // Commented out as it was giving the crack a serated effect
         sk_faces.push_back( a );
         sk_faces.push_back( a + 1 );
         sk_faces.push_back( a + 2 );
+        */
 
         sk_faces.push_back( a );
         sk_faces.push_back( a + 1 );
@@ -362,4 +362,9 @@ void Scene::CrackPattern( Geometry* sketch ) {
     sk->faces = sk_faces;
     sk->Load();
     AddGeometry( sk );
+
+    // Crack Geometry TODO: Move later
+    Geometry* cracked = Geometry::Crack( geometries[0], sk );
+    delete geometries[0];
+    geometries[0] = cracked;
 }
