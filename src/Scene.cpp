@@ -116,7 +116,6 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
 void Scene::RenderSketch( Geometry* sketch ) const {
     glDisable( GL_DEPTH_TEST );
     Shader* program = sketch->program;
-    glPointSize(5.f);
 
     program->use();
     program->setMat4( "Model", sketch->ModelMatrix );
@@ -212,16 +211,16 @@ void Scene::Carve( Geometry* g ) {
             int id1 = g->faces[j + 1];
             int id2 = g->faces[j + 2];
 
-            glm::vec3 n0 = glm::vec3(g->ModelMatrix*glm::vec4(g->normals[id0],1)); 
-            glm::vec3 n1 = glm::vec3(g->ModelMatrix*glm::vec4(g->normals[id1],1)); 
-            glm::vec3 n2 = glm::vec3(g->ModelMatrix*glm::vec4(g->normals[id2],1));
+            glm::vec3 n0 = glm::vec3( g->ModelMatrix * glm::vec4( g->normals[id0], 1 ) );
+            glm::vec3 n1 = glm::vec3( g->ModelMatrix * glm::vec4( g->normals[id1], 1 ) );
+            glm::vec3 n2 = glm::vec3( g->ModelMatrix * glm::vec4( g->normals[id2], 1 ) );
 
-            //face normal 
-            glm::vec3 no = glm::normalize(glm::cross(n1-n0, n2-n0));
+            //face normal
+            glm::vec3 no = glm::normalize( glm::cross( n1 - n0, n2 - n0 ) );
 
-            glm::vec3 p0 = glm::vec3(g->ModelMatrix*glm::vec4(g->vertices[id0],1));
-            glm::vec3 p1 = glm::vec3(g->ModelMatrix*glm::vec4(g->vertices[id1],1));
-            glm::vec3 p2 = glm::vec3(g->ModelMatrix*glm::vec4(g->vertices[id2],1));
+            glm::vec3 p0 = glm::vec3( g->ModelMatrix * glm::vec4( g->vertices[id0], 1 ) );
+            glm::vec3 p1 = glm::vec3( g->ModelMatrix * glm::vec4( g->vertices[id1], 1 ) );
+            glm::vec3 p2 = glm::vec3( g->ModelMatrix * glm::vec4( g->vertices[id2], 1 ) );
 
             float t = tracer.GetIntersection( r, p0, p1, p2, no );
 

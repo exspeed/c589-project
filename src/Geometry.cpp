@@ -281,20 +281,21 @@ void Geometry::SmoothLine() {
     std::vector<glm::vec3> ALPCPs;  // Arc Length Parametereized Control Points
     std::vector<glm::vec3> RCSCPs;  // Reverse Chaikin Subdivision Control Points
 
-    ALPCPs = ArcLengthParameterize(vertices);
+    ALPCPs = ArcLengthParameterize( vertices );
 
     RCSCPs = ALPCPs;
     const int numReverseSubdivisions = 3;
 
     // reverse chaikin subdivision 3 times
-    for(int i = 0; i < numReverseSubdivisions; i++) {
-        RCSCPs = ChaikinReverseSubdivision(RCSCPs);
+    for ( int i = 0; i < numReverseSubdivisions; i++ ) {
+        RCSCPs = ChaikinReverseSubdivision( RCSCPs );
     }
 
-    // chaikin subdivision 4 times 
+    // chaikin subdivision 4 times
     const int numSubdivisions = 4;
-    for(int i = 0; i < numSubdivisions; i++) {
-        RCSCPs = ChaikinSubdivision(RCSCPs);
+
+    for ( int i = 0; i < numSubdivisions; i++ ) {
+        RCSCPs = ChaikinSubdivision( RCSCPs );
     }
 
     vertices = RCSCPs;
@@ -304,25 +305,26 @@ void Geometry::SmoothLine() {
     normals = std::vector<glm::vec3>( vertices.size(), glm::vec3( 0.f, 1.f, 0.f ) );
 }
 
-std::vector<glm::vec3> Geometry::ArcLengthParameterize(std::vector<glm::vec3> vertices) {
+std::vector<glm::vec3> Geometry::ArcLengthParameterize( std::vector<glm::vec3> vertices ) {
     float length = 0.0;
 
     // Find the length of the line created by the control points
-    for( int i = 0; i < vertices.size()-1; i++ ) {
+    for ( int i = 0; i < vertices.size() - 1; i++ ) {
         glm::vec3 pi = vertices[i];
-        glm::vec3 pj = vertices[i+1];
+        glm::vec3 pj = vertices[i + 1];
         length += glm::length( pj - pi );
     }
-    
+
     // Find the nearest power of 2 using log base 2
-    int nearestPowerOf2 = floor(log2f((float)vertices.size())) + 1;
-    int numPoints = pow(2, nearestPowerOf2)-3; // -3 just makes it so we remove 1 chaikin reverse subdivision point so we have an even # of cps
-    float distance = (float) length/(float) numPoints;
+    int nearestPowerOf2 = floor( log2f( ( float )vertices.size() ) ) + 1;
+    int numPoints = pow( 2, nearestPowerOf2 ) - 3; // -3 just makes it so we remove 1 chaikin reverse subdivision point so we have an even # of cps
+    float distance = ( float ) length / ( float ) numPoints;
 
     // subdivide the line many times
     std::vector<glm::vec3> subdividedCPs = vertices;
+
     for ( int i = 0; i < 5; i++ ) {
-        subdividedCPs = Subdivide(subdividedCPs);
+        subdividedCPs = Subdivide( subdividedCPs );
     }
 
     // parameterize the line
@@ -331,82 +333,89 @@ std::vector<glm::vec3> Geometry::ArcLengthParameterize(std::vector<glm::vec3> ve
     glm::vec3 pi;
     glm::vec3 pj;
     float deltad;
-    
-    arclengthParameterizedCPs.push_back(subdividedCPs.front());
-    for ( int i = 0; i < subdividedCPs.size()-1; i++) {
+
+    arclengthParameterizedCPs.push_back( subdividedCPs.front() );
+
+    for ( int i = 0; i < subdividedCPs.size() - 1; i++ ) {
         pi = subdividedCPs[i];
-        pj = subdividedCPs[i+1];
+        pj = subdividedCPs[i + 1];
         deltad = glm::length( pj - pi );
         total += deltad;
+
         if ( total >= distance ) {
-            arclengthParameterizedCPs.push_back(pj);
+            arclengthParameterizedCPs.push_back( pj );
             total -= distance;
         }
     }
+
     // if we don't have enough control points, add the last one
-    if (arclengthParameterizedCPs.size() % 2 != 0) {
-        arclengthParameterizedCPs.push_back(subdividedCPs.back());
+    if ( arclengthParameterizedCPs.size() % 2 != 0 ) {
+        arclengthParameterizedCPs.push_back( subdividedCPs.back() );
     }
 
     return arclengthParameterizedCPs;
 }
 
-std::vector<glm::vec3> Geometry::Subdivide(std::vector<glm::vec3> vertices) {
+std::vector<glm::vec3> Geometry::Subdivide( std::vector<glm::vec3> vertices ) {
     std::vector<glm::vec3> subdividedCPs;
     glm::vec3 pi;
     glm::vec3 pj;
     glm::vec3 pij;
-    
-    // First point is added 
-    pi = vertices.front();
-    subdividedCPs.push_back(pi);
 
-    for( int i = 0; i < vertices.size()-1; i++ ) {
-       pi = vertices[i];
-       pj = vertices[i+1];
-       pij = 0.5f * pi + 0.5f * pj; // 1/2 pi + 1/2 pj
-       subdividedCPs.push_back(pij);
-       subdividedCPs.push_back(pj);
+    // First point is added
+    pi = vertices.front();
+    subdividedCPs.push_back( pi );
+
+    for ( int i = 0; i < vertices.size() - 1; i++ ) {
+        pi = vertices[i];
+        pj = vertices[i + 1];
+        pij = 0.5f * pi + 0.5f * pj; // 1/2 pi + 1/2 pj
+        subdividedCPs.push_back( pij );
+        subdividedCPs.push_back( pj );
     }
 
     return subdividedCPs;
 }
 
-std::vector<glm::vec3> Geometry::ChaikinReverseSubdivision(std::vector<glm::vec3> F) {
+std::vector<glm::vec3> Geometry::ChaikinReverseSubdivision( std::vector<glm::vec3> F ) {
     std::vector<glm::vec3> C;
-    C.push_back(F.front());
-    glm::vec3 C1 = -0.5f*F[0] + F[1] + 0.75f*F[2] - 0.25f*F[3];
-    C.push_back(C1);
+    C.push_back( F.front() );
+    glm::vec3 C1 = -0.5f * F[0] + F[1] + 0.75f * F[2] - 0.25f * F[3];
+    C.push_back( C1 );
 
     glm::vec3 Cj;
-    for ( int i = 2; i <= F.size()-6; i += 2 ) {
-        Cj = -0.25f*F[i] + 0.75f*F[i+1] + 0.75f*F[i+2] - 0.25f*F[i+3];
-        C.push_back(Cj);
+
+    for ( int i = 2; i <= F.size() - 6; i += 2 ) {
+        Cj = -0.25f * F[i] + 0.75f * F[i + 1] + 0.75f * F[i + 2] - 0.25f * F[i + 3];
+        C.push_back( Cj );
     }
-    Cj = -0.25f*F[F.size()-4] + 0.75f*F[F.size()-3] + F[F.size()-2] - 0.5f*F.back();    // F.back = f.size()-1
-    C.push_back(Cj);
-    C.push_back(F.back());
+
+    Cj = -0.25f * F[F.size() - 4] + 0.75f * F[F.size() - 3] + F[F.size() - 2] - 0.5f * F.back(); // F.back = f.size()-1
+    C.push_back( Cj );
+    C.push_back( F.back() );
 
     return C;
 }
 
-std::vector<glm::vec3> Geometry::ChaikinSubdivision(std::vector<glm::vec3> C) {
+std::vector<glm::vec3> Geometry::ChaikinSubdivision( std::vector<glm::vec3> C ) {
     std::vector<glm::vec3> F;
-    F.push_back(C.front());
+    F.push_back( C.front() );
     glm::vec3 F1 = 0.5f * C[0] + 0.5f * C[1];
-    F.push_back(F1);
+    F.push_back( F1 );
 
     glm::vec3 Fi;
     glm::vec3 Fj;
-    for ( int i = 2; i < C.size()-1; ++i) {
-        Fi = 0.75f*C[i-1] + 0.25f*C[i];
-        Fj = 0.25f*C[i-1] + 0.75f*C[i];
-        F.push_back(Fi);
-        F.push_back(Fj);
+
+    for ( int i = 2; i < C.size() - 1; ++i ) {
+        Fi = 0.75f * C[i - 1] + 0.25f * C[i];
+        Fj = 0.25f * C[i - 1] + 0.75f * C[i];
+        F.push_back( Fi );
+        F.push_back( Fj );
     }
-    Fi = 0.5f*C[C.size()-2] + 0.5f*C[C.size()-1];
-    F.push_back(Fi);
-    F.push_back(C.back());
+
+    Fi = 0.5f * C[C.size() - 2] + 0.5f * C[C.size() - 1];
+    F.push_back( Fi );
+    F.push_back( C.back() );
     return F;
 }
 
