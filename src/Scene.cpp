@@ -41,6 +41,11 @@ void Scene::ClearSketch() {
     sketch->Load();
 }
 
+void Scene::SmoothSketch() {
+    sketch->SmoothLine();
+    sketch->Load();
+}
+
 int Scene::GetGeometriesSize() {
     return geometries.size();
 }

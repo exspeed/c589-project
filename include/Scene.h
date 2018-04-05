@@ -19,6 +19,7 @@ public:
     void DeleteGeometry( int i );
     void ClearGeometries();
     void ClearSketch();
+    void SmoothSketch();
     int GetGeometriesSize();
     Geometry* GetGeometry( int i );
     Geometry* GetSketch();
