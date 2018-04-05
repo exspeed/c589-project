@@ -155,8 +155,8 @@ void InputManager::KeyInput( const int key, const int action ) {
 
             case GLFW_KEY_ENTER:
                 if ( !scene->IsSketchConfirmed() ) {
-                    scene->Carve( scene->GetGeometry( 0 ) );
                     scene->SmoothSketch();
+                    scene->Carve( scene->GetGeometry( 0 ) );
                     sketching = !sketching;
                     glfwSetCursor( window, standardCursor );
                 }
