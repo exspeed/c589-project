@@ -385,7 +385,7 @@ std::vector<glm::vec3> Geometry::ChaikinReverseSubdivision( std::vector<glm::vec
 
     glm::vec3 Cj;
 
-    for ( int i = 2; i <= F.size() - 6; i += 2 ) {
+    for ( int i = 2; i <= ( int ) F.size() - 6; i += 2 ) {
         Cj = -0.25f * F[i] + 0.75f * F[i + 1] + 0.75f * F[i + 2] - 0.25f * F[i + 3];
         C.push_back( Cj );
     }
