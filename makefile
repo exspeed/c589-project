@@ -10,9 +10,9 @@ ifdef debug
 	LINKFLAGS += -flto
 endif
 
-INCDIR= -I./middleware -Imiddleware/glad/include -Iinclude -I./middleware/assimp-3.3.1/include
+INCDIR= -I./middleware -Imiddleware/glad/include -Iinclude -I./middleware/assimp-3.3.1/include -I./middleware/cork/include
 
-LIBDIR=-L/usr/X11R6 -L/usr/local/lib -L./middleware/assimp-3.3.1/lib
+LIBDIR=-L/usr/X11R6 -L/usr/local/lib -L./middleware/assimp-3.3.1/lib -L./middleware/cork/lib
 
 LIBS=
 
@@ -21,12 +21,12 @@ OS_NAME:=$(shell uname -s)
 ifeq ($(OS_NAME),Darwin)
 	LIBDIR=
 	LIBS += -framework OpenGL `pkg-config --static --libs glfw3` 
-	LIBS += -lassimp
+	LIBS += -lassimp -lcork -lgmp
 
 endif
 ifeq ($(OS_NAME),Linux)
 	LIBS += `pkg-config --static --libs glfw3 gl`
-	LIBS += -lassimp
+	LIBS += -lassimp -lcork -lgmp
 endif
 
 SRCDIR=./src

@@ -20,34 +20,63 @@
 #include "Shader.h"
 
 static InputManager* inputManager = nullptr;
+Camera* camera;
 
-void scroll_callback( GLFWwindow* window, double xoffset, double yoffset ) {
-    if ( inputManager == nullptr ) {
-        std::cout << "WHOOPS: inputManager is NULL\n";
-        return;
-    } else {
-        inputManager->ScrollWheel( xoffset, yoffset ); //forward input
+void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
+    assert( inputManager != nullptr );
+    inputManager->KeyInput( key, action );
+}
+
+void ScrollCallback( GLFWwindow* window, double xoffset, double yoffset ) {
+    assert( inputManager != nullptr );
+    inputManager->ScrollWheel( xoffset, yoffset ); //forward input
+}
+
+void FramebufferCallback( GLFWwindow* window, int width, int height ) {
+    glViewport( 0, 0, width, height );
+
+    if ( camera != nullptr ) {
+        camera->SetScreenResolution( glm::vec2( ( float ) width, ( float ) height ) );
     }
 }
 
 // PROGRAM ENTRY POINT
 int main( int argc, char* argv[] ) {
-
     // Initialize OpenGL and creat the window
     GLFWwindow* window = nullptr;
     Initialize( window );
 
-    glfwSetScrollCallback( window, scroll_callback );
-    Camera* camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ) );
+    glfwSetScrollCallback( window, ScrollCallback );
+    glfwSetKeyCallback( window, KeyCallback );
+    glfwSetFramebufferSizeCallback( window, FramebufferCallback );
 
-    // Create Geometry
-    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES );
+    int width, height;
+    glfwGetWindowSize( window, &width, &height );
+    camera = new Camera( glm::vec3( 4, 3, 3 ), glm::vec3( 0, 0, 0 ), glm::vec3( 0, 1, 0 ),  glm::vec2( width, height ) );
 
     // Create Camera
-    Shader program( "shaders/vertex.glsl", "shaders/fragment.glsl" );
-    Shader programOutline( "shaders/vertex.glsl", "shaders/outline.frag" );
-    Scene* scene = new Scene( &program, &programOutline, camera );
+    Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
+    Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+    Shader* programLine = new Shader( "shaders/vertex.glsl", "shaders/linefrag.frag" );
+
+    // Initial Mesh
+    Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
+    // sketching geometry
+    Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, nullptr );
+
+    // Hack in crack pattern (for now)
+    Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
+    crack_pattern->Scale( glm::vec3( 0.25f, 0.25f, 0.25f ) );
+    crack_pattern->Translate( glm::vec3( 0.f, 2.f, 0.f ) );
+
+    // Crack
+    Geometry* cracked = Geometry::Crack( geometry, crack_pattern );
+
+    Scene* scene = new Scene( camera );
     scene->AddGeometry( geometry );
+    //scene->AddGeometry( cracked );
+
+    scene->AddSketch( sketch );
 
     inputManager = new InputManager( window, camera, scene );
 

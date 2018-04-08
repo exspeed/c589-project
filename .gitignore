@@ -5,7 +5,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+obj/**
 
 # Precompiled Headers
 *.gch
@@ -36,3 +36,6 @@ exec
 .vscode/
 
 *.DS_Store
+
+# Cork
+error_log.txt

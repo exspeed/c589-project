@@ -13,24 +13,34 @@
 
 class Scene {
 public:
-    std::vector<bool> selected;
-
-    Scene( Shader* prog, Shader* progOutline, Camera* cam );
+    Scene( Camera* cam );
     void AddGeometry( Geometry* g );
+    void AddSketch( Geometry* g );
+    void DeleteGeometry( int i );
     void ClearGeometries();
     void ExportSelectedGeometries() const;
     void ExportAllGeometries() const;
-    int GetGeometriesSize() const;
+    void ClearSketch();
+    void SmoothSketch();
+    int GetGeometriesSize();
+    Geometry* GetGeometry( int i );
+    Geometry* GetSketch();
     void ToggleSelectedGeometry( int i );
-
+    bool HasAnyGeometrySelected();
+    std::vector<Geometry*> GetGeometrySelected();
     void Render() const;
+    bool IsSketchConfirmed();
+    void Carve( Geometry* g );
+    void CrackPattern( Geometry* g );
 
 private:
-    Shader* program;
-    Shader* programOutline;
     Camera* camera;
 
     std::vector<Geometry*> geometries;
+    Geometry* sketch;
     void InitializeVAO( Geometry& g ) const;
+    void RenderGeometry( Geometry* geometry ) const;
+    void RenderSketch( Geometry* geometry ) const;
     void RenderStencil( Geometry* geometry ) const;
+    bool SketchConfirmed = false;
 };

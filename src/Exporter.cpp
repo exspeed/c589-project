@@ -37,9 +37,9 @@ aiScene* Exporter::CreateExportableScene( const std::vector<Geometry*>& geometri
     scene->mRootNode->mMeshes[0] = 0;
     scene->mRootNode->mNumMeshes = 1;
 
-    for(int i = 0; i < geometries.size(); ++i) {
+    for ( int i = 0; i < geometries.size(); ++i ) {
         Geometry* geometry = geometries[i];
-        scene->mMeshes[i] = CreateExportableMesh(geometry);
+        scene->mMeshes[i] = CreateExportableMesh( geometry );
         scene->mMeshes[i]->mMaterialIndex = 0;
     }
 
@@ -75,9 +75,9 @@ aiMesh* Exporter::CreateExportableMesh( Geometry* geometry ) const {
     return pMesh;
 }
 
-void Exporter::Export(aiScene* scene, const std::string filename) const {
+void Exporter::Export( aiScene* scene, const std::string filename ) const {
     std::string out_path = EXPORT_DIR + filename + "." + FORMAT_ID;
-    
+
     // Run AssImp Exporter
     Assimp::Exporter exporter;
     auto ret = exporter.Export( scene, FORMAT_ID, out_path );
