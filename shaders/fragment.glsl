@@ -9,7 +9,7 @@ in vec3 view_position;
 
 
 void main() {
-  const float ambient_strength = 0.1;
+  const float ambient_strength = 0.17;
   const vec3 light_position = vec3(4,3,5);
   const vec3 light_colour = vec3(1,1,1);
 

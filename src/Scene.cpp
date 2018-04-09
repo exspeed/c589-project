@@ -297,8 +297,7 @@ void Scene::CrackPattern( Geometry* sketch ) {
     std::vector<GLuint> sk_faces;
 
     // Find triangle for each control point on sketch except for last
-    const float DEPTH = 0.005f;
-    const float WIDTH = 0.005f;
+    
     const float OFFSET = 0.025f;
 
     for ( int i = 0; i < ( int )sketch->vertices.size() - 1; i++ ) {

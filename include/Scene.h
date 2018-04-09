@@ -32,6 +32,8 @@ public:
     bool IsSketchConfirmed();
     void Carve( Geometry* g );
     void CrackPattern( Geometry* g );
+    float DEPTH = 0.005f;
+    float WIDTH = 0.005f;
 
 private:
     Camera* camera;

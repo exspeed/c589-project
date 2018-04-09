@@ -136,7 +136,27 @@ void InputManager::KeyInput( const int key, const int action ) {
                 }
 
                 break;
+            case GLFW_KEY_EQUAL:
+                scene->DEPTH += 0.01;
+                std::cout << "DEPTH: "<< scene->DEPTH << std::endl;
+                break;
+            case GLFW_KEY_MINUS:
+                if(scene->DEPTH > 0.01){
+                    scene->DEPTH -= 0.01;
+                }
+                std::cout << "DEPTH: "<< scene->DEPTH << std::endl;
+                break;
 
+            case GLFW_KEY_RIGHT_BRACKET:
+                scene->WIDTH += 0.01;
+                std::cout << "WIDTH: " << scene->WIDTH << std::endl;
+                break;
+            case GLFW_KEY_LEFT_BRACKET:
+                if(scene->WIDTH > 0.01){
+                    scene->WIDTH -= 0.01;
+                }
+                std::cout <<"WIDTH: " <<  scene->WIDTH << std::endl;
+                break;
             case GLFW_KEY_DELETE:
                 scene->ClearSketch();
 
