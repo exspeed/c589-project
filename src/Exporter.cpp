@@ -22,16 +22,17 @@ aiScene* Exporter::CreateExportableScene( const std::vector<Geometry*>& geometri
     scene->mRootNode = new aiNode();
 
     // Add materials (Currently not supported)
-    scene->mMaterials    = new aiMaterial *[1];
-    scene->mMaterials[0] = nullptr;
-    scene->mNumMaterials = 1;
-
-    scene->mMaterials[0] = new aiMaterial();
+    scene->mMaterials    = new aiMaterial *[geometries.size()];
+    scene->mNumMaterials = geometries.size();
 
     // Create mesh
-    scene->mMeshes    = new aiMesh *[1];
-    scene->mMeshes[0] = nullptr;
+    scene->mMeshes    = new aiMesh *[geometries.size()];
     scene->mNumMeshes = geometries.size();
+
+    for ( unsigned int i = 0; i < geometries.size(); ++i ) {
+        scene->mMaterials[i] = new aiMaterial();
+        scene->mMeshes[i] = nullptr;
+    }
 
     scene->mRootNode->mMeshes    = new unsigned int[1];
     scene->mRootNode->mMeshes[0] = 0;
@@ -40,7 +41,7 @@ aiScene* Exporter::CreateExportableScene( const std::vector<Geometry*>& geometri
     for ( int i = 0; i < geometries.size(); ++i ) {
         Geometry* geometry = geometries[i];
         scene->mMeshes[i] = CreateExportableMesh( geometry );
-        scene->mMeshes[i]->mMaterialIndex = 0;
+        scene->mMeshes[i]->mMaterialIndex = i;
     }
 
     return scene;
