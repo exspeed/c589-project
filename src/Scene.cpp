@@ -1,11 +1,13 @@
 #include <glad/glad.h>
+
+#include "Exporter.h"
 #include <cassert>
 #include "Scene.h"
 #include "Camera.h"
 #include "RayTracer.h"
 
-Scene::Scene( Camera* cam ):
-    camera( cam ) {
+Scene::Scene( Camera* cam )
+    : camera( cam ) {
 }
 
 void Scene::AddGeometry( Geometry* g ) {
@@ -30,6 +32,26 @@ void Scene::ClearGeometries() {
     }
 
     geometries.clear();
+}
+
+void Scene::ExportSelectedGeometries() const {
+    std::vector<Geometry*> selected;
+
+    for ( auto g : geometries ) {
+        if ( g->IsSelectedGeometry() ) {
+            selected.push_back( g );
+        }
+    }
+
+    Exporter exporter;
+    std::string s = "Exported";
+    exporter.ExportGeometries( geometries, s );
+}
+
+void Scene::ExportAllGeometries() const {
+    Exporter exporter;
+    std::string s = "Exported";
+    exporter.ExportGeometries( geometries, s );
 }
 
 void Scene::ClearSketch() {

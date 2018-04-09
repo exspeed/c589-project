@@ -18,6 +18,8 @@ public:
     void AddSketch( Geometry* g );
     void DeleteGeometry( int i );
     void ClearGeometries();
+    void ExportSelectedGeometries() const;
+    void ExportAllGeometries() const;
     void ClearSketch();
     void SmoothSketch();
     int GetGeometriesSize();

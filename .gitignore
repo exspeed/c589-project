@@ -39,3 +39,6 @@ exec
 
 # Cork
 error_log.txt
+
+# Exported objects
+exports/

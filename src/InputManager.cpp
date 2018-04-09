@@ -226,6 +226,10 @@ void InputManager::KeyInput( const int key, const int action ) {
                     geometry->Rotate( glm::vec3( 0.0f, 0.0f, 1.0f ), -GEOMETRY_ROTATION_SPEED );
                     break;
 
+                case GLFW_KEY_P:
+                    scene->ExportSelectedGeometries();
+                    break;
+
                 default:
                     break;
             }

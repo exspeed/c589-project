@@ -15,9 +15,9 @@
 
 #include "Geometry.h"
 #include "GLHelpers.h"
+#include "InputManager.h"
 #include "Scene.h"
 #include "Shader.h"
-#include "InputManager.h"
 
 static InputManager* inputManager = nullptr;
 Camera* camera;

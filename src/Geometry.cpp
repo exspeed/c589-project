@@ -3,6 +3,7 @@
 
 #include "assimp/postprocess.h"
 #include "Geometry.h"
+#include <iostream>
 
 namespace {
     const GLuint VERTEX_INDEX = 0;
