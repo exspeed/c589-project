@@ -380,13 +380,12 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
 
-    Geometry* sk = new Geometry( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, program );
-    sk->faces = sk_faces;
-    sk->Load();
-    AddGeometry( sk );
+    Geometry sk( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, program );
+    sk.faces = sk_faces;
+    sk.Load();
 
     // Crack Geometry TODO: Move later
-    Geometry* cracked = Geometry::Crack( geometries[0], sk );
+    Geometry* cracked = Geometry::Crack( geometries[0], &sk );
     delete geometries[0];
     geometries[0] = cracked;
 }

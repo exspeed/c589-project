@@ -166,8 +166,9 @@ void InputManager::KeyInput( const int key, const int action ) {
                 if ( !scene->IsSketchConfirmed() ) {
                     scene->SmoothSketch();
                     scene->Carve( scene->GetGeometry( 0 ) );
-                    sketching = !sketching;
+                    sketching = false;
                     glfwSetCursor( window, standardCursor );
+                    scene->ClearSketch();
                 }
 
                 break;

@@ -36,7 +36,7 @@ float RayTracer::GetIntersection( Ray ray, glm::vec3 p0, glm::vec3 p1, glm::vec3
         t = glm::dot( ( p2 - ray.pos ), triNormal ) / denom;
 
         if ( t < 0 ) {
-            std::cout << "Behind " << t << std::endl;
+            // std::cout << "Behind " << t << std::endl;
             return -1;
         }
 
