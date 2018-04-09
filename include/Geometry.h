@@ -66,6 +66,8 @@ private:
 
     void GetCorkTriMesh( CorkTriMesh& out );
 
+    void RemoveDegeneracies();
+
     // Returns Union of two geometries (OR)
     Geometry* operator+( Geometry& g );
     // Returns Difference of two geometries (NOT)

@@ -422,6 +422,7 @@ std::vector<glm::vec3> Geometry::ChaikinSubdivision( std::vector<glm::vec3> C ) 
 
 Geometry* Geometry::Crack( Geometry* inp, Geometry* crack ) {
     Geometry* cracked = *inp - *crack;
+    cracked->RemoveDegeneracies();
     return cracked;
 }
 
@@ -520,4 +521,24 @@ void Geometry::GetCorkTriMesh( CorkTriMesh& out ) {
     out.vertices = &nvertices->front().x;
     out.n_triangles = nfaces->size() / 3;
     out.triangles = &nfaces->front();
+}
+
+void Geometry::RemoveDegeneracies() {
+    for ( auto i = faces.begin(); i != faces.end() - 3; ) {
+        glm::vec3 a = vertices[*i];
+        glm::vec3 b = vertices[*( i + 1 )];
+        glm::vec3 c = vertices[*( i + 2 )];
+
+        float area =  glm::length( glm::cross( a - b, a - c ) ) * 0.5f;
+
+        if ( area <= 1E-15 ) {
+            faces.erase( i );
+            faces.erase( i );
+            faces.erase( i );
+        } else {
+            i += 3;
+        }
+    }
+
+    Load();
 }
