@@ -58,17 +58,17 @@ aiMesh* Exporter::CreateExportableMesh( Geometry* geometry ) const {
     }
 
     // Fill face data
-    pMesh->mNumFaces = geometry->vertices.size() / VERTEX_COUNT_PER_FACE;
+    pMesh->mNumFaces = geometry->faces.size() / VERTEX_COUNT_PER_FACE;
     pMesh->mFaces    = new aiFace[pMesh->mNumFaces];
 
     for ( int i = 0; i < pMesh->mNumFaces; ++i ) {
         aiFace& face     = pMesh->mFaces[i];
-        face.mIndices    = new unsigned int[3];
+        face.mIndices    = new unsigned int[VERTEX_COUNT_PER_FACE];
         face.mNumIndices = VERTEX_COUNT_PER_FACE;
 
         for ( int j = 0; j < VERTEX_COUNT_PER_FACE; ++j ) {
             int idx = ( i * VERTEX_COUNT_PER_FACE ) + j;
-            face.mIndices[j] = idx;
+            face.mIndices[j] = geometry->faces[idx];
         }
     }
 
