@@ -154,6 +154,11 @@ void InputManager::KeyInput( const int key, const int action ) {
                 scene->SmoothSketch();
                 break;
 
+            case GLFW_KEY_R:
+                // Clear Geometries and reload cube model
+                scene->ResetGeometry();
+                break;
+
             // Wireframe toggle
             case GLFW_KEY_Z:
                 wireframe = !wireframe;

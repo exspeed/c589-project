@@ -19,6 +19,16 @@ void Scene::AddSketch( Geometry* g ) {
     sketch = g;
 }
 
+void Scene::ResetGeometry() {
+    Geometry newg("models/cube/cube.obj", GL_TRIANGLES, nullptr, nullptr);
+    Geometry* g = GetGeometry( 0 );
+    g->vertices = newg.vertices;
+    g->colours = newg.colours;
+    g->normals = newg.normals;
+    g->faces = newg.faces;
+    g->Load();
+}
+
 void Scene::DeleteGeometry( int i ) {
     if ( i < geometries.size() ) {
         delete geometries[i];

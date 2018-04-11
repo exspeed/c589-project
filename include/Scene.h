@@ -16,6 +16,7 @@ public:
     Scene( Camera* cam );
     void AddGeometry( Geometry* g );
     void AddSketch( Geometry* g );
+    void ResetGeometry();
     void DeleteGeometry( int i );
     void ClearGeometries();
     void ExportSelectedGeometries() const;

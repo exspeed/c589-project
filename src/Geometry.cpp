@@ -279,7 +279,7 @@ void Geometry::Rotate( const glm::vec3 rotate, const float angle ) {
 // http://www.inesc-id.pt/ficheiros/publicacoes/2502.pdf source/reference paper
 
 void Geometry::SmoothLine() {
-    std::vector<glm::vec3> ALPCPs;  // Arc Length Parametereized Control Points
+    std::vector<glm::vec3> ALPCPs;  // Arc Length Parameterized Control Points
     std::vector<glm::vec3> RCSCPs;  // Reverse Chaikin Subdivision Control Points
 
     ALPCPs = ArcLengthParameterize( vertices );
