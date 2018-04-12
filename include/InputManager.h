@@ -24,6 +24,8 @@ private:
     bool wireframe = false;
     bool sketching = false;
 
+    int modelIndex = 0;
+
     GLFWcursor* sketchCursor;
     GLFWcursor* standardCursor;
 
