@@ -130,33 +130,40 @@ void InputManager::KeyInput( const int key, const int action ) {
             case GLFW_KEY_X:
                 if ( !scene->IsSketchConfirmed() ) {
                     sketching = !sketching;
+                    scene->SetIsSketching( sketching );
                     ( sketching )
                     ? glfwSetCursor( window, sketchCursor )
                     : glfwSetCursor( window, standardCursor );
                 }
 
                 break;
+
             case GLFW_KEY_EQUAL:
                 scene->DEPTH += 0.01;
-                std::cout << "DEPTH: "<< scene->DEPTH << std::endl;
+                std::cout << "DEPTH: " << scene->DEPTH << std::endl;
                 break;
+
             case GLFW_KEY_MINUS:
-                if(scene->DEPTH > 0.01){
+                if ( scene->DEPTH > 0.01 ) {
                     scene->DEPTH -= 0.01;
                 }
-                std::cout << "DEPTH: "<< scene->DEPTH << std::endl;
+
+                std::cout << "DEPTH: " << scene->DEPTH << std::endl;
                 break;
 
             case GLFW_KEY_RIGHT_BRACKET:
                 scene->WIDTH += 0.01;
                 std::cout << "WIDTH: " << scene->WIDTH << std::endl;
                 break;
+
             case GLFW_KEY_LEFT_BRACKET:
-                if(scene->WIDTH > 0.01){
+                if ( scene->WIDTH > 0.01 ) {
                     scene->WIDTH -= 0.01;
                 }
-                std::cout <<"WIDTH: " <<  scene->WIDTH << std::endl;
+
+                std::cout << "WIDTH: " <<  scene->WIDTH << std::endl;
                 break;
+
             case GLFW_KEY_DELETE:
                 scene->ClearSketch();
 
@@ -192,6 +199,7 @@ void InputManager::KeyInput( const int key, const int action ) {
                     scene->SmoothSketch();
                     scene->Carve( scene->GetGeometry( 0 ) );
                     sketching = false;
+                    scene->SetIsSketching( sketching );
                     glfwSetCursor( window, standardCursor );
                     scene->ClearSketch();
                 }

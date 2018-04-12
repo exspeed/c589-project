@@ -7,7 +7,12 @@
 #include "RayTracer.h"
 
 Scene::Scene( Camera* cam )
-    : camera( cam ) {
+    : camera( cam )
+    , sketching( false ) {
+}
+
+void Scene::AddCursor( Geometry* c ) {
+    cursor = c;
 }
 
 void Scene::AddGeometry( Geometry* g ) {
@@ -20,7 +25,7 @@ void Scene::AddSketch( Geometry* g ) {
 }
 
 void Scene::ResetGeometry() {
-    Geometry newg("models/cube/cube.obj", GL_TRIANGLES, nullptr, nullptr);
+    Geometry newg( "models/cube/cube.obj", GL_TRIANGLES, nullptr, nullptr );
     Geometry* g = GetGeometry( 0 );
     g->vertices = newg.vertices;
     g->colours = newg.colours;
@@ -125,11 +130,39 @@ void Scene::Render() const {
 
     RenderSketch( sketch );
 
+    RenderCursor( cursor );
+
     glDisable( GL_DEPTH_TEST );
     glDisable( GL_STENCIL_TEST );
     // reset state to default (no shader or geometry bound)
     glBindVertexArray( 0 );
     glUseProgram( 0 );
+}
+
+void Scene::RenderCursor( Geometry* geometry ) const {
+    if ( !sketching ) {
+        return;
+    }
+
+    glDisable( GL_DEPTH_TEST );
+    Shader* program = geometry->program;
+
+    program->use();
+    program->setMat4( "Model", glm::mat4( 1.0f ) );
+    program->setMat4( "View", glm::mat4( 1.0f ) );
+    program->setMat4( "Projection", glm::mat4( 1.0f ) );
+
+    glPointSize( ( WIDTH / 0.005f ) * 0.25f );
+    geometry->colours[0] = glm::vec3( 1.f, 0.f, 0.f );
+    geometry->Load();
+
+    glBindVertexArray( geometry->vertexArray );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometry->vertexBuffer );
+    glDrawArrays(
+        geometry->renderMode,
+        0,
+        geometry->vertices.size()
+    );
 }
 
 void Scene::RenderGeometry( Geometry* geometry ) const {
@@ -307,7 +340,7 @@ void Scene::CrackPattern( Geometry* sketch ) {
     std::vector<GLuint> sk_faces;
 
     // Find triangle for each control point on sketch except for last
-    
+
     const float OFFSET = 0.025f;
 
     for ( int i = 0; i < ( int )sketch->vertices.size() - 1; i++ ) {
@@ -397,4 +430,8 @@ void Scene::CrackPattern( Geometry* sketch ) {
     Geometry* cracked = Geometry::Crack( geometries[0], &sk );
     delete geometries[0];
     geometries[0] = cracked;
+}
+
+void Scene::SetIsSketching( bool s ) {
+    sketching = s;
 }
