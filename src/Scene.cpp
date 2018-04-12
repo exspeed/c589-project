@@ -153,7 +153,7 @@ void Scene::RenderCursor( Geometry* geometry ) const {
     program->setMat4( "Projection", glm::mat4( 1.0f ) );
 
     glPointSize( ( WIDTH / 0.005f ) * 0.25f );
-    geometry->colours[0] = glm::vec3( 1.f, 0.f, 0.f );
+    geometry->colours[0] = glm::vec3( ( DEPTH / 0.15f ), 0.f, 0.f );
     geometry->Load();
 
     glBindVertexArray( geometry->vertexArray );
