@@ -21,6 +21,8 @@
 
 static InputManager* inputManager = nullptr;
 Camera* camera;
+Geometry* cursor;
+Scene* scene;
 
 void KeyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
     assert( inputManager != nullptr );
@@ -40,6 +42,20 @@ void FramebufferCallback( GLFWwindow* window, int width, int height ) {
     }
 }
 
+void CursorPositionCallback( GLFWwindow* window, double xpos, double ypos ) {
+    if ( cursor == nullptr ) {
+        return;
+    }
+
+    glm::vec2 screenRes = camera->GetScreenResolution();
+    float MVPX = 2.0f * ( xpos / screenRes.x ) - 1;
+    float MVPY = -2.0f * ( ypos / screenRes.y ) + 1;
+
+    glPointSize( scene->WIDTH * 2000.f );
+    cursor->vertices[0] = glm::vec3( MVPX, MVPY, 0.f );
+    cursor->Load();
+}
+
 // PROGRAM ENTRY POINT
 int main( int argc, char* argv[] ) {
     // Initialize OpenGL and creat the window
@@ -48,6 +64,7 @@ int main( int argc, char* argv[] ) {
 
     glfwSetScrollCallback( window, ScrollCallback );
     glfwSetKeyCallback( window, KeyCallback );
+    glfwSetCursorPosCallback( window, CursorPositionCallback );
     glfwSetFramebufferSizeCallback( window, FramebufferCallback );
 
     int width, height;
@@ -63,6 +80,7 @@ int main( int argc, char* argv[] ) {
     Geometry* geometry = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
     // sketching geometry
     Geometry* sketch = new Geometry( {}, {}, {}, GL_LINE_STRIP, programLine, nullptr );
+    cursor = new Geometry( {glm::vec3( 0.f, 0.f, 0.f )}, {glm::vec3( 1.f, 0.f, 0.f )}, {glm::vec3()}, GL_POINTS, programLine, nullptr );
 
     // Hack in crack pattern (for now)
     Geometry* crack_pattern = new Geometry( "models/cube/cube.obj", GL_TRIANGLES, program, programOutline );
@@ -72,11 +90,13 @@ int main( int argc, char* argv[] ) {
     // Crack
     Geometry* cracked = Geometry::Crack( geometry, crack_pattern );
 
-    Scene* scene = new Scene( camera );
+    scene = new Scene( camera );
     scene->AddGeometry( geometry );
     //scene->AddGeometry( cracked );
 
     scene->AddSketch( sketch );
+
+    scene->AddCursor( cursor );
 
     inputManager = new InputManager( window, camera, scene );
 
@@ -97,6 +117,7 @@ int main( int argc, char* argv[] ) {
     scene->ClearGeometries();
     delete( camera );
     delete( scene );
+    delete( cursor );
     delete( inputManager );
     glfwDestroyWindow( window );
     glfwTerminate();

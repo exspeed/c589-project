@@ -14,6 +14,7 @@
 class Scene {
 public:
     Scene( Camera* cam );
+    void AddCursor( Geometry* c );
     void AddGeometry( Geometry* g );
     void AddSketch( Geometry* g );
     void ResetGeometry();
@@ -33,15 +34,21 @@ public:
     bool IsSketchConfirmed();
     void Carve( Geometry* g );
     void CrackPattern( Geometry* g );
+    void SetIsSketching( bool s );
+
     float DEPTH = 0.005f;
     float WIDTH = 0.005f;
 
 private:
     Camera* camera;
+    bool sketching;
 
     std::vector<Geometry*> geometries;
     Geometry* sketch;
+    Geometry* cursor;
+
     void InitializeVAO( Geometry& g ) const;
+    void RenderCursor( Geometry* geometry ) const;
     void RenderGeometry( Geometry* geometry ) const;
     void RenderSketch( Geometry* geometry ) const;
     void RenderStencil( Geometry* geometry ) const;
