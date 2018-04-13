@@ -346,9 +346,6 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
     // Find triangle for each control point on sketch except for last
 
-//   float DEPTH = 0.005f;
-  //  float WIDTH = 0.005f;
-
     DEPTH = 0.3f; 
     WIDTH = 0.1f; 
 
@@ -386,8 +383,8 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
     // Populate face indeces
     sk_faces.push_back( 0 );
-    sk_faces.push_back( 2 );
     sk_faces.push_back( 1 );
+    sk_faces.push_back( 2 );
 
     for ( int i = 0; i < ( int )sk_vertices.size() - 3; i += 3 ) {
         int a = i;
@@ -395,44 +392,42 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
         // Form Triangle Prism
         // Commented out as it was giving the crack a serated effect
-        /*
-        
-*/
         sk_faces.push_back( a );
-        sk_faces.push_back( a + 1 );
         sk_faces.push_back( b );
+        sk_faces.push_back( a + 1 );
 
         sk_faces.push_back( b );
-        sk_faces.push_back( a + 1 );
         sk_faces.push_back( b + 1 );
+        sk_faces.push_back( a + 1 );
 
 
         sk_faces.push_back( a );
-        sk_faces.push_back( a + 2 );
         sk_faces.push_back( b );
+        sk_faces.push_back( a + 2 );
+
 
         sk_faces.push_back( b );
-        sk_faces.push_back( a + 2 );
         sk_faces.push_back( b + 2 );
+        sk_faces.push_back( a + 2 );
 
 
 
         sk_faces.push_back( a + 2 );
+        sk_faces.push_back( b + 1 );
         sk_faces.push_back( a + 1 );
-        sk_faces.push_back( b + 1 );
 
 
         sk_faces.push_back( b + 1 );
-        sk_faces.push_back( b + 2 );
         sk_faces.push_back( a + 2 );
+        sk_faces.push_back( b + 2 );
 
     }
 
     // Add last face
     last = sk_vertices.size();
     sk_faces.push_back( last - 3 );
-    sk_faces.push_back( last - 1 );
     sk_faces.push_back( last - 2 );
+    sk_faces.push_back( last - 1 );
 
     // Instantiate Geometry
     std::vector<glm::vec3> sk_colours( sk_vertices.size(), glm::vec3( 0.88f, 0.61f, 0.596f ) );
