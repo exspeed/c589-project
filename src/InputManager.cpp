@@ -188,33 +188,34 @@ void InputManager::KeyInput( const int key, const int action ) {
                 }
 
                 break;
+
             //Change scenes
 
-            case GLFW_KEY_PAGE_UP:
-            {
-                modelIndex = (modelIndex + 1) % models.size(); 
-                scene->DeleteGeometry(0);
+            case GLFW_KEY_PAGE_UP: {
+                modelIndex = ( modelIndex + 1 ) % models.size();
+                scene->DeleteGeometry( 0 );
                 Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
                 Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
                 Geometry* geometry = new Geometry( models[modelIndex], GL_TRIANGLES, program, programOutline );
-                scene->AddGeometry(geometry);
+                scene->AddGeometry( geometry );
             }
-                break;
-            case GLFW_KEY_PAGE_DOWN:
-            {
-                if(modelIndex == 0){
-                    modelIndex = models.size()-1;
+            break;
+
+            case GLFW_KEY_PAGE_DOWN: {
+                if ( modelIndex == 0 ) {
+                    modelIndex = models.size() - 1;
+                } else {
+                    modelIndex = ( modelIndex - 1 ) % models.size();
                 }
-                else{
-                    modelIndex = (modelIndex - 1) % models.size(); 
-                }
-                scene->DeleteGeometry(0);
+
+                scene->DeleteGeometry( 0 );
                 Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
                 Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
                 Geometry* geometry = new Geometry( models[modelIndex], GL_TRIANGLES, program, programOutline );
-                scene->AddGeometry(geometry);
+                scene->AddGeometry( geometry );
             }
-                break;
+            break;
+
             // Misc
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose( window, GL_TRUE );

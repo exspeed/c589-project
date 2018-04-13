@@ -78,6 +78,10 @@ void Scene::ClearSketch() {
 }
 
 void Scene::SmoothSketch() {
+    if ( sketch->vertices.size() <= 0 ) {
+        return;
+    }
+
     sketch->SmoothLine();
     sketch->Load();
 }
@@ -269,7 +273,7 @@ void Scene::RenderStencil( Geometry* geometry ) const {
 }
 
 bool Scene::IsSketchConfirmed() {
-    return SketchConfirmed;
+    return SketchConfirmed && sketch->vertices.size() > 0;
 }
 
 void Scene::Carve( Geometry* g ) {
