@@ -383,8 +383,8 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
     // Populate face indeces
     sk_faces.push_back( 0 );
-    sk_faces.push_back( 1 );
     sk_faces.push_back( 2 );
+    sk_faces.push_back( 1 );
 
     for ( int i = 0; i < ( int )sk_vertices.size() - 3; i += 3 ) {
         int a = i;
@@ -393,12 +393,13 @@ void Scene::CrackPattern( Geometry* sketch ) {
         // Form Triangle Prism
         // Commented out as it was giving the crack a serated effect
         sk_faces.push_back( a );
-        sk_faces.push_back( b );
         sk_faces.push_back( a + 1 );
+        sk_faces.push_back( b );
+        
 
         sk_faces.push_back( b );
-        sk_faces.push_back( b + 1 );
         sk_faces.push_back( a + 1 );
+        sk_faces.push_back( b + 1 );
 
 
         sk_faces.push_back( a );
