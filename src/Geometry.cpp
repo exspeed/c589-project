@@ -293,7 +293,7 @@ void Geometry::SmoothLine() {
     }
 
     // chaikin subdivision 4 times
-    const int numSubdivisions = 1;
+    const int numSubdivisions = 4;
 
     for ( int i = 0; i < numSubdivisions; i++ ) {
         RCSCPs = ChaikinSubdivision( RCSCPs );

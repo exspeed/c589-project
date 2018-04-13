@@ -345,10 +345,6 @@ void Scene::CrackPattern( Geometry* sketch ) {
     std::vector<GLuint> sk_faces;
 
     // Find triangle for each control point on sketch except for last
-
-    DEPTH = 0.3f; 
-    WIDTH = 0.1f; 
-
     const float OFFSET = 0.025f;
 
     for ( int i = 0; i < ( int )sketch->vertices.size() - 1; i++ ) {
@@ -382,6 +378,7 @@ void Scene::CrackPattern( Geometry* sketch ) {
     sk_vertices.push_back( right );
 
     // Populate face indeces
+    // First Face
     sk_faces.push_back( 0 );
     sk_faces.push_back( 2 );
     sk_faces.push_back( 1 );
@@ -392,27 +389,25 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
         // Form Triangle Prism
         // Commented out as it was giving the crack a serated effect
+        // Upper Crack Faces
         sk_faces.push_back( a );
         sk_faces.push_back( a + 1 );
         sk_faces.push_back( b );
         
-
         sk_faces.push_back( b );
         sk_faces.push_back( a + 1 );
         sk_faces.push_back( b + 1 );
 
-
+        // Lower crack faces?
         sk_faces.push_back( a );
         sk_faces.push_back( b );
         sk_faces.push_back( a + 2 );
-
 
         sk_faces.push_back( b );
         sk_faces.push_back( b + 2 );
         sk_faces.push_back( a + 2 );
 
-
-
+        // Crack base faces?
         sk_faces.push_back( a + 2 );
         sk_faces.push_back( b + 1 );
         sk_faces.push_back( a + 1 );
