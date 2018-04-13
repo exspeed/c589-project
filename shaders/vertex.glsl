@@ -13,7 +13,7 @@ layout(location = 1) in vec3 VertexColour;
 layout(location = 2) in vec3 VertexNormal;
 
 out vec3 object_colour;
-out vec3 normal_face;
+out vec3 vert_view_space;
 out vec3 world_position;
 out vec3 view_position;
 
@@ -22,7 +22,9 @@ uniform mat4x4 View;
 uniform mat4x4 Projection;
 
 void main() {
-  normal_face = (normalize(Model * vec4(VertexNormal, 0.0f))).xyz;
+  //normal_face = (normalize(Model * vec4(VertexNormal, 0.0f))).xyz;
+
+  vert_view_space = vec3(View * Model * vec4(VertexPosition,1));
 
   world_position = (Model * vec4(VertexPosition, 1.0f)).xyz;
 
