@@ -307,9 +307,9 @@ void Scene::Carve( Geometry* g ) {
 
             // Face normal
             glm::mat4 mm = g->ModelMatrix;
-            glm::vec3 p0 = glm::vec3(mm* glm::vec4(g->vertices[id0],1));
-            glm::vec3 p1 = glm::vec3(mm* glm::vec4(g->vertices[id1],1));
-            glm::vec3 p2 = glm::vec3(mm* glm::vec4(g->vertices[id2],1));
+            glm::vec3 p0 = glm::vec3( mm * glm::vec4( g->vertices[id0], 1 ) );
+            glm::vec3 p1 = glm::vec3( mm * glm::vec4( g->vertices[id1], 1 ) );
+            glm::vec3 p2 = glm::vec3( mm * glm::vec4( g->vertices[id2], 1 ) );
             glm::vec3 no = glm::normalize( glm::cross( p1 - p0, p2 - p0 ) );
 
             float t = tracer.GetIntersection( r, p0, p1, p2, no );
@@ -345,7 +345,6 @@ void Scene::CrackPattern( Geometry* sketch ) {
     std::vector<GLuint> sk_faces;
 
     // Find triangle for each control point on sketch except for last
-
     const float OFFSET = 0.025f;
 
     for ( int i = 0; i < ( int )sketch->vertices.size() - 1; i++ ) {
@@ -379,40 +378,45 @@ void Scene::CrackPattern( Geometry* sketch ) {
     sk_vertices.push_back( right );
 
     // Populate face indeces
+    // First Face
+    sk_faces.push_back( 0 );
+    sk_faces.push_back( 2 );
+    sk_faces.push_back( 1 );
+
     for ( int i = 0; i < ( int )sk_vertices.size() - 3; i += 3 ) {
         int a = i;
         int b = i + 3;
 
         // Form Triangle Prism
-        /* // Commented out as it was giving the crack a serated effect
-        sk_faces.push_back( a );
-        sk_faces.push_back( a + 1 );
-        sk_faces.push_back( a + 2 );
-        */
-
+        // Commented out as it was giving the crack a serated effect
+        // Upper Crack Faces
         sk_faces.push_back( a );
         sk_faces.push_back( a + 1 );
         sk_faces.push_back( b );
 
         sk_faces.push_back( b );
+        sk_faces.push_back( a + 1 );
         sk_faces.push_back( b + 1 );
-        sk_faces.push_back( a + 1 );
 
+        // Lower crack faces?
         sk_faces.push_back( a );
-        sk_faces.push_back( a + 2 );
         sk_faces.push_back( b );
+        sk_faces.push_back( a + 2 );
 
         sk_faces.push_back( b );
         sk_faces.push_back( b + 2 );
         sk_faces.push_back( a + 2 );
 
+        // Crack base faces?
         sk_faces.push_back( a + 2 );
-        sk_faces.push_back( a + 1 );
         sk_faces.push_back( b + 1 );
+        sk_faces.push_back( a + 1 );
+
 
         sk_faces.push_back( b + 1 );
-        sk_faces.push_back( b + 2 );
         sk_faces.push_back( a + 2 );
+        sk_faces.push_back( b + 2 );
+
     }
 
     // Add last face
@@ -427,14 +431,26 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
     Shader* program = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
 
+    /*
+        Geometry* sk = new Geometry( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, program );
+        sk->faces = sk_faces;
+        sk->Load();
+
+        // Crack Geometry TODO: Move later
+        Geometry* cracked = Geometry::Crack( geometries[0], &sk );
+        delete geometries[0];
+        geometries[0] = sk;
+    */
+
+
     Geometry sk( sk_vertices, sk_colours, normals , GL_TRIANGLES, program, program );
     sk.faces = sk_faces;
     sk.Load();
 
-    // Crack Geometry TODO: Move later
     Geometry* cracked = Geometry::Crack( geometries[0], &sk );
     delete geometries[0];
     geometries[0] = cracked;
+
 }
 
 void Scene::SetIsSketching( bool s ) {
