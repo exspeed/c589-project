@@ -6,6 +6,15 @@ namespace {
     const float GEOMETRY_ROTATION_SPEED = 0.05f;
     const float GEOMETRY_SCALE_UP = 1.1f;
     const float GEOMETRY_SCALE_DOWN = 0.9f;
+
+    const std::vector<std::string> models{
+        "models/cube/cube.obj",
+        "models/cone/cone.obj",
+        "models/cylinder/cylinder.obj",
+        "models/sphere/sphere.obj",
+        "models/torus/torus.obj",
+        "models/monkey/monkey.obj",
+    };
 }
 
 InputManager::InputManager( GLFWwindow* w, Camera* cam, Scene* s )
@@ -179,14 +188,38 @@ void InputManager::KeyInput( const int key, const int action ) {
                 }
 
                 break;
+            //Change scenes
 
+            case GLFW_KEY_PAGE_UP:
+            {
+                modelIndex = (modelIndex + 1) % models.size(); 
+                scene->DeleteGeometry(0);
+                Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
+                Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+                Geometry* geometry = new Geometry( models[modelIndex], GL_TRIANGLES, program, programOutline );
+                scene->AddGeometry(geometry);
+            }
+                break;
+            case GLFW_KEY_PAGE_DOWN:
+            {
+                if(modelIndex == 0){
+                    modelIndex = models.size()-1;
+                }
+                else{
+                    modelIndex = (modelIndex - 1) % models.size(); 
+                }
+                scene->DeleteGeometry(0);
+                Shader* program = new Shader( "shaders/vertex.glsl", "shaders/fragment.glsl" );
+                Shader* programOutline = new Shader( "shaders/vertex.glsl", "shaders/outline.frag" );
+                Geometry* geometry = new Geometry( models[modelIndex], GL_TRIANGLES, program, programOutline );
+                scene->AddGeometry(geometry);
+            }
+                break;
             // Misc
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose( window, GL_TRUE );
                 break;
 
-            default:
-                break;
         }
     }
 
