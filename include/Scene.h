@@ -36,8 +36,8 @@ public:
     void CrackPattern( Geometry* g );
     void SetIsSketching( bool s );
 
-    float DEPTH = 0.005f;
-    float WIDTH = 0.005f;
+    float DEPTH = 0.05f;
+    float WIDTH = 0.05f;
 
 private:
     Camera* camera;
