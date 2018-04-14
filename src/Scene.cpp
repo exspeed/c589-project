@@ -338,7 +338,8 @@ void Scene::Carve( Geometry* g ) {
 
     CrackPattern( sketch );
 }
-
+#include <stdlib.h>
+#include <cmath>
 void Scene::CrackPattern( Geometry* sketch ) {
     // create triangles
     std::vector<glm::vec3> sk_vertices;
@@ -354,9 +355,15 @@ void Scene::CrackPattern( Geometry* sketch ) {
         glm::vec3 no = glm::normalize( sketch->normals[i] );
         glm::vec3 perp = glm::normalize( glm::cross( no, v1 - v0 ) );
 
-        glm::vec3 in = v0 - ( no * DEPTH );
-        glm::vec3 left = v0 + ( perp * WIDTH ) + ( no *  OFFSET );
-        glm::vec3 right = v0 - ( perp * WIDTH ) + ( no * OFFSET );
+        float a = 0.7f;
+        float depth = DEPTH + ( std::fmod( rand(), a * DEPTH ) );
+        float width = WIDTH + ( std::fmod( rand(), a * WIDTH ) );
+
+        glm::vec3 in = v0 - ( no * depth );
+        glm::vec3 left = v0 + ( perp * width ) + ( no *  OFFSET );
+
+        width = WIDTH - width;
+        glm::vec3 right = v0 - ( perp * width ) + ( no * OFFSET );
 
         sk_vertices.push_back( in );
         sk_vertices.push_back( left );
