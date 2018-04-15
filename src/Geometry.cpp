@@ -531,7 +531,7 @@ void Geometry::RemoveDegeneracies() {
 
         float area =  glm::length( glm::cross( a - b, a - c ) ) * 0.5f;
 
-        if ( area <= 1E-15 ) {
+        if ( area <= 1E-5 ) {
             faces.erase( i );
             faces.erase( i );
             faces.erase( i );
