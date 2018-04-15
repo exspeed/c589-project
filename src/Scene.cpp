@@ -355,14 +355,14 @@ void Scene::CrackPattern( Geometry* sketch ) {
         glm::vec3 no = glm::normalize( sketch->normals[i] );
         glm::vec3 perp = glm::normalize( glm::cross( no, v1 - v0 ) );
 
-        float a = 0.7f;
+        float a = ( ( double ) rand() / RAND_MAX ) + 1; // 0 <= a < 1;
         float depth = DEPTH + ( std::fmod( rand(), a * DEPTH ) );
         float width = WIDTH + ( std::fmod( rand(), a * WIDTH ) );
 
         glm::vec3 in = v0 - ( no * depth );
         glm::vec3 left = v0 + ( perp * width ) + ( no *  OFFSET );
 
-        width = WIDTH - width;
+        width = WIDTH - ( std::fmod( rand(), a * WIDTH ) );
         glm::vec3 right = v0 - ( perp * width ) + ( no * OFFSET );
 
         sk_vertices.push_back( in );
