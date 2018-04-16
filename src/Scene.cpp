@@ -183,6 +183,9 @@ void Scene::RenderGeometry( Geometry* geometry ) const {
     program->setMat4( "View", camera->ViewMatrix );
     program->setMat4( "Projection", camera->ProjectionMatrix );
 
+    GLint polygonMode;
+    glGetIntegerv( GL_POLYGON_MODE, &polygonMode );
+    program->setInt( "Wireframe", polygonMode == GL_LINE );
 
     glBindVertexArray( geometry->vertexArray );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, geometry->faceBuffer );
