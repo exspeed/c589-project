@@ -8,7 +8,8 @@
 
 Scene::Scene( Camera* cam )
     : camera( cam )
-    , sketching( false ) {
+    , sketching( false )
+    , shakey( false ) {
 }
 
 void Scene::AddCursor( Geometry* c ) {
@@ -341,7 +342,8 @@ void Scene::Carve( Geometry* g ) {
 
     CrackPattern( sketch );
 }
-
+#include <stdlib.h>
+#include <cmath>
 void Scene::CrackPattern( Geometry* sketch ) {
     // create triangles
     std::vector<glm::vec3> sk_vertices;
@@ -357,9 +359,22 @@ void Scene::CrackPattern( Geometry* sketch ) {
         glm::vec3 no = glm::normalize( sketch->normals[i] );
         glm::vec3 perp = glm::normalize( glm::cross( no, v1 - v0 ) );
 
-        glm::vec3 in = v0 - ( no * DEPTH );
-        glm::vec3 left = v0 + ( perp * WIDTH ) + ( no *  OFFSET );
-        glm::vec3 right = v0 - ( perp * WIDTH ) + ( no * OFFSET );
+        float depth, widthl, widthr;
+
+        if ( shakey ) {
+            float variability = ( ( double ) rand() / RAND_MAX ) + 1; // 0 <= a < 1;
+            depth = DEPTH + ( std::fmod( rand(), variability * DEPTH ) );
+            widthl = WIDTH + ( std::fmod( rand(), variability * WIDTH ) );
+            widthr = WIDTH - ( std::fmod( rand(), variability * WIDTH ) );
+        } else {
+            depth = DEPTH;
+            widthl = WIDTH;
+            widthr = WIDTH;
+        }
+
+        glm::vec3 in = v0 - ( no * depth );
+        glm::vec3 left = v0 + ( perp * widthl ) + ( no *  OFFSET );
+        glm::vec3 right = v0 - ( perp * widthr ) + ( no * OFFSET );
 
         sk_vertices.push_back( in );
         sk_vertices.push_back( left );
@@ -458,4 +473,8 @@ void Scene::CrackPattern( Geometry* sketch ) {
 
 void Scene::SetIsSketching( bool s ) {
     sketching = s;
+}
+
+void Scene::ToggleShake() {
+    shakey = !shakey;
 }

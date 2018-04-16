@@ -189,6 +189,10 @@ void InputManager::KeyInput( const int key, const int action ) {
 
                 break;
 
+            case GLFW_KEY_SPACE:
+                scene->ToggleShake();
+                break;
+
             //Change scenes
 
             case GLFW_KEY_PAGE_UP: {
