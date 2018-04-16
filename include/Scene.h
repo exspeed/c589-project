@@ -35,6 +35,7 @@ public:
     void Carve( Geometry* g );
     void CrackPattern( Geometry* g );
     void SetIsSketching( bool s );
+    void ToggleShake();
 
     float DEPTH = 0.05f;
     float WIDTH = 0.05f;
@@ -42,6 +43,7 @@ public:
 private:
     Camera* camera;
     bool sketching;
+    bool shakey;
 
     std::vector<Geometry*> geometries;
     Geometry* sketch;
